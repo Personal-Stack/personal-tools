@@ -207,6 +207,17 @@ class BudgetTracker {
     }
 
     initializeCharts() {
+        // Check if Chart.js is available
+        if (typeof Chart === 'undefined') {
+            console.warn('Chart.js not available, charts will not be displayed');
+            // Hide charts section or show a message
+            const chartsSection = document.querySelector('.charts');
+            if (chartsSection) {
+                chartsSection.innerHTML = '<h2>Budget Visualization</h2><p style="text-align: center; padding: 40px; color: #666;">Charts require internet connection to load Chart.js library.</p>';
+            }
+            return;
+        }
+
         // Budget Breakdown Chart
         const budgetCtx = document.getElementById('budgetChart').getContext('2d');
         this.charts.budget = new Chart(budgetCtx, {
@@ -271,6 +282,11 @@ class BudgetTracker {
     }
 
     updateCharts() {
+        // Only update charts if Chart.js is available and charts are initialized
+        if (typeof Chart === 'undefined' || !this.charts.budget || !this.charts.remaining) {
+            return;
+        }
+
         // Update budget breakdown chart
         const labels = [];
         const data = [];
