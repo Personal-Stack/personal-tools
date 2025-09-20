@@ -428,9 +428,39 @@ class BudgetTracker {
         return total;
     }
 
+    calculateTotalAnnualExpenses() {
+        let total = 0;
+        
+        // Convert all items to annual amounts based on frequency
+        this.items.forEach(item => {
+            let annualAmount = 0;
+            
+            switch (item.frequency) {
+                case 'daily':
+                    annualAmount = item.value * 365;
+                    break;
+                case 'weekly':
+                    annualAmount = item.value * 52;
+                    break;
+                case 'monthly':
+                    annualAmount = item.value * 12;
+                    break;
+                case 'yearly':
+                    annualAmount = item.value; // yearly expenses added as full amount
+                    break;
+                default:
+                    annualAmount = item.value * 12; // default to monthly
+            }
+            
+            total += annualAmount;
+        });
+        
+        return total;
+    }
+
     updateCalculations() {
         const totalMonthly = this.calculateTotalMonthlyExpenses();
-        const totalAnnual = totalMonthly * 12;
+        const totalAnnual = this.calculateTotalAnnualExpenses();
         const remaining = this.maxCash - totalAnnual;
         
         // Update indicators
