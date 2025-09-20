@@ -635,7 +635,127 @@ button:hover {
     border-left-color: #dc3545;
 }
 
+/* Section Header with Refresh Button */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.section-header h2 {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.refresh-btn {
+    background: #17a2b8;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.refresh-btn:hover {
+    background: #138496;
+    transform: translateY(-1px);
+}
+
+.refresh-btn:active {
+    transform: translateY(0);
+}
+
+/* Main Content Grid Layout */
+.main-content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+.left-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.middle-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+/* Adjust section styles for new layout */
+.left-column section,
+.middle-column section {
+    margin-bottom: 20px;
+}
+
+/* Adjust form row for left column */
+.left-column .form-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.left-column .form-row input,
+.left-column .form-row select,
+.left-column .form-row button {
+    width: 100%;
+}
+
+/* Adjust indicators for middle column */
+.middle-column .indicators-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+/* Adjust charts container for middle column */
+.middle-column .charts-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
 /* Responsive Design */
+@media (max-width: 1200px) {
+    .main-content-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .left-column .form-row {
+        grid-template-columns: 2fr 1fr 2fr 1fr auto;
+        gap: 15px;
+    }
+    
+    .left-column .form-row input,
+    .left-column .form-row select,
+    .left-column .form-row button {
+        width: auto;
+    }
+    
+    .middle-column .indicators-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+    
+    .middle-column .charts-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
+}
+
 @media (max-width: 768px) {
     .charts-container {
         grid-template-columns: 1fr;

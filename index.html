@@ -16,7 +16,7 @@
 
         <main>
             <!-- Annual Budget Section -->
-            <section class="annual-budget">
+            <section class="annual-budget full-width">
                 <h2>Annual Budget Setup</h2>
                 <div class="form-group">
                     <label for="maxCash">Max Available Cash Per Year ($):</label>
@@ -71,30 +71,31 @@
                 </div>
             </section>
 
-            <!-- Budget Items Section -->
-            <section class="budget-items">
-                <h2>Budget Items</h2>
-                <div class="add-item-form">
-                    <div class="form-row">
-                        <input type="text" id="itemName" placeholder="Item name" required>
-                        <input type="number" id="itemValue" placeholder="Amount ($)" min="0" step="0.01" required>
-                        <input type="text" id="itemTags" placeholder="Tags (optional)">
-                        <select id="itemFrequency">
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly" selected>Monthly</option>
-                            <option value="yearly">Yearly</option>
-                        </select>
-                        <button id="addItemBtn" onclick="addItem()">Add Item</button>
+            <!-- Budget Summary Section -->
+            <section class="summary full-width">
+                <h2>Budget Summary</h2>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <span class="label">Total Monthly Expenses:</span>
+                        <span class="value" id="totalMonthly">$0.00</span>
                     </div>
-                </div>
-                <div class="items-list" id="itemsList">
-                    <!-- Items will be added here dynamically -->
+                    <div class="summary-item">
+                        <span class="label">Total Annual Expenses:</span>
+                        <span class="value" id="totalAnnual">$0.00</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">Remaining Annual Budget:</span>
+                        <span class="value" id="remainingBudget">$0.00</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">Budget Status:</span>
+                        <span class="value" id="budgetStatus">-</span>
+                    </div>
                 </div>
             </section>
 
             <!-- Budget Indicators Section -->
-            <section class="budget-indicators">
+            <section class="budget-indicators full-width">
                 <h2>Budget Indicators</h2>
                 <div class="indicators-grid">
                     <div class="indicator">
@@ -121,8 +122,11 @@
             </section>
 
             <!-- Charts Section -->
-            <section class="charts">
-                <h2>Budget Visualization</h2>
+            <section class="charts full-width">
+                <div class="section-header">
+                    <h2>Budget Visualization</h2>
+                    <button type="button" id="refreshChartsBtn" class="refresh-btn" onclick="budgetTracker.updateCharts()">🔄 Refresh Charts</button>
+                </div>
                 <div class="charts-container">
                     <div class="chart-wrapper">
                         <canvas id="budgetChart"></canvas>
@@ -134,8 +138,11 @@
             </section>
 
             <!-- Dynamic Charts Section -->
-            <section class="dynamic-charts">
-                <h2>Custom Charts</h2>
+            <section class="dynamic-charts full-width">
+                <div class="section-header">
+                    <h2>Custom Charts</h2>
+                    <button type="button" id="refreshDynamicChartsBtn" class="refresh-btn" onclick="budgetTracker.refreshDynamicCharts()">🔄 Refresh Custom Charts</button>
+                </div>
                 <p>Create custom pie charts to analyze your budget by specific tags, frequencies, or combinations.</p>
                 
                 <div class="chart-controls">
@@ -204,26 +211,25 @@
                 </div>
             </section>
 
-            <!-- Summary Section -->
-            <section class="summary">
-                <h2>Budget Summary</h2>
-                <div class="summary-grid">
-                    <div class="summary-item">
-                        <span class="label">Total Monthly Expenses:</span>
-                        <span class="value" id="totalMonthly">$0.00</span>
+            <!-- Budget Items Section -->
+            <section class="budget-items full-width">
+                <h2>Budget Items</h2>
+                <div class="add-item-form">
+                    <div class="form-row">
+                        <input type="text" id="itemName" placeholder="Item name" required>
+                        <input type="number" id="itemValue" placeholder="Amount ($)" min="0" step="0.01" required>
+                        <input type="text" id="itemTags" placeholder="Tags (optional)">
+                        <select id="itemFrequency">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly" selected>Monthly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
+                        <button id="addItemBtn" onclick="addItem()">Add Item</button>
                     </div>
-                    <div class="summary-item">
-                        <span class="label">Total Annual Expenses:</span>
-                        <span class="value" id="totalAnnual">$0.00</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="label">Remaining Annual Budget:</span>
-                        <span class="value" id="remainingBudget">$0.00</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="label">Budget Status:</span>
-                        <span class="value" id="budgetStatus">-</span>
-                    </div>
+                </div>
+                <div class="items-list" id="itemsList">
+                    <!-- Items will be added here dynamically -->
                 </div>
             </section>
         </main>
