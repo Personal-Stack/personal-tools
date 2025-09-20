@@ -22,6 +22,53 @@
                     <label for="maxCash">Max Available Cash Per Year ($):</label>
                     <input type="number" id="maxCash" placeholder="Enter your annual budget" min="0" step="0.01">
                 </div>
+                <div class="import-section">
+                    <h3>Import Budget Data</h3>
+                    <p>Upload a feed.json file to automatically populate your budget items and settings.</p>
+                    
+                    <div class="import-group">
+                        <label for="feedFile">Select feed.json file:</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="feedFile" accept="application/json,.json">
+                            <button type="button" id="importFeedBtn">Import Feed</button>
+                        </div>
+                        <span id="importStatus" class="import-status"></span>
+                    </div>
+                    
+                    <div class="import-preview" id="importPreview" style="display: none;">
+                        <h4>Preview:</h4>
+                        <div class="preview-content">
+                            <div class="preview-settings">
+                                <strong>Settings:</strong>
+                                <span id="previewMaxCash">-</span>
+                            </div>
+                            <div class="preview-items">
+                                <strong>Items:</strong>
+                                <span id="previewItemsCount">0</span> items found
+                            </div>
+                        </div>
+                        <button type="button" id="confirmImportBtn" class="confirm-btn">Confirm Import</button>
+                        <button type="button" id="cancelImportBtn" class="cancel-btn">Cancel</button>
+                    </div>
+                    
+                    <details class="json-format-help">
+                        <summary>Expected JSON Format</summary>
+                        <pre><code>{
+  "settings": {
+    "maxCash": 100000,
+    "currency": "USD"
+  },
+  "items": [
+    {
+      "name": "rent",
+      "value": 1200,
+      "frequency": "monthly",
+      "tags": ["housing", "essential"]
+    }
+  ]
+}</code></pre>
+                    </details>
+                </div>
             </section>
 
             <!-- Budget Items Section -->
@@ -38,7 +85,7 @@
                             <option value="monthly" selected>Monthly</option>
                             <option value="yearly">Yearly</option>
                         </select>
-                        <button onclick="addItem()">Add Item</button>
+                        <button id="addItemBtn" onclick="addItem()">Add Item</button>
                     </div>
                 </div>
                 <div class="items-list" id="itemsList">
