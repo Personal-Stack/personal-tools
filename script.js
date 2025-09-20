@@ -2,17 +2,7 @@
 class BudgetTracker {
     constructor() {
         this.maxCash = 0;
-        this.defaultCategories = [
-            { name: 'Electricity', amount: 0 },
-            { name: 'Water', amount: 0 },
-            { name: 'Gas', amount: 0 },
-            { name: 'Internet', amount: 0 },
-            { name: 'Phone', amount: 0 },
-            { name: 'Mortgage', amount: 0 },
-            { name: 'Car Gas', amount: 0 },
-            { name: 'Investment', amount: 0, isPercentage: true }
-        ];
-        this.customCategories = [];
+        this.items = [];
         this.charts = {};
         
         this.init();
@@ -20,7 +10,7 @@ class BudgetTracker {
 
     init() {
         this.setupEventListeners();
-        this.renderDefaultCategories();
+        this.renderItems();
         this.updateCalculations();
         this.initializeCharts();
     }
@@ -48,8 +38,7 @@ class BudgetTracker {
     saveData() {
         const data = {
             maxCash: this.maxCash,
-            defaultCategories: this.defaultCategories,
-            customCategories: this.customCategories
+            items: this.items
         };
         localStorage.setItem('budgetData', JSON.stringify(data));
     }
@@ -59,112 +48,101 @@ class BudgetTracker {
         if (savedData) {
             const data = JSON.parse(savedData);
             this.maxCash = data.maxCash || 0;
-            this.defaultCategories = data.defaultCategories || this.defaultCategories;
-            this.customCategories = data.customCategories || [];
+            this.items = data.items || [];
             
             // Update UI
             document.getElementById('maxCash').value = this.maxCash;
-            this.renderDefaultCategories();
-            this.renderCustomCategories();
+            this.renderItems();
             this.updateCalculations();
         }
     }
 
-    renderDefaultCategories() {
-        const container = document.getElementById('defaultCategories');
+    renderItems() {
+        const container = document.getElementById('itemsList');
+        if (!container) return;
+        
         container.innerHTML = '';
 
-        this.defaultCategories.forEach((category, index) => {
-            const categoryElement = this.createCategoryElement(category, index, true);
-            container.appendChild(categoryElement);
+        this.items.forEach((item, index) => {
+            const itemElement = this.createItemElement(item, index);
+            container.appendChild(itemElement);
         });
     }
 
-    renderCustomCategories() {
-        const container = document.getElementById('customCategories');
-        container.innerHTML = '';
-
-        this.customCategories.forEach((category, index) => {
-            const categoryElement = this.createCategoryElement(category, index, false);
-            container.appendChild(categoryElement);
-        });
-    }
-
-    createCategoryElement(category, index, isDefault) {
+    createItemElement(item, index) {
         const div = document.createElement('div');
-        div.className = 'category-item';
-
-        const isInvestment = category.name === 'Investment';
+        div.className = 'item-row';
         
         div.innerHTML = `
-            <label>${category.name}:</label>
-            <input type="number" 
-                   value="${category.amount}" 
-                   min="0" 
-                   step="0.01" 
-                   placeholder="${isInvestment ? 'Percentage' : 'Monthly amount'}"
-                   class="${isInvestment ? 'investment-input' : ''}"
-                   onchange="budgetTracker.updateCategory(${index}, this.value, ${isDefault})">
-            ${isInvestment ? '<span>%</span>' : '<span>$/month</span>'}
-            ${!isDefault ? `<button class="remove-btn" onclick="budgetTracker.removeCustomCategory(${index})">Remove</button>` : ''}
+            <div class="item-info">
+                <div class="item-name">${item.name}</div>
+                <div class="item-details">
+                    <span class="item-value">$${item.value.toFixed(2)}</span>
+                    <span class="item-frequency">${item.frequency}</span>
+                    <span class="item-tags">${item.tags || 'No tags'}</span>
+                </div>
+            </div>
+            <button class="remove-btn" onclick="budgetTracker.removeItem(${index})">Remove</button>
         `;
 
         return div;
     }
 
-    updateCategory(index, value, isDefault) {
-        const amount = parseFloat(value) || 0;
-        
-        if (isDefault) {
-            this.defaultCategories[index].amount = amount;
-        } else {
-            this.customCategories[index].amount = amount;
-        }
-        
-        this.updateCalculations();
-    }
-
-    addCustomCategory() {
-        const nameInput = document.getElementById('newCategoryName');
-        const amountInput = document.getElementById('newCategoryAmount');
+    addItem() {
+        const nameInput = document.getElementById('itemName');
+        const valueInput = document.getElementById('itemValue');
+        const tagsInput = document.getElementById('itemTags');
+        const frequencySelect = document.getElementById('itemFrequency');
         
         const name = nameInput.value.trim();
-        const amount = parseFloat(amountInput.value) || 0;
+        const value = parseFloat(valueInput.value) || 0;
+        const tags = tagsInput.value.trim();
+        const frequency = frequencySelect.value;
         
-        if (name) {
-            this.customCategories.push({ name, amount });
-            this.renderCustomCategories();
+        if (name && value > 0) {
+            this.items.push({ name, value, tags, frequency });
+            this.renderItems();
             this.updateCalculations();
             
             // Clear inputs
             nameInput.value = '';
-            amountInput.value = '';
+            valueInput.value = '';
+            tagsInput.value = '';
+            frequencySelect.value = 'monthly';
         }
     }
 
-    removeCustomCategory(index) {
-        this.customCategories.splice(index, 1);
-        this.renderCustomCategories();
+    removeItem(index) {
+        this.items.splice(index, 1);
+        this.renderItems();
         this.updateCalculations();
     }
 
     calculateTotalMonthlyExpenses() {
         let total = 0;
         
-        // Add default categories
-        this.defaultCategories.forEach(category => {
-            if (category.name === 'Investment' && category.isPercentage) {
-                // Investment is a percentage of monthly budget
-                const monthlyBudget = this.maxCash / 12;
-                total += (monthlyBudget * category.amount) / 100;
-            } else {
-                total += category.amount;
+        // Convert all items to monthly amounts based on frequency
+        this.items.forEach(item => {
+            let monthlyAmount = 0;
+            
+            switch (item.frequency) {
+                case 'daily':
+                    monthlyAmount = item.value * 30.44; // average days per month
+                    break;
+                case 'weekly':
+                    monthlyAmount = item.value * 4.33; // average weeks per month
+                    break;
+                case 'monthly':
+                    monthlyAmount = item.value;
+                    break;
+                case 'yearly':
+                    monthlyAmount = item.value / 12;
+                    break;
+                default:
+                    monthlyAmount = item.value; // default to monthly
             }
-        });
-        
-        // Add custom categories
-        this.customCategories.forEach(category => {
-            total += category.amount;
+            
+            total += monthlyAmount;
         });
         
         return total;
@@ -291,25 +269,31 @@ class BudgetTracker {
         const labels = [];
         const data = [];
         
-        // Add default categories with non-zero amounts
-        this.defaultCategories.forEach(category => {
-            if (category.amount > 0) {
-                labels.push(category.name);
-                if (category.name === 'Investment' && category.isPercentage) {
-                    const monthlyBudget = this.maxCash / 12;
-                    const annualAmount = ((monthlyBudget * category.amount) / 100) * 12;
-                    data.push(annualAmount);
-                } else {
-                    data.push(category.amount * 12);
+        // Add items with non-zero values
+        this.items.forEach(item => {
+            if (item.value > 0) {
+                labels.push(item.name);
+                
+                // Convert to annual amount for chart display
+                let annualAmount = 0;
+                switch (item.frequency) {
+                    case 'daily':
+                        annualAmount = item.value * 365;
+                        break;
+                    case 'weekly':
+                        annualAmount = item.value * 52;
+                        break;
+                    case 'monthly':
+                        annualAmount = item.value * 12;
+                        break;
+                    case 'yearly':
+                        annualAmount = item.value;
+                        break;
+                    default:
+                        annualAmount = item.value * 12;
                 }
-            }
-        });
-        
-        // Add custom categories with non-zero amounts
-        this.customCategories.forEach(category => {
-            if (category.amount > 0) {
-                labels.push(category.name);
-                data.push(category.amount * 12);
+                
+                data.push(annualAmount);
             }
         });
         
@@ -327,8 +311,8 @@ class BudgetTracker {
 }
 
 // Global functions for HTML onclick events
-function addCustomCategory() {
-    budgetTracker.addCustomCategory();
+function addItem() {
+    budgetTracker.addItem();
 }
 
 // Initialize the budget tracker when the page loads
