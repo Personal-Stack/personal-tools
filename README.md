@@ -6,11 +6,13 @@ An HTML-based budget tracking application with interactive charts and real-time 
 
 ### Core Functionality
 - **Annual Budget Setup**: Set your maximum available cash per year
-- **Default Budget Categories**: Pre-configured categories including:
-  - Electricity, Water, Gas, Internet, Phone, Mortgage, Car Gas
-  - Investment (percentage-based calculation)
-- **Custom Categories**: Add and remove custom budget categories dynamically
-- **Real-time Calculations**: Automatic updates of all totals and indicators
+- **Flexible Item System**: Add budget items with comprehensive details:
+  - **Name**: Descriptive name for the expense
+  - **Value**: Monetary amount
+  - **Tags**: Optional categorization labels for organization
+  - **Frequency**: Daily, Weekly, Monthly, or Yearly occurrence
+- **Smart Calculations**: Automatic conversion between frequencies and real-time updates
+- **Dynamic Management**: Add and remove items with immediate recalculation
 
 ### Budget Indicators
 - **Daily Maximum**: Available spending per day
@@ -27,16 +29,19 @@ An HTML-based budget tracking application with interactive charts and real-time 
 - **Responsive Design**: Works on desktop and mobile devices
 - **Data Persistence**: Automatically saves data to local storage
 - **Budget Status**: Visual indicators for under/on/over budget status
-- **Investment Calculation**: Special handling for percentage-based investments
+- **Frequency Flexibility**: Support for daily, weekly, monthly, and yearly expenses
 
 ## Usage
 
 1. Open `index.html` in your web browser
 2. Enter your annual budget amount
-3. Fill in your monthly expenses for default categories
-4. Set investment as a percentage of monthly budget
-5. Add custom categories as needed
-6. View real-time budget indicators and charts
+3. Add budget items using the flexible form:
+   - Enter item name (e.g., "Rent", "Coffee", "Car Insurance")
+   - Specify the amount 
+   - Add optional tags for categorization (e.g., "housing, fixed")
+   - Select frequency (Daily, Weekly, Monthly, or Yearly)
+4. View real-time budget indicators and charts
+5. Remove items as needed with automatic recalculation
 
 ## Technical Details
 

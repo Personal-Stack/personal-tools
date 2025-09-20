@@ -99,65 +99,108 @@ button:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Categories Section */
-.categories-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
+/* Budget Items Section */
+.add-item-form {
+    margin-bottom: 30px;
 }
 
-.category-list {
+.form-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 2fr 1fr auto;
+    gap: 15px;
+    align-items: center;
+}
+
+.form-row input, .form-row select {
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.form-row button {
+    padding: 12px 20px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.form-row button:hover {
+    background: #5a67d8;
+}
+
+.items-list {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-.category-item {
-    display: grid;
-    grid-template-columns: 1fr auto auto;
-    gap: 10px;
+.item-row {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    padding: 15px;
+    padding: 20px;
     background: #f8f9fa;
     border-radius: 8px;
     border-left: 4px solid #667eea;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.category-item label {
-    font-weight: 500;
-    color: #555;
+.item-info {
+    flex: 1;
 }
 
-.category-item input {
-    width: 120px;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+.item-name {
+    font-weight: 600;
+    color: #333;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
 }
 
-.category-item .investment-input {
-    width: 80px;
+.item-details {
+    display: flex;
+    gap: 20px;
+    align-items: center;
 }
 
-.category-item .remove-btn {
+.item-value {
+    font-weight: 600;
+    color: #28a745;
+    font-size: 1rem;
+}
+
+.item-frequency {
+    background: #e9ecef;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    color: #666;
+    text-transform: capitalize;
+}
+
+.item-tags {
+    color: #666;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.remove-btn {
     background: #dc3545;
     color: white;
     border: none;
-    padding: 6px 12px;
+    padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
 }
 
-.category-item .remove-btn:hover {
+.remove-btn:hover {
     background: #c82333;
-}
-
-.add-category {
-    display: grid;
-    grid-template-columns: 1fr 120px auto;
-    gap: 10px;
-    margin-bottom: 20px;
 }
 
 /* Indicators */
@@ -243,10 +286,6 @@ button:hover {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .categories-container {
-        grid-template-columns: 1fr;
-    }
-    
     .charts-container {
         grid-template-columns: 1fr;
     }
@@ -255,15 +294,21 @@ button:hover {
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     }
     
-    .add-category {
+    .form-row {
         grid-template-columns: 1fr;
         gap: 10px;
     }
     
-    .category-item {
-        grid-template-columns: 1fr;
-        gap: 10px;
-        text-align: center;
+    .item-details {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .item-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
     }
     
     header h1 {
@@ -283,6 +328,6 @@ button:hover {
     }
 }
 
-.category-item {
+.item-row {
     animation: slideIn 0.3s ease;
 }
