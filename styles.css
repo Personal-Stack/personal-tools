@@ -188,6 +188,56 @@ button:hover {
     font-style: italic;
 }
 
+.item-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.edit-btn {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.edit-btn:hover {
+    background: #5a67d8;
+}
+
+.save-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.save-btn:hover {
+    background: #218838;
+}
+
+.cancel-btn {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.cancel-btn:hover {
+    background: #5a6268;
+}
+
 .remove-btn {
     background: #dc3545;
     color: white;
@@ -201,6 +251,60 @@ button:hover {
 
 .remove-btn:hover {
     background: #c82333;
+}
+
+/* Edit mode styles */
+.item-row.editing {
+    background: #fff3cd;
+    border-left-color: #ffc107;
+}
+
+.edit-name {
+    font-weight: 600;
+    color: #333;
+    font-size: 1.1rem;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    padding: 4px 8px;
+    background: white;
+    width: 100%;
+    max-width: 200px;
+}
+
+.edit-value {
+    font-weight: 600;
+    color: #28a745;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    padding: 4px 8px;
+    background: white;
+    width: 80px;
+}
+
+.edit-frequency {
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.edit-tags {
+    color: #666;
+    font-size: 0.9rem;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    padding: 4px 8px;
+    background: white;
+    width: 150px;
+}
+
+.edit-name:focus, .edit-value:focus, .edit-frequency:focus, .edit-tags:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
 }
 
 /* Indicators */
@@ -309,6 +413,16 @@ button:hover {
         flex-direction: column;
         align-items: flex-start;
         gap: 15px;
+    }
+    
+    .item-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    
+    .edit-name, .edit-tags {
+        width: 100%;
+        max-width: none;
     }
     
     header h1 {

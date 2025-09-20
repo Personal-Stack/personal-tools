@@ -72,17 +72,21 @@ class BudgetTracker {
     createItemElement(item, index) {
         const div = document.createElement('div');
         div.className = 'item-row';
+        div.setAttribute('data-index', index);
         
         div.innerHTML = `
             <div class="item-info">
-                <div class="item-name">${item.name}</div>
+                <div class="item-name" data-field="name">${item.name}</div>
                 <div class="item-details">
-                    <span class="item-value">$${item.value.toFixed(2)}</span>
-                    <span class="item-frequency">${item.frequency}</span>
-                    <span class="item-tags">${item.tags || 'No tags'}</span>
+                    <span class="item-value" data-field="value">$${item.value.toFixed(2)}</span>
+                    <span class="item-frequency" data-field="frequency">${item.frequency}</span>
+                    <span class="item-tags" data-field="tags">${item.tags || 'No tags'}</span>
                 </div>
             </div>
-            <button class="remove-btn" onclick="budgetTracker.removeItem(${index})">Remove</button>
+            <div class="item-actions">
+                <button class="edit-btn" onclick="budgetTracker.editItem(${index})">Edit</button>
+                <button class="remove-btn" onclick="budgetTracker.removeItem(${index})">Remove</button>
+            </div>
         `;
 
         return div;
@@ -116,6 +120,62 @@ class BudgetTracker {
         this.items.splice(index, 1);
         this.renderItems();
         this.updateCalculations();
+    }
+
+    editItem(index) {
+        const itemRow = document.querySelector(`[data-index="${index}"]`);
+        const item = this.items[index];
+        
+        if (itemRow.classList.contains('editing')) {
+            return; // Already in edit mode
+        }
+        
+        itemRow.classList.add('editing');
+        
+        // Replace display elements with input elements
+        const nameElement = itemRow.querySelector('[data-field="name"]');
+        const valueElement = itemRow.querySelector('[data-field="value"]');
+        const frequencyElement = itemRow.querySelector('[data-field="frequency"]');
+        const tagsElement = itemRow.querySelector('[data-field="tags"]');
+        
+        nameElement.innerHTML = `<input type="text" class="edit-name" value="${item.name}" />`;
+        valueElement.innerHTML = `$<input type="number" class="edit-value" value="${item.value}" min="0" step="0.01" />`;
+        frequencyElement.innerHTML = `
+            <select class="edit-frequency">
+                <option value="daily" ${item.frequency === 'daily' ? 'selected' : ''}>Daily</option>
+                <option value="weekly" ${item.frequency === 'weekly' ? 'selected' : ''}>Weekly</option>
+                <option value="monthly" ${item.frequency === 'monthly' ? 'selected' : ''}>Monthly</option>
+                <option value="yearly" ${item.frequency === 'yearly' ? 'selected' : ''}>Yearly</option>
+            </select>
+        `;
+        tagsElement.innerHTML = `<input type="text" class="edit-tags" value="${item.tags || ''}" placeholder="Tags (optional)" />`;
+        
+        // Replace action buttons
+        const actionsDiv = itemRow.querySelector('.item-actions');
+        actionsDiv.innerHTML = `
+            <button class="save-btn" onclick="budgetTracker.saveItem(${index})">Save</button>
+            <button class="cancel-btn" onclick="budgetTracker.cancelEdit(${index})">Cancel</button>
+        `;
+    }
+
+    saveItem(index) {
+        const itemRow = document.querySelector(`[data-index="${index}"]`);
+        
+        const name = itemRow.querySelector('.edit-name').value.trim();
+        const value = parseFloat(itemRow.querySelector('.edit-value').value) || 0;
+        const frequency = itemRow.querySelector('.edit-frequency').value;
+        const tags = itemRow.querySelector('.edit-tags').value.trim();
+        
+        if (name && value > 0) {
+            this.items[index] = { name, value, tags, frequency };
+            this.renderItems();
+            this.updateCalculations();
+        }
+    }
+
+    cancelEdit(index) {
+        // Simply re-render to cancel edit mode
+        this.renderItems();
     }
 
     calculateTotalMonthlyExpenses() {
