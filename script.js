@@ -27,22 +27,6 @@ class BudgetTracker {
             this.updateCalculations();
         });
 
-        // Feed import
-        const importBtn = document.getElementById('importFeedBtn');
-        if (importBtn) {
-            importBtn.addEventListener('click', () => this.handleFeedImport());
-        }
-
-        // Enhanced feed import with preview
-        const confirmImportBtn = document.getElementById('confirmImportBtn');
-        const cancelImportBtn = document.getElementById('cancelImportBtn');
-        if (confirmImportBtn) {
-            confirmImportBtn.addEventListener('click', () => this.confirmFeedImport());
-        }
-        if (cancelImportBtn) {
-            cancelImportBtn.addEventListener('click', () => this.cancelFeedImport());
-        }
-
         // Dynamic chart controls
         this.setupDynamicChartControls();
 
@@ -219,14 +203,13 @@ class BudgetTracker {
         reader.onload = (e) => {
             try {
                 const data = JSON.parse(e.target.result);
-                this.validateAndPreviewData(data, statusEl, previewEl);
+                this.validateAndImportData(data, statusEl);
             } catch(err) {
                 console.error('JSON Parse Error:', err);
                 if (statusEl) {
                     statusEl.textContent = 'Invalid JSON format. Please check your file.';
                     statusEl.className = 'import-status error';
                 }
-                this.hidePreview();
             }
         };
         
@@ -235,13 +218,12 @@ class BudgetTracker {
                 statusEl.textContent = 'Error reading file';
                 statusEl.className = 'import-status error';
             }
-            this.hidePreview();
         };
         
         reader.readAsText(file);
     }
 
-    validateAndPreviewData(data, statusEl, previewEl) {
+    validateAndImportData(data, statusEl) {
         // Validate data structure
         if (!data || typeof data !== 'object') {
             throw new Error('Data must be an object');
@@ -277,35 +259,49 @@ class BudgetTracker {
                 .filter(item => item.name && item.value > 0);
         }
 
-        // Store for later confirmation
-        this.pendingImportData = validatedData;
-
-        // Show preview
-        this.showPreview(validatedData, statusEl, previewEl);
+        // Import data immediately
+        this.importDataDirectly(validatedData, statusEl);
     }
 
-    showPreview(data, statusEl, previewEl) {
-        const previewMaxCash = document.getElementById('previewMaxCash');
-        const previewItemsCount = document.getElementById('previewItemsCount');
+    importDataDirectly(data, statusEl) {
+        try {
+            // Apply settings
+            if (data.settings.maxCash) {
+                this.maxCash = data.settings.maxCash;
+                document.getElementById('maxCash').value = this.maxCash;
+            }
 
-        if (previewMaxCash) {
-            previewMaxCash.textContent = data.settings.maxCash ? 
-                `$${data.settings.maxCash.toLocaleString()}` + 
-                (data.settings.currency ? ` ${data.settings.currency}` : '') : 
-                'Not specified';
-        }
+            // Apply items (replace existing)
+            if (data.items.length > 0) {
+                this.items = data.items;
+            }
 
-        if (previewItemsCount) {
-            previewItemsCount.textContent = data.items.length;
-        }
+            // Update UI
+            this.editingIndex = undefined;
+            this.renderItems();
+            this.updateCalculations();
+            this.refreshDynamicCharts();
+            this.populateTagSelect();
 
-        if (statusEl) {
-            statusEl.textContent = 'File loaded successfully. Review the preview below.';
-            statusEl.className = 'import-status success';
-        }
+            // Show success status
+            if (statusEl) {
+                statusEl.textContent = `Successfully imported ${data.items.length} items` + 
+                    (data.settings.maxCash ? ` and budget of $${data.settings.maxCash.toLocaleString()}` : '');
+                statusEl.className = 'import-status success';
+            }
 
-        if (previewEl) {
-            previewEl.style.display = 'block';
+            // Clear file input
+            const fileInput = document.getElementById('feedFile');
+            if (fileInput) {
+                fileInput.value = '';
+            }
+
+        } catch (error) {
+            console.error('Import Error:', error);
+            if (statusEl) {
+                statusEl.textContent = 'Error importing data: ' + error.message;
+                statusEl.className = 'import-status error';
+            }
         }
     }
 
