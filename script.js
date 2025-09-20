@@ -16,6 +16,7 @@ class BudgetTracker {
         this.renderItems();
         this.updateCalculations();
         this.initializeCharts();
+        this.updateNoChartsMessage();
     }
 
     setupEventListeners() {
@@ -42,11 +43,8 @@ class BudgetTracker {
             cancelImportBtn.addEventListener('click', () => this.cancelFeedImport());
         }
 
-        // Dynamic chart buttons
-        const addTagChartBtn = document.getElementById('addTagChartBtn');
-        if (addTagChartBtn) addTagChartBtn.addEventListener('click', () => this.addTagChart());
-        const addFreqChartBtn = document.getElementById('addFreqChartBtn');
-        if (addFreqChartBtn) addFreqChartBtn.addEventListener('click', () => this.addFrequencyChart());
+        // Dynamic chart controls
+        this.setupDynamicChartControls();
 
         // Save data to localStorage on any change
         this.setupAutoSave();
@@ -593,37 +591,160 @@ class BudgetTracker {
     }
 
     // ----- Dynamic Charts -----
+    setupDynamicChartControls() {
+        const chartTypeSelect = document.getElementById('chartType');
+        const addChartBtn = document.getElementById('addCustomChartBtn');
+        const clearAllBtn = document.getElementById('clearAllChartsBtn');
+
+        // Chart type change handler
+        if (chartTypeSelect) {
+            chartTypeSelect.addEventListener('change', () => this.handleChartTypeChange());
+        }
+
+        // Add chart button
+        if (addChartBtn) {
+            addChartBtn.addEventListener('click', () => this.addCustomChart());
+        }
+
+        // Clear all charts button
+        if (clearAllBtn) {
+            clearAllBtn.addEventListener('click', () => this.clearAllDynamicCharts());
+        }
+
+        // Initialize the controls
+        this.handleChartTypeChange();
+        this.updateNoChartsMessage();
+        this.populateChartSelects();
+    }
+
+    handleChartTypeChange() {
+        const chartType = document.getElementById('chartType').value;
+        const tagGroup = document.getElementById('tagFilterGroup');
+        const freqGroup = document.getElementById('freqFilterGroup');
+        const combinedGroup = document.getElementById('combinedFilterGroup');
+
+        // Hide all groups first
+        if (tagGroup) tagGroup.style.display = 'none';
+        if (freqGroup) freqGroup.style.display = 'none';
+        if (combinedGroup) combinedGroup.style.display = 'none';
+
+        // Show relevant groups
+        switch (chartType) {
+            case 'tag':
+                if (tagGroup) tagGroup.style.display = 'flex';
+                break;
+            case 'frequency':
+                if (freqGroup) freqGroup.style.display = 'flex';
+                break;
+            case 'combined':
+                if (combinedGroup) combinedGroup.style.display = 'flex';
+                break;
+        }
+
+        this.populateChartSelects();
+    }
+
+    addCustomChart() {
+        const chartType = document.getElementById('chartType').value;
+        let key, title, filterConfig;
+
+        switch (chartType) {
+            case 'tag':
+                const tagValue = document.getElementById('tagChartSelect').value;
+                if (!tagValue) {
+                    alert('Please select a tag');
+                    return;
+                }
+                key = `tag:${tagValue}`;
+                title = tagValue === '__all__' ? 'All Items by Tag' : `Items tagged: ${tagValue}`;
+                filterConfig = { type: 'tag', value: tagValue };
+                break;
+
+            case 'frequency':
+                const freqValue = document.getElementById('freqChartSelect').value;
+                if (!freqValue) {
+                    alert('Please select a frequency');
+                    return;
+                }
+                key = `freq:${freqValue}`;
+                title = `All Items (${freqValue.charAt(0).toUpperCase() + freqValue.slice(1)} View)`;
+                filterConfig = { type: 'frequency', value: freqValue };
+                break;
+
+            case 'combined':
+                const combTag = document.getElementById('combinedTagSelect').value;
+                const combFreq = document.getElementById('combinedFreqSelect').value;
+                if (!combTag || !combFreq) {
+                    alert('Please select both tag and frequency');
+                    return;
+                }
+                key = `combined:${combTag}:${combFreq}`;
+                const tagLabel = combTag === '__all__' ? 'All Tags' : combTag;
+                const freqLabel = combFreq === '__all__' ? 'Annual View' : `${combFreq.charAt(0).toUpperCase() + combFreq.slice(1)} View`;
+                title = `${tagLabel} - ${freqLabel}`;
+                filterConfig = { type: 'combined', tag: combTag, frequency: combFreq };
+                break;
+
+            default:
+                return;
+        }
+
+        // Check if chart already exists
+        if (this.dynamicCharts[key]) {
+            alert('This chart already exists');
+            return;
+        }
+
+        // Check if there will be any data for this combination (only for tag filtering)
+        const testFilter = this.filterItems(filterConfig);
+        if (testFilter.length === 0 && filterConfig.type !== 'frequency') {
+            let message = 'No budget items match the selected criteria:\n';
+            if (filterConfig.type === 'tag') {
+                message += `Tag: "${filterConfig.value}"`;
+            } else if (filterConfig.type === 'combined') {
+                message += `Tag: "${filterConfig.tag}"`;
+            }
+            message += '\n\nThe chart will be created but will show "No matching items found".';
+            
+            if (!confirm(message + '\n\nDo you want to create the chart anyway?')) {
+                return;
+            }
+        }
+
+        this.createDynamicChart(key, filterConfig, title);
+    }
+
     addTagChart() {
+        // Legacy method for backward compatibility
         const select = document.getElementById('tagChartSelect');
         if (!select || !select.value) return;
         const tag = select.value;
         const key = `tag:${tag}`;
-        if (this.dynamicCharts[key]) return; // already exists
-        this.createDynamicChart(key, 'tag', tag);
+        if (this.dynamicCharts[key]) return;
+        const title = tag === '__all__' ? 'All Items' : `Tag: ${tag}`;
+        this.createDynamicChart(key, { type: 'tag', value: tag }, title);
     }
 
     addFrequencyChart() {
+        // Legacy method for backward compatibility
         const select = document.getElementById('freqChartSelect');
         if (!select || !select.value) return;
         const freq = select.value;
         const key = `freq:${freq}`;
         if (this.dynamicCharts[key]) return;
-        this.createDynamicChart(key, 'frequency', freq);
+        const title = `Frequency: ${freq}`;
+        this.createDynamicChart(key, { type: 'frequency', value: freq }, title);
     }
 
-    createDynamicChart(key, type, value) {
+    createDynamicChart(key, filterConfig, title) {
         if (typeof Chart === 'undefined') return;
         const container = document.getElementById('dynamicCharts');
         if (!container) return;
+
         const wrapper = document.createElement('div');
         wrapper.className = 'chart-wrapper dynamic';
         wrapper.setAttribute('data-chart-key', key);
-        let title;
-        if (type === 'tag') {
-            title = (value === '__all__') ? 'All Items' : `Tag: ${value}`;
-        } else {
-            title = `Frequency: ${value}`;
-        }
+        
         wrapper.innerHTML = `
             <div class="dynamic-chart-header">
                 <h3>${title}</h3>
@@ -632,55 +753,146 @@ class BudgetTracker {
             <canvas></canvas>
         `;
         container.appendChild(wrapper);
+
         const ctx = wrapper.querySelector('canvas').getContext('2d');
-        // Use doughnut chart for the special "All Items" aggregate, bar otherwise
-        const isAllItems = (type === 'tag' && value === '__all__');
-        const chartConfig = isAllItems ? {
+        
+        // Always use pie/doughnut chart for better visualization
+        const chartConfig = {
             type: 'doughnut',
-            data: { labels: [], datasets: [{ data: [], backgroundColor: [
-                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
-                '#9966FF', '#FF9F40', '#C9CBCF', '#8DD17E',
-                '#FF99C8', '#7DA3FF', '#FFC870', '#5AD1D1'
-            ] }] },
-            options: { responsive: true, plugins: { legend: { position: 'bottom' }, title: { display: false } } }
-        } : {
-            type: 'bar',
-            data: { labels: [], datasets: [{ label: 'Annual Amount ($)', data: [], backgroundColor: '#36A2EB' }] },
-            options: { responsive: true, plugins: { legend: { display: false } } }
+            data: { 
+                labels: [], 
+                datasets: [{ 
+                    data: [], 
+                    backgroundColor: [
+                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                        '#9966FF', '#FF9F40', '#C9CBCF', '#8DD17E',
+                        '#FF99C8', '#7DA3FF', '#FFC870', '#5AD1D1',
+                        '#FFB6C1', '#87CEEB', '#DDA0DD', '#98FB98'
+                    ] 
+                }] 
+            },
+            options: { 
+                responsive: false, 
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { 
+                        position: 'bottom',
+                        labels: {
+                            padding: 10,
+                            usePointStyle: true,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }, 
+                    title: { 
+                        display: false 
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0';
+                                
+                                // Get the chart instance to access the filterConfig
+                                const chart = context.chart;
+                                const filterConfig = chart.budgetFilterConfig;
+                                
+                                let frequencyLabel = 'annual';
+                                if (filterConfig && filterConfig.type === 'frequency') {
+                                    frequencyLabel = filterConfig.value;
+                                } else if (filterConfig && filterConfig.type === 'combined' && filterConfig.frequency !== '__all__') {
+                                    frequencyLabel = filterConfig.frequency;
+                                }
+                                
+                                return `${label}: $${value.toLocaleString()} ${frequencyLabel} (${percentage}%)`;
+                            }
+                        }
+                    }
+                } 
+            }
         };
+
+        // Set fixed canvas dimensions based on screen size
+        const canvas = wrapper.querySelector('canvas');
+        const isMobile = window.innerWidth <= 480;
+        const canvasWidth = isMobile ? 270 : 350;
+        const canvasHeight = isMobile ? 250 : 300;
+        
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+        canvas.style.width = `${canvasWidth}px`;
+        canvas.style.height = `${canvasHeight}px`;
+
         const chart = new Chart(ctx, chartConfig);
-        this.dynamicCharts[key] = { chart, type, value, wrapper };
+        
+        // Store filterConfig in chart for tooltip access
+        chart.budgetFilterConfig = filterConfig;
+        
+        this.dynamicCharts[key] = { chart, filterConfig, title, wrapper };
         this.updateDynamicChart(key);
+        this.updateNoChartsMessage();
     }
 
     updateDynamicChart(key) {
         const entry = this.dynamicCharts[key];
         if (!entry) return;
-        const { chart, type, value } = entry;
-        let filtered = [];
-        if (type === 'tag') {
-            if (value === '__all__') {
-                filtered = this.items.slice();
-            } else {
-                filtered = this.items.filter(it => (it.tags||[]).includes(value));
-            }
-        } else if (type === 'frequency') {
-            filtered = this.items.filter(it => it.frequency === value);
+        
+        const { chart, filterConfig } = entry;
+        let filtered = this.filterItems(filterConfig);
+        
+        if (filtered.length === 0) {
+            chart.data.labels = ['No matching items found'];
+            chart.data.datasets[0].data = [1];
+            chart.data.datasets[0].backgroundColor = ['#e9ecef'];
+        } else {
+            const labels = filtered.map(it => it.name);
+            const data = filtered.map(it => this.convertToTargetFrequency(it, filterConfig));
+            chart.data.labels = labels;
+            chart.data.datasets[0].data = data;
+            
+            // Ensure colors array matches data length
+            const colors = [
+                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                '#9966FF', '#FF9F40', '#C9CBCF', '#8DD17E',
+                '#FF99C8', '#7DA3FF', '#FFC870', '#5AD1D1',
+                '#FFB6C1', '#87CEEB', '#DDA0DD', '#98FB98'
+            ];
+            chart.data.datasets[0].backgroundColor = data.map((_, index) => colors[index % colors.length]);
         }
-        const labels = filtered.map(it => it.name);
-        const data = filtered.map(it => this.toAnnual(it));
-        chart.data.labels = labels;
-        chart.data.datasets[0].data = data;
-        // For All Items doughnut, ensure colors array at least matches length
-        if (type === 'tag' && value === '__all__') {
-            const colors = chart.data.datasets[0].backgroundColor;
-            if (Array.isArray(colors)) {
-                while (colors.length < data.length) {
-                    colors.push(colors[colors.length % 12]);
-                }
-            }
-        }
+        
         chart.update();
+    }
+
+    filterItems(filterConfig) {
+        let filtered = this.items.slice();
+        
+        switch (filterConfig.type) {
+            case 'tag':
+                if (filterConfig.value === '__all__') {
+                    // Return all items
+                } else {
+                    filtered = filtered.filter(it => (it.tags || []).includes(filterConfig.value));
+                }
+                break;
+                
+            case 'frequency':
+                // For frequency charts, show ALL items but convert them to the target frequency
+                // Don't filter by frequency, just convert all items to show in target frequency
+                break;
+                
+            case 'combined':
+                // Apply tag filter
+                if (filterConfig.tag !== '__all__') {
+                    filtered = filtered.filter(it => (it.tags || []).includes(filterConfig.tag));
+                }
+                // For combined charts, don't filter by frequency either - convert all to target frequency
+                break;
+        }
+        
+        return filtered;
     }
 
     toAnnual(item) {
@@ -690,6 +902,29 @@ class BudgetTracker {
             case 'monthly': return item.value * 12;
             case 'yearly': return item.value;
             default: return item.value * 12;
+        }
+    }
+
+    convertToTargetFrequency(item, filterConfig) {
+        // First convert to annual, then to target frequency
+        const annual = this.toAnnual(item);
+        
+        // Determine target frequency
+        let targetFrequency = 'annual'; // default
+        
+        if (filterConfig.type === 'frequency') {
+            targetFrequency = filterConfig.value;
+        } else if (filterConfig.type === 'combined' && filterConfig.frequency !== '__all__') {
+            targetFrequency = filterConfig.frequency;
+        }
+        
+        // Convert from annual to target frequency
+        switch(targetFrequency) {
+            case 'daily': return annual / 365;
+            case 'weekly': return annual / 52;
+            case 'monthly': return annual / 12;
+            case 'yearly': return annual;
+            default: return annual; // fallback to annual
         }
     }
 
@@ -703,6 +938,32 @@ class BudgetTracker {
         entry.chart.destroy();
         entry.wrapper.remove();
         delete this.dynamicCharts[key];
+        this.updateNoChartsMessage();
+    }
+
+    clearAllDynamicCharts() {
+        if (Object.keys(this.dynamicCharts).length === 0) {
+            return;
+        }
+        
+        if (confirm('Are you sure you want to remove all custom charts?')) {
+            Object.keys(this.dynamicCharts).forEach(key => {
+                const entry = this.dynamicCharts[key];
+                entry.chart.destroy();
+                entry.wrapper.remove();
+            });
+            this.dynamicCharts = {};
+            this.updateNoChartsMessage();
+        }
+    }
+
+    updateNoChartsMessage() {
+        const noChartsMsg = document.getElementById('noChartsMessage');
+        const hasCharts = Object.keys(this.dynamicCharts).length > 0;
+        
+        if (noChartsMsg) {
+            noChartsMsg.style.display = hasCharts ? 'none' : 'block';
+        }
     }
 
     populateTagSelect() {
@@ -726,6 +987,79 @@ class BudgetTracker {
         }
         if (datalist) {
             datalist.innerHTML = newTags.map(t=>`<option value="${t}">`).join('');
+        }
+        
+        // Also update chart selects
+        this.populateChartSelects();
+    }
+
+    populateChartSelects() {
+        const tags = new Set();
+        const frequencies = new Set();
+        this.items.forEach(it => {
+            (it.tags || []).forEach(t => tags.add(t));
+            frequencies.add(it.frequency);
+        });
+        const sortedTags = Array.from(tags).sort();
+        const sortedFreqs = Array.from(frequencies).sort();
+        
+        // Update main tag select
+        const tagSelect = document.getElementById('tagChartSelect');
+        if (tagSelect) {
+            const prevValue = tagSelect.value;
+            let optionsHtml = '<option value="" disabled>Choose tag</option><option value="__all__">All Items</option>';
+            optionsHtml += sortedTags.map(t => {
+                const count = this.items.filter(item => (item.tags || []).includes(t)).length;
+                return `<option value="${t}">${t} (${count} items)</option>`;
+            }).join('');
+            tagSelect.innerHTML = optionsHtml;
+            if (prevValue && (prevValue === '__all__' || sortedTags.includes(prevValue))) {
+                tagSelect.value = prevValue;
+            }
+        }
+        
+        // Update frequency select - all frequencies available since we convert
+        const freqSelect = document.getElementById('freqChartSelect');
+        if (freqSelect) {
+            const prevValue = freqSelect.value;
+            let optionsHtml = '<option value="" disabled>Choose frequency view</option>';
+            ['daily', 'weekly', 'monthly', 'yearly'].forEach(freq => {
+                const totalItems = this.items.length;
+                optionsHtml += `<option value="${freq}">${freq} (${totalItems} items converted)</option>`;
+            });
+            freqSelect.innerHTML = optionsHtml;
+            if (prevValue && ['daily', 'weekly', 'monthly', 'yearly'].includes(prevValue)) {
+                freqSelect.value = prevValue;
+            }
+        }
+        
+        // Update combined tag select
+        const combinedTagSelect = document.getElementById('combinedTagSelect');
+        if (combinedTagSelect) {
+            const prevValue = combinedTagSelect.value;
+            let optionsHtml = '<option value="" disabled>Choose tag</option><option value="__all__">All Tags</option>';
+            optionsHtml += sortedTags.map(t => {
+                const count = this.items.filter(item => (item.tags || []).includes(t)).length;
+                return `<option value="${t}">${t} (${count} items)</option>`;
+            }).join('');
+            combinedTagSelect.innerHTML = optionsHtml;
+            if (prevValue && (prevValue === '__all__' || sortedTags.includes(prevValue))) {
+                combinedTagSelect.value = prevValue;
+            }
+        }
+        
+        // Update combined frequency select - all frequencies available since we convert
+        const combinedFreqSelect = document.getElementById('combinedFreqSelect');
+        if (combinedFreqSelect) {
+            const prevValue = combinedFreqSelect.value;
+            let optionsHtml = '<option value="" disabled>Choose frequency view</option><option value="__all__">Annual View</option>';
+            ['daily', 'weekly', 'monthly', 'yearly'].forEach(freq => {
+                optionsHtml += `<option value="${freq}">${freq} view</option>`;
+            });
+            combinedFreqSelect.innerHTML = optionsHtml;
+            if (prevValue && (['__all__', 'daily', 'weekly', 'monthly', 'yearly'].includes(prevValue))) {
+                combinedFreqSelect.value = prevValue;
+            }
         }
     }
 }
