@@ -2,6 +2,7 @@
 class BudgetTracker {
     constructor() {
         this.maxCash = 0;
+        this.currency = 'USD'; // current currency
         this.investmentValue = 0;
         this.investmentType = 'amount'; // 'amount' or 'percentage'
         this.investmentFrequency = 'monthly';
@@ -10,6 +11,30 @@ class BudgetTracker {
         this.editingIndex = undefined; // track index being edited
         this.dynamicCharts = {}; // key -> { chart, type: 'tag'|'frequency', value }
         this.pendingImportData = null; // store data for preview before import
+        
+        // Currency conversion rates (base: USD)
+        this.conversionRates = {
+            'USD': 1.0,
+            'EUR': 0.85,
+            'BGN': 1.66,
+            'GBP': 0.73,
+            'JPY': 110.0,
+            'CAD': 1.25,
+            'AUD': 1.35,
+            'CHF': 0.92
+        };
+        
+        // Currency symbols
+        this.currencySymbols = {
+            'USD': '$',
+            'EUR': '€',
+            'BGN': 'лв',
+            'GBP': '£',
+            'JPY': '¥',
+            'CAD': 'C$',
+            'AUD': 'A$',
+            'CHF': 'Fr'
+        };
         
         this.init();
     }
@@ -58,6 +83,14 @@ class BudgetTracker {
             });
         }
 
+        // Currency selection
+        const currencySelect = document.getElementById('currency');
+        if (currencySelect) {
+            currencySelect.addEventListener('change', () => {
+                this.changeCurrency(currencySelect.value);
+            });
+        }
+
         // Dynamic chart controls
         this.setupDynamicChartControls();
 
@@ -76,6 +109,7 @@ class BudgetTracker {
     saveData() {
         const data = {
             maxCash: this.maxCash,
+            currency: this.currency,
             investmentValue: this.investmentValue,
             investmentType: this.investmentType,
             investmentFrequency: this.investmentFrequency,
@@ -89,6 +123,7 @@ class BudgetTracker {
         if (savedData) {
             const data = JSON.parse(savedData);
             this.maxCash = data.maxCash || 0;
+            this.currency = data.currency || 'USD';
             this.investmentValue = data.investmentValue || 0;
             this.investmentType = data.investmentType || 'amount';
             this.investmentFrequency = data.investmentFrequency || 'monthly';
@@ -96,10 +131,12 @@ class BudgetTracker {
             
             // Update UI
             document.getElementById('maxCash').value = this.maxCash;
+            document.getElementById('currency').value = this.currency;
+            document.getElementById('currencySymbol').textContent = this.currencySymbols[this.currency];
             document.getElementById('investmentValue').value = this.investmentValue;
             document.getElementById('investmentType').value = this.investmentType;
             document.getElementById('investmentFrequency').value = this.investmentFrequency;
-            document.getElementById('investmentUnit').textContent = this.investmentType === 'percentage' ? '%' : '$';
+            document.getElementById('investmentUnit').textContent = this.investmentType === 'percentage' ? '%' : this.currencySymbols[this.currency];
             this.renderItems();
             this.updateCalculations();
             this.populateTagSelect();
@@ -148,7 +185,7 @@ class BudgetTracker {
                 <div class="item-info">
                     <div class="item-name">${item.name}</div>
                     <div class="item-details">
-                        <span class="item-value">$${item.value.toFixed(2)}</span>
+                        <span class="item-value">${this.formatCurrency(item.value)}</span>
                         <span class="item-frequency">${item.frequency}</span>
                         <span class="item-tags">${(item.tags && item.tags.length ? item.tags.join(', ') : 'No tags')}</span>
                     </div>
@@ -319,6 +356,37 @@ class BudgetTracker {
 
     importDataDirectly(data, statusEl) {
         try {
+            // Apply currency settings first
+            if (data.settings.currency && this.currencySymbols.hasOwnProperty(data.settings.currency)) {
+                const newCurrency = data.settings.currency;
+                const oldCurrency = this.currency;
+                
+                // If currency is different, we'll need to convert existing values
+                if (oldCurrency !== newCurrency) {
+                    // Convert existing maxCash if it exists
+                    if (this.maxCash > 0) {
+                        this.maxCash = this.convertAmount(this.maxCash, oldCurrency, newCurrency);
+                    }
+                    
+                    // Convert existing investment value if it's a fixed amount
+                    if (this.investmentType === 'amount' && this.investmentValue > 0) {
+                        this.investmentValue = this.convertAmount(this.investmentValue, oldCurrency, newCurrency);
+                    }
+                    
+                    // Convert existing items
+                    this.items.forEach(item => {
+                        item.value = this.convertAmount(item.value, oldCurrency, newCurrency);
+                    });
+                }
+                
+                // Update currency
+                this.currency = newCurrency;
+                
+                // Update UI elements
+                document.getElementById('currency').value = this.currency;
+                document.getElementById('currencySymbol').textContent = this.currencySymbols[this.currency];
+            }
+
             // Apply settings
             if (data.settings.maxCash) {
                 this.maxCash = data.settings.maxCash;
@@ -340,7 +408,7 @@ class BudgetTracker {
                 if (typeSelect) typeSelect.value = this.investmentType;
                 if (valueInput) valueInput.value = this.investmentValue;
                 if (frequencySelect) frequencySelect.value = this.investmentFrequency;
-                if (unitSpan) unitSpan.textContent = this.investmentType === 'percentage' ? '%' : '$';
+                if (unitSpan) unitSpan.textContent = this.investmentType === 'percentage' ? '%' : this.currencySymbols[this.currency];
             }
 
             // Apply items (replace existing)
@@ -358,12 +426,16 @@ class BudgetTracker {
             // Show success status
             if (statusEl) {
                 let message = `Successfully imported ${data.items.length} items`;
+                if (data.settings.currency) {
+                    message += ` with currency ${data.settings.currency}`;
+                }
                 if (data.settings.maxCash) {
-                    message += ` and budget of $${data.settings.maxCash.toLocaleString()}`;
+                    const currencySymbol = this.currencySymbols[this.currency];
+                    message += ` and budget of ${currencySymbol}${data.settings.maxCash.toLocaleString()}`;
                 }
                 if (data.settings.investment) {
                     const { type, value, frequency } = data.settings.investment;
-                    const unit = type === 'percentage' ? '%' : '$';
+                    const unit = type === 'percentage' ? '%' : this.currencySymbols[this.currency];
                     message += ` and investment of ${unit}${value} ${frequency}`;
                 }
                 statusEl.textContent = message;
@@ -562,6 +634,60 @@ class BudgetTracker {
         return annualInvestment;
     }
 
+    // Currency conversion methods
+    convertAmount(amount, fromCurrency, toCurrency) {
+        if (fromCurrency === toCurrency) return amount;
+        
+        // Convert to USD first (base currency), then to target currency
+        const usdAmount = amount / this.conversionRates[fromCurrency];
+        const convertedAmount = usdAmount * this.conversionRates[toCurrency];
+        
+        return convertedAmount;
+    }
+
+    changeCurrency(newCurrency) {
+        const oldCurrency = this.currency;
+        
+        // Convert maxCash
+        if (this.maxCash > 0) {
+            this.maxCash = this.convertAmount(this.maxCash, oldCurrency, newCurrency);
+            document.getElementById('maxCash').value = this.maxCash.toFixed(2);
+        }
+        
+        // Convert investment value if it's a fixed amount
+        if (this.investmentType === 'amount' && this.investmentValue > 0) {
+            this.investmentValue = this.convertAmount(this.investmentValue, oldCurrency, newCurrency);
+            document.getElementById('investmentValue').value = this.investmentValue.toFixed(2);
+        }
+        
+        // Convert all item values
+        this.items.forEach(item => {
+            item.value = this.convertAmount(item.value, oldCurrency, newCurrency);
+        });
+        
+        // Update currency
+        this.currency = newCurrency;
+        
+        // Update currency symbol display
+        const currencySymbol = this.currencySymbols[newCurrency];
+        document.getElementById('currencySymbol').textContent = currencySymbol;
+        
+        // Update investment unit symbol if it's amount type
+        if (this.investmentType === 'amount') {
+            document.getElementById('investmentUnit').textContent = currencySymbol;
+        }
+        
+        // Re-render and update everything
+        this.renderItems();
+        this.updateCalculations();
+        this.refreshDynamicCharts();
+    }
+
+    formatCurrency(amount, currency = this.currency) {
+        const symbol = this.currencySymbols[currency];
+        return `${symbol}${amount.toFixed(2)}`;
+    }
+
     updateCalculations() {
         const totalMonthly = this.calculateTotalMonthlyExpenses();
         const totalAnnual = this.calculateTotalAnnualExpenses();
@@ -571,16 +697,16 @@ class BudgetTracker {
         
         // Update indicators
         const availableAfterExpenses = Math.max(0, remaining);
-        document.getElementById('dailyMax').textContent = `$${(availableAfterExpenses / 365).toFixed(2)}`;
-        document.getElementById('weeklyMax').textContent = `$${(availableAfterExpenses / 52).toFixed(2)}`;
-        document.getElementById('monthlyMax').textContent = `$${(availableAfterExpenses / 12).toFixed(2)}`;
-        document.getElementById('yearlyMax').textContent = `$${availableAfterExpenses.toFixed(2)}`;
+        document.getElementById('dailyMax').textContent = this.formatCurrency(availableAfterExpenses / 365);
+        document.getElementById('weeklyMax').textContent = this.formatCurrency(availableAfterExpenses / 52);
+        document.getElementById('monthlyMax').textContent = this.formatCurrency(availableAfterExpenses / 12);
+        document.getElementById('yearlyMax').textContent = this.formatCurrency(availableAfterExpenses);
         
         // Update summary
-        document.getElementById('totalMonthly').textContent = `$${totalMonthly.toFixed(2)}`;
-        document.getElementById('totalAnnual').textContent = `$${totalAnnual.toFixed(2)}`;
-        document.getElementById('totalInvestment').textContent = `$${annualInvestment.toFixed(2)}`;
-        document.getElementById('remainingBudget').textContent = `$${remaining.toFixed(2)}`;
+        document.getElementById('totalMonthly').textContent = this.formatCurrency(totalMonthly);
+        document.getElementById('totalAnnual').textContent = this.formatCurrency(totalAnnual);
+        document.getElementById('totalInvestment').textContent = this.formatCurrency(annualInvestment);
+        document.getElementById('remainingBudget').textContent = this.formatCurrency(remaining);
         
         // Update budget status
         const statusElement = document.getElementById('budgetStatus');

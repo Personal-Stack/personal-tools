@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Budget Tracker</title>
+    <title>Budget Planner</title>
     <link rel="stylesheet" href="styles.css">
     <!-- Chart.js library - can be replaced with local file -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
@@ -11,16 +11,31 @@
 <body>
     <div class="container">
         <header>
-            <h1>Simple Budget Tracker</h1>
+            <h1>Budget Planner</h1>
         </header>
 
         <main>
             <!-- Annual Budget Section -->
             <section class="annual-budget full-width">
                 <h2>Annual Budget Setup</h2>
-                <div class="form-group">
-                    <label for="maxCash">Max Available Cash Per Year ($):</label>
-                    <input type="number" id="maxCash" placeholder="Enter your annual budget" min="0" step="0.01">
+                <div class="budget-setup-grid">
+                    <div class="form-group">
+                        <label for="currency">Currency:</label>
+                        <select id="currency">
+                            <option value="USD">USD ($)</option>
+                            <option value="EUR">EUR (€)</option>
+                            <option value="BGN">BGN (лв)</option>
+                            <option value="GBP">GBP (£)</option>
+                            <option value="JPY">JPY (¥)</option>
+                            <option value="CAD">CAD (C$)</option>
+                            <option value="AUD">AUD (A$)</option>
+                            <option value="CHF">CHF (Fr)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="maxCash">Max Available Cash Per Year (<span id="currencySymbol">$</span>):</label>
+                        <input type="number" id="maxCash" placeholder="Enter your annual budget" min="0" step="0.01">
+                    </div>
                 </div>
                 <div class="form-group">
                     <h3>💹 Investment Allocation</h3>
@@ -66,7 +81,12 @@
                         <pre><code>{
   "settings": {
     "maxCash": 100000,
-    "currency": "USD"
+    "currency": "USD",
+    "investment": {
+      "type": "percentage",
+      "value": 10,
+      "frequency": "yearly"
+    }
   },
   "items": [
     {
