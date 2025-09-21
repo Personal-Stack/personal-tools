@@ -11,6 +11,7 @@ class BudgetTracker {
         this.editingIndex = undefined; // track index being edited
         this.dynamicCharts = {}; // key -> { chart, type: 'tag'|'frequency', value }
         this.pendingImportData = null; // store data for preview before import
+        this.changeHistory = []; // array to store all budget changes
         
         // Currency conversion rates (base: USD)
         this.conversionRates = {
@@ -51,7 +52,17 @@ class BudgetTracker {
         // Max cash input
         const maxCashInput = document.getElementById('maxCash');
         maxCashInput.addEventListener('input', () => {
+            const oldValue = this.maxCash;
             this.maxCash = parseFloat(maxCashInput.value) || 0;
+            
+            // Add to history if value actually changed
+            if (oldValue !== this.maxCash) {
+                this.addToHistory('max_cash_updated', {
+                    oldValue: oldValue,
+                    newValue: this.maxCash
+                });
+            }
+            
             this.updateCalculations();
         });
 
@@ -63,22 +74,49 @@ class BudgetTracker {
 
         if (investmentTypeSelect) {
             investmentTypeSelect.addEventListener('change', () => {
+                const oldType = this.investmentType;
                 this.investmentType = investmentTypeSelect.value;
                 investmentUnit.textContent = this.investmentType === 'percentage' ? '%' : '$';
+                
+                // Add to history
+                this.addToHistory('investment_type_changed', {
+                    oldType: oldType,
+                    newType: this.investmentType
+                });
+                
                 this.updateCalculations();
             });
         }
 
         if (investmentValueInput) {
             investmentValueInput.addEventListener('input', () => {
+                const oldValue = this.investmentValue;
                 this.investmentValue = parseFloat(investmentValueInput.value) || 0;
+                
+                // Add to history if value actually changed
+                if (oldValue !== this.investmentValue) {
+                    this.addToHistory('investment_value_changed', {
+                        oldValue: oldValue,
+                        newValue: this.investmentValue,
+                        type: this.investmentType
+                    });
+                }
+                
                 this.updateCalculations();
             });
         }
 
         if (investmentFrequencySelect) {
             investmentFrequencySelect.addEventListener('change', () => {
+                const oldFreq = this.investmentFrequency;
                 this.investmentFrequency = investmentFrequencySelect.value;
+                
+                // Add to history
+                this.addToHistory('investment_frequency_changed', {
+                    oldFrequency: oldFreq,
+                    newFrequency: this.investmentFrequency
+                });
+                
                 this.updateCalculations();
             });
         }
@@ -113,7 +151,8 @@ class BudgetTracker {
             investmentValue: this.investmentValue,
             investmentType: this.investmentType,
             investmentFrequency: this.investmentFrequency,
-            items: this.items
+            items: this.items,
+            changeHistory: this.changeHistory
         };
         localStorage.setItem('budgetData', JSON.stringify(data));
     }
@@ -128,6 +167,7 @@ class BudgetTracker {
             this.investmentType = data.investmentType || 'amount';
             this.investmentFrequency = data.investmentFrequency || 'monthly';
             this.items = data.items || [];
+            this.changeHistory = data.changeHistory || [];
             
             // Update UI
             document.getElementById('maxCash').value = this.maxCash;
@@ -140,6 +180,26 @@ class BudgetTracker {
             this.renderItems();
             this.updateCalculations();
             this.populateTagSelect();
+        }
+    }
+
+    // Change History Management
+    addToHistory(action, details = {}, comment = '') {
+        const historyEntry = {
+            timestamp: new Date().toISOString(),
+            action: action,
+            details: details,
+            comment: comment,
+            currency: this.currency
+        };
+        this.changeHistory.push(historyEntry);
+        this.saveData(); // Auto-save when history changes
+    }
+
+    addHistoryComment(index, comment) {
+        if (this.changeHistory[index]) {
+            this.changeHistory[index].comment = comment;
+            this.saveData();
         }
     }
 
@@ -212,6 +272,16 @@ class BudgetTracker {
         if (name && value > 0) {
             // Always add new (editing occurs inline now)
             this.items.push({ name, value, tags, frequency });
+            
+            // Add to history
+            this.addToHistory('item_added', {
+                itemName: name,
+                value: value,
+                tags: tags,
+                frequency: frequency,
+                itemIndex: this.items.length - 1
+            });
+            
             this.renderItems();
             this.updateCalculations();
             this.refreshDynamicCharts();
@@ -237,7 +307,17 @@ class BudgetTracker {
         const value = parseFloat(form.elements.value.value) || 0;
         const tags = form.elements.tags.value.split(',').map(t=>t.trim()).filter(t=>t);
         const frequency = form.elements.frequency.value;
+        
         if (name && value > 0) {
+            const oldItem = this.items[index];
+            
+            // Add to history
+            this.addToHistory('item_edited', {
+                itemIndex: index,
+                oldItem: { ...oldItem },
+                newItem: { name, value, tags, frequency }
+            });
+            
             this.items[index] = { name, value, tags, frequency };
             this.editingIndex = undefined;
             this.renderItems();
@@ -350,6 +430,25 @@ class BudgetTracker {
                 .filter(item => item.name && item.value > 0);
         }
 
+        // Validate and extract change history
+        if (Array.isArray(data.changeHistory)) {
+            validatedData.changeHistory = data.changeHistory
+                .filter(entry => entry && typeof entry === 'object')
+                .filter(entry => 
+                    entry.timestamp && 
+                    entry.action && 
+                    typeof entry.timestamp === 'string' &&
+                    typeof entry.action === 'string'
+                )
+                .map(entry => ({
+                    timestamp: entry.timestamp,
+                    action: entry.action,
+                    details: entry.details || {},
+                    comment: typeof entry.comment === 'string' ? entry.comment : '',
+                    currency: typeof entry.currency === 'string' ? entry.currency : 'USD'
+                }));
+        }
+
         // Import data immediately
         this.importDataDirectly(validatedData, statusEl);
     }
@@ -416,6 +515,34 @@ class BudgetTracker {
                 this.items = data.items;
             }
 
+            // Apply change history (merge with existing)
+            if (data.changeHistory && Array.isArray(data.changeHistory) && data.changeHistory.length > 0) {
+                // Ask user whether to merge or replace history
+                const mergeHistory = confirm(
+                    `Found ${data.changeHistory.length} change history entries.\n\n` +
+                    `Click OK to MERGE with existing history (${this.changeHistory.length} entries).\n` +
+                    `Click Cancel to REPLACE existing history.`
+                );
+                
+                if (mergeHistory) {
+                    // Merge histories and sort by timestamp
+                    const combinedHistory = [...this.changeHistory, ...data.changeHistory];
+                    this.changeHistory = combinedHistory.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+                } else {
+                    // Replace existing history
+                    this.changeHistory = [...data.changeHistory];
+                }
+            }
+
+            // Add to history
+            this.addToHistory('feed_imported', {
+                itemsCount: data.items.length,
+                currency: data.settings.currency || null,
+                maxCash: data.settings.maxCash || null,
+                investment: data.settings.investment || null,
+                historyEntriesImported: data.changeHistory ? data.changeHistory.length : 0
+            });
+
             // Update UI
             this.editingIndex = undefined;
             this.renderItems();
@@ -437,6 +564,9 @@ class BudgetTracker {
                     const { type, value, frequency } = data.settings.investment;
                     const unit = type === 'percentage' ? '%' : this.currencySymbols[this.currency];
                     message += ` and investment of ${unit}${value} ${frequency}`;
+                }
+                if (data.changeHistory && data.changeHistory.length > 0) {
+                    message += ` and ${data.changeHistory.length} history entries`;
                 }
                 statusEl.textContent = message;
                 statusEl.className = 'import-status success';
@@ -532,6 +662,17 @@ class BudgetTracker {
     }
 
     removeItem(index) {
+        const removedItem = this.items[index];
+        
+        // Add to history before removal
+        this.addToHistory('item_removed', {
+            itemName: removedItem.name,
+            value: removedItem.value,
+            tags: removedItem.tags,
+            frequency: removedItem.frequency,
+            itemIndex: index
+        });
+        
         this.items.splice(index, 1);
         if (this.editingIndex !== undefined) {
             if (index === this.editingIndex) {
@@ -647,6 +788,13 @@ class BudgetTracker {
 
     changeCurrency(newCurrency) {
         const oldCurrency = this.currency;
+        
+        // Add to history
+        this.addToHistory('currency_changed', {
+            oldCurrency: oldCurrency,
+            newCurrency: newCurrency,
+            conversionRate: this.conversionRates[newCurrency] / this.conversionRates[oldCurrency]
+        });
         
         // Convert maxCash
         if (this.maxCash > 0) {
@@ -1345,6 +1493,299 @@ class BudgetTracker {
                 combinedFreqSelect.value = prevValue;
             }
         }
+    }
+
+    // Change History Display Methods
+    toggleHistory() {
+        const container = document.getElementById('historyContainer');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+            this.renderHistory();
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    renderHistory() {
+        const historyList = document.getElementById('historyList');
+        const actionFilter = document.getElementById('historyActionFilter').value;
+        
+        if (!historyList) return;
+
+        let filteredHistory = this.changeHistory;
+        if (actionFilter) {
+            filteredHistory = this.changeHistory.filter(entry => entry.action === actionFilter);
+        }
+
+        if (filteredHistory.length === 0) {
+            historyList.innerHTML = '<div class="no-history">No history entries found.</div>';
+            return;
+        }
+
+        historyList.innerHTML = filteredHistory
+            .slice()
+            .reverse() // Show most recent first
+            .map((entry, index) => this.renderHistoryEntry(entry, filteredHistory.length - 1 - index))
+            .join('');
+    }
+
+    renderHistoryEntry(entry, originalIndex) {
+        const timestamp = new Date(entry.timestamp).toLocaleString();
+        const actionText = this.getActionText(entry);
+        const detailsText = this.getDetailsText(entry);
+        
+        return `
+            <div class="history-entry" data-index="${originalIndex}">
+                <div class="history-timestamp">${timestamp}</div>
+                <div class="history-action">
+                    <div class="history-action-type">${actionText}</div>
+                    <div class="history-details">${detailsText}</div>
+                    ${entry.comment ? `<div class="history-comment">💬 ${entry.comment}</div>` : ''}
+                </div>
+                <button class="comment-btn" onclick="budgetTracker.editComment(${originalIndex})">
+                    ${entry.comment ? 'Edit' : 'Add'} Comment
+                </button>
+            </div>
+        `;
+    }
+
+    getActionText(entry) {
+        const actionMap = {
+            'item_added': '➕ Item Added',
+            'item_removed': '➖ Item Removed', 
+            'item_edited': '✏️ Item Edited',
+            'max_cash_updated': '💰 Budget Updated',
+            'currency_changed': '💱 Currency Changed',
+            'investment_type_changed': '📊 Investment Type Changed',
+            'investment_value_changed': '📈 Investment Value Changed',
+            'investment_frequency_changed': '⏰ Investment Frequency Changed',
+            'feed_imported': '📥 Data Imported',
+            'history_exported': '📤 History Exported',
+            'history_imported': '📥 History Imported'
+        };
+        return actionMap[entry.action] || '🔄 Change Made';
+    }
+
+    getDetailsText(entry) {
+        const { action, details, currency } = entry;
+        const currencySymbol = this.currencySymbols[currency] || '$';
+
+        switch (action) {
+            case 'item_added':
+                return `Added "${details.itemName}" - ${currencySymbol}${details.value} (${details.frequency})`;
+            
+            case 'item_removed':
+                return `Removed "${details.itemName}" - ${currencySymbol}${details.value} (${details.frequency})`;
+            
+            case 'item_edited':
+                return `Changed "${details.oldItem.name}" → "${details.newItem.name}" (${currencySymbol}${details.oldItem.value} → ${currencySymbol}${details.newItem.value})`;
+            
+            case 'max_cash_updated':
+                return `Budget: ${currencySymbol}${details.oldValue.toLocaleString()} → ${currencySymbol}${details.newValue.toLocaleString()}`;
+            
+            case 'currency_changed':
+                return `Currency: ${details.oldCurrency} → ${details.newCurrency} (rate: ${details.conversionRate.toFixed(4)})`;
+            
+            case 'investment_type_changed':
+                return `Investment type: ${details.oldType} → ${details.newType}`;
+            
+            case 'investment_value_changed':
+                const unit = details.type === 'percentage' ? '%' : currencySymbol;
+                return `Investment value: ${unit}${details.oldValue} → ${unit}${details.newValue}`;
+            
+            case 'investment_frequency_changed':
+                return `Investment frequency: ${details.oldFrequency} → ${details.newFrequency}`;
+            
+            case 'feed_imported':
+                let text = `Imported ${details.itemsCount} items`;
+                if (details.currency) text += `, currency: ${details.currency}`;
+                if (details.maxCash) text += `, budget: ${currencySymbol}${details.maxCash.toLocaleString()}`;
+                if (details.historyEntriesImported) text += `, ${details.historyEntriesImported} history entries`;
+                return text;
+            
+            case 'history_exported':
+                return `Exported ${details.entriesExported} history entries to file`;
+            
+            case 'history_imported':
+                return `Imported ${details.entriesImported} history entries (${details.importMethod}), total: ${details.totalEntriesAfter}`;
+            
+            default:
+                return 'Change made to budget';
+        }
+    }
+
+    editComment(index) {
+        const entry = this.changeHistory[index];
+        if (!entry) return;
+
+        const newComment = prompt('Enter comment for this change:', entry.comment || '');
+        if (newComment !== null) { // User didn't cancel
+            this.addHistoryComment(index, newComment);
+            this.renderHistory();
+        }
+    }
+
+    filterHistory() {
+        this.renderHistory();
+    }
+
+    clearHistory() {
+        if (confirm('Are you sure you want to clear all change history? This action cannot be undone.')) {
+            this.changeHistory = [];
+            this.saveData();
+            this.renderHistory();
+        }
+    }
+
+    exportHistory() {
+        if (this.changeHistory.length === 0) {
+            alert('No change history to export.');
+            return;
+        }
+
+        // Create export data structure
+        const exportData = {
+            exportInfo: {
+                exportedAt: new Date().toISOString(),
+                totalEntries: this.changeHistory.length,
+                exportType: 'change_history',
+                appVersion: '1.0',
+                currency: this.currency
+            },
+            changeHistory: this.changeHistory
+        };
+
+        // Create and download the file
+        const dataStr = JSON.stringify(exportData, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(dataBlob);
+        link.download = `budget-history-${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // Add to history
+        this.addToHistory('history_exported', {
+            entriesExported: this.changeHistory.length,
+            exportTimestamp: exportData.exportInfo.exportedAt
+        });
+
+        alert(`Successfully exported ${this.changeHistory.length} history entries.`);
+    }
+
+    importHistory() {
+        // Create hidden file input
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = '.json';
+        fileInput.style.display = 'none';
+        
+        fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const importData = JSON.parse(event.target.result);
+                    this.processHistoryImport(importData);
+                } catch (error) {
+                    alert('Error reading file: Invalid JSON format.');
+                    console.error('Import error:', error);
+                }
+            };
+            reader.readAsText(file);
+        };
+        
+        document.body.appendChild(fileInput);
+        fileInput.click();
+        document.body.removeChild(fileInput);
+    }
+
+    processHistoryImport(importData) {
+        // Validate import data structure
+        if (!importData || typeof importData !== 'object') {
+            alert('Invalid import file: Not a valid JSON object.');
+            return;
+        }
+
+        let historyToImport = [];
+
+        // Check if it's a dedicated history export
+        if (importData.exportType === 'change_history' && Array.isArray(importData.changeHistory)) {
+            historyToImport = importData.changeHistory;
+        }
+        // Check if it's a full budget export with history
+        else if (Array.isArray(importData.changeHistory)) {
+            historyToImport = importData.changeHistory;
+        }
+        // Check if it's just an array of history entries
+        else if (Array.isArray(importData)) {
+            historyToImport = importData;
+        }
+        else {
+            alert('Invalid import file: No change history data found.');
+            return;
+        }
+
+        // Validate history entries
+        const validEntries = historyToImport.filter(entry => 
+            entry && 
+            typeof entry === 'object' && 
+            entry.timestamp && 
+            entry.action &&
+            typeof entry.timestamp === 'string' &&
+            typeof entry.action === 'string'
+        );
+
+        if (validEntries.length === 0) {
+            alert('No valid history entries found in the import file.');
+            return;
+        }
+
+        // Ask user how to handle the import
+        const currentCount = this.changeHistory.length;
+        const importCount = validEntries.length;
+        
+        const action = confirm(
+            `Found ${importCount} valid history entries to import.\\n\\n` +
+            `You currently have ${currentCount} history entries.\\n\\n` +
+            `Click OK to MERGE with existing history.\\n` +
+            `Click Cancel to REPLACE existing history.`
+        );
+
+        if (action) {
+            // Merge histories
+            const combinedHistory = [...this.changeHistory, ...validEntries];
+            // Sort by timestamp and remove duplicates based on timestamp and action
+            this.changeHistory = combinedHistory
+                .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+                .filter((entry, index, arr) => {
+                    // Simple duplicate detection based on timestamp and action
+                    return index === arr.findIndex(e => 
+                        e.timestamp === entry.timestamp && 
+                        e.action === entry.action
+                    );
+                });
+        } else {
+            // Replace existing history
+            this.changeHistory = [...validEntries].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        }
+
+        // Save and update UI
+        this.saveData();
+        this.renderHistory();
+
+        // Add to history
+        this.addToHistory('history_imported', {
+            entriesImported: validEntries.length,
+            importMethod: action ? 'merged' : 'replaced',
+            totalEntriesAfter: this.changeHistory.length
+        });
+
+        alert(`Successfully imported ${validEntries.length} history entries. Total entries: ${this.changeHistory.length}`);
     }
 }
 

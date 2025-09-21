@@ -95,6 +95,15 @@
       "frequency": "monthly",
       "tags": ["housing", "essential"]
     }
+  ],
+  "changeHistory": [
+    {
+      "timestamp": "2024-01-15T10:30:00.000Z",
+      "action": "item_added",
+      "details": { "itemName": "rent", "value": 1200 },
+      "comment": "Added monthly rent expense",
+      "currency": "USD"
+    }
   ]
 }</code></pre>
                     </details>
@@ -242,6 +251,35 @@
                 
                 <div class="no-charts-message" id="noChartsMessage">
                     <p>No custom charts created yet. Use the controls above to create your first chart!</p>
+                </div>
+            </section>
+
+            <!-- Change History Section -->
+            <section class="change-history full-width">
+                <div class="section-header">
+                    <h2>Change History</h2>
+                    <button type="button" id="toggleHistoryBtn" class="refresh-btn" onclick="budgetTracker.toggleHistory()">📋 Show/Hide History</button>
+                </div>
+                <div id="historyContainer" class="history-container" style="display: none;">
+                    <div class="history-filters">
+                        <label for="historyActionFilter">Filter by Action:</label>
+                        <select id="historyActionFilter" onchange="budgetTracker.filterHistory()">
+                            <option value="">All Actions</option>
+                            <option value="item_added">Items Added</option>
+                            <option value="item_removed">Items Removed</option>
+                            <option value="item_edited">Items Edited</option>
+                            <option value="max_cash_updated">Budget Changes</option>
+                            <option value="currency_changed">Currency Changes</option>
+                            <option value="investment_value_changed">Investment Changes</option>
+                            <option value="feed_imported">Feed Imports</option>
+                        </select>
+                        <button type="button" class="export-history-btn" onclick="budgetTracker.exportHistory()">Export History</button>
+                        <button type="button" class="import-history-btn" onclick="budgetTracker.importHistory()">Import History</button>
+                        <button type="button" class="clear-history-btn" onclick="budgetTracker.clearHistory()">Clear History</button>
+                    </div>
+                    <div class="history-list" id="historyList">
+                        <!-- History entries will be displayed here -->
+                    </div>
                 </div>
             </section>
 

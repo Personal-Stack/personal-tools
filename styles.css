@@ -964,3 +964,154 @@ button:hover {
     .inline-edit-grid { grid-template-columns: 1fr; }
     .inline-buttons { justify-content: flex-start; }
 }
+
+/* Change History Styles */
+.change-history {
+    border-left: 4px solid #17a2b8;
+}
+
+.history-container {
+    margin-top: 15px;
+}
+
+.history-filters {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    flex-wrap: wrap;
+}
+
+.history-filters label {
+    font-weight: 600;
+    color: #495057;
+}
+
+.history-filters select {
+    padding: 6px 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background: white;
+}
+
+.export-history-btn, .import-history-btn, .clear-history-btn {
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: white;
+}
+
+.export-history-btn {
+    background: #28a745;
+    margin-right: 8px;
+}
+
+.export-history-btn:hover {
+    background: #218838;
+}
+
+.import-history-btn {
+    background: #007bff;
+    margin-right: 8px;
+}
+
+.import-history-btn:hover {
+    background: #0056b3;
+}
+
+.clear-history-btn {
+    background: #dc3545;
+    margin-left: auto;
+}
+
+.clear-history-btn:hover {
+    background: #c82333;
+}
+
+.history-list {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+}
+
+.history-entry {
+    padding: 12px;
+    border-bottom: 1px solid #f1f3f4;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 10px;
+    align-items: center;
+}
+
+.history-entry:hover {
+    background-color: #f8f9fa;
+}
+
+.history-entry:last-child {
+    border-bottom: none;
+}
+
+.history-timestamp {
+    font-size: 0.85em;
+    color: #6c757d;
+    font-family: monospace;
+    white-space: nowrap;
+}
+
+.history-action {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.history-action-type {
+    font-weight: 600;
+    color: #495057;
+}
+
+.history-details {
+    font-size: 0.9em;
+    color: #6c757d;
+}
+
+.history-comment {
+    font-style: italic;
+    color: #007bff;
+    margin-top: 4px;
+}
+
+.comment-btn {
+    background: #17a2b8;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.comment-btn:hover {
+    background: #138496;
+}
+
+.comment-input {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.no-history {
+    padding: 20px;
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+}
