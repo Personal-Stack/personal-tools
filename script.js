@@ -283,6 +283,19 @@ class BudgetTracker {
             if (data.settings.currency && typeof data.settings.currency === 'string') {
                 validatedData.settings.currency = data.settings.currency;
             }
+            // Validate and extract investment settings
+            if (data.settings.investment && typeof data.settings.investment === 'object') {
+                const investment = data.settings.investment;
+                if ((investment.type === 'amount' || investment.type === 'percentage') &&
+                    typeof investment.value === 'number' && investment.value >= 0 &&
+                    ['daily', 'weekly', 'monthly', 'yearly'].includes(investment.frequency)) {
+                    validatedData.settings.investment = {
+                        type: investment.type,
+                        value: investment.value,
+                        frequency: investment.frequency
+                    };
+                }
+            }
         }
 
         // Validate and extract items
@@ -312,6 +325,24 @@ class BudgetTracker {
                 document.getElementById('maxCash').value = this.maxCash;
             }
 
+            // Apply investment settings
+            if (data.settings.investment) {
+                this.investmentType = data.settings.investment.type;
+                this.investmentValue = data.settings.investment.value;
+                this.investmentFrequency = data.settings.investment.frequency;
+                
+                // Update UI elements
+                const typeSelect = document.getElementById('investmentType');
+                const valueInput = document.getElementById('investmentValue');
+                const frequencySelect = document.getElementById('investmentFrequency');
+                const unitSpan = document.getElementById('investmentUnit');
+                
+                if (typeSelect) typeSelect.value = this.investmentType;
+                if (valueInput) valueInput.value = this.investmentValue;
+                if (frequencySelect) frequencySelect.value = this.investmentFrequency;
+                if (unitSpan) unitSpan.textContent = this.investmentType === 'percentage' ? '%' : '$';
+            }
+
             // Apply items (replace existing)
             if (data.items.length > 0) {
                 this.items = data.items;
@@ -326,8 +357,16 @@ class BudgetTracker {
 
             // Show success status
             if (statusEl) {
-                statusEl.textContent = `Successfully imported ${data.items.length} items` + 
-                    (data.settings.maxCash ? ` and budget of $${data.settings.maxCash.toLocaleString()}` : '');
+                let message = `Successfully imported ${data.items.length} items`;
+                if (data.settings.maxCash) {
+                    message += ` and budget of $${data.settings.maxCash.toLocaleString()}`;
+                }
+                if (data.settings.investment) {
+                    const { type, value, frequency } = data.settings.investment;
+                    const unit = type === 'percentage' ? '%' : '$';
+                    message += ` and investment of ${unit}${value} ${frequency}`;
+                }
+                statusEl.textContent = message;
                 statusEl.className = 'import-status success';
             }
 
