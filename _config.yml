@@ -1,0 +1,27 @@
+# GitHub Pages configuration for Budget Planner
+title: Budget Planner
+description: A comprehensive budget tracking and planning application with multi-currency support, investment allocation, and change history.
+url: ""
+baseurl: ""
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# Exclude files from processing
+exclude:
+  - README.md
+  - .gitignore
+  - .github/
+  - node_modules/
+  - package*.json
+
+# Include specific files
+include:
+  - index.html
+  - script.js
+  - styles.css
+
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
