@@ -22,6 +22,31 @@
                     <label for="maxCash">Max Available Cash Per Year ($):</label>
                     <input type="number" id="maxCash" placeholder="Enter your annual budget" min="0" step="0.01">
                 </div>
+                <div class="form-group">
+                    <h3>💹 Investment Allocation</h3>
+                    <div class="investment-controls">
+                        <div class="investment-type">
+                            <label>Investment Type:</label>
+                            <select id="investmentType">
+                                <option value="amount">Fixed Amount ($)</option>
+                                <option value="percentage">Percentage (%)</option>
+                            </select>
+                        </div>
+                        <div class="investment-value">
+                            <label for="investmentValue">Investment Value:</label>
+                            <input type="number" id="investmentValue" placeholder="Enter amount or percentage" min="0" step="0.01">
+                            <span class="investment-unit" id="investmentUnit">$</span>
+                        </div>
+                        <div class="investment-frequency">
+                            <label for="investmentFrequency">Investment Frequency:</label>
+                            <select id="investmentFrequency">
+                                <option value="monthly" selected>Monthly</option>
+                                <option value="quarterly">Quarterly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <div class="import-section">
                     <h3>Import Budget Data</h3>
                     <p>Select a feed.json file to instantly import and populate your budget items and settings.</p>
@@ -58,22 +83,26 @@
 
             <!-- Budget Summary Section -->
             <section class="summary full-width">
-                <h2>Budget Summary</h2>
+                <h2>💰 Budget Summary</h2>
                 <div class="summary-grid">
                     <div class="summary-item">
-                        <span class="label">Total Monthly Expenses:</span>
+                        <span class="label">📅 Total Monthly Expenses:</span>
                         <span class="value" id="totalMonthly">$0.00</span>
                     </div>
                     <div class="summary-item">
-                        <span class="label">Total Annual Expenses:</span>
+                        <span class="label">📊 Total Annual Expenses:</span>
                         <span class="value" id="totalAnnual">$0.00</span>
                     </div>
                     <div class="summary-item">
-                        <span class="label">Remaining Annual Budget:</span>
+                        <span class="label">� Annual Investment:</span>
+                        <span class="value" id="totalInvestment">$0.00</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">�💵 Remaining Annual Budget:</span>
                         <span class="value" id="remainingBudget">$0.00</span>
                     </div>
                     <div class="summary-item">
-                        <span class="label">Budget Status:</span>
+                        <span class="label">🎯 Budget Status:</span>
                         <span class="value" id="budgetStatus">-</span>
                     </div>
                 </div>

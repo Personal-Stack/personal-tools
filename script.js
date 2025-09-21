@@ -2,6 +2,9 @@
 class BudgetTracker {
     constructor() {
         this.maxCash = 0;
+        this.investmentValue = 0;
+        this.investmentType = 'amount'; // 'amount' or 'percentage'
+        this.investmentFrequency = 'monthly';
         this.items = [];
         this.charts = {};
         this.editingIndex = undefined; // track index being edited
@@ -27,6 +30,34 @@ class BudgetTracker {
             this.updateCalculations();
         });
 
+        // Investment controls
+        const investmentTypeSelect = document.getElementById('investmentType');
+        const investmentValueInput = document.getElementById('investmentValue');
+        const investmentFrequencySelect = document.getElementById('investmentFrequency');
+        const investmentUnit = document.getElementById('investmentUnit');
+
+        if (investmentTypeSelect) {
+            investmentTypeSelect.addEventListener('change', () => {
+                this.investmentType = investmentTypeSelect.value;
+                investmentUnit.textContent = this.investmentType === 'percentage' ? '%' : '$';
+                this.updateCalculations();
+            });
+        }
+
+        if (investmentValueInput) {
+            investmentValueInput.addEventListener('input', () => {
+                this.investmentValue = parseFloat(investmentValueInput.value) || 0;
+                this.updateCalculations();
+            });
+        }
+
+        if (investmentFrequencySelect) {
+            investmentFrequencySelect.addEventListener('change', () => {
+                this.investmentFrequency = investmentFrequencySelect.value;
+                this.updateCalculations();
+            });
+        }
+
         // Dynamic chart controls
         this.setupDynamicChartControls();
 
@@ -45,6 +76,9 @@ class BudgetTracker {
     saveData() {
         const data = {
             maxCash: this.maxCash,
+            investmentValue: this.investmentValue,
+            investmentType: this.investmentType,
+            investmentFrequency: this.investmentFrequency,
             items: this.items
         };
         localStorage.setItem('budgetData', JSON.stringify(data));
@@ -55,10 +89,17 @@ class BudgetTracker {
         if (savedData) {
             const data = JSON.parse(savedData);
             this.maxCash = data.maxCash || 0;
+            this.investmentValue = data.investmentValue || 0;
+            this.investmentType = data.investmentType || 'amount';
+            this.investmentFrequency = data.investmentFrequency || 'monthly';
             this.items = data.items || [];
             
             // Update UI
             document.getElementById('maxCash').value = this.maxCash;
+            document.getElementById('investmentValue').value = this.investmentValue;
+            document.getElementById('investmentType').value = this.investmentType;
+            document.getElementById('investmentFrequency').value = this.investmentFrequency;
+            document.getElementById('investmentUnit').textContent = this.investmentType === 'percentage' ? '%' : '$';
             this.renderItems();
             this.updateCalculations();
             this.populateTagSelect();
@@ -454,10 +495,40 @@ class BudgetTracker {
         return total;
     }
 
+    calculateAnnualInvestment() {
+        if (!this.investmentValue) return 0;
+        
+        let annualInvestment = 0;
+        
+        if (this.investmentType === 'percentage') {
+            // Calculate percentage of max cash
+            annualInvestment = (this.maxCash * this.investmentValue) / 100;
+        } else {
+            // Fixed amount - convert to annual based on frequency
+            switch (this.investmentFrequency) {
+                case 'monthly':
+                    annualInvestment = this.investmentValue * 12;
+                    break;
+                case 'quarterly':
+                    annualInvestment = this.investmentValue * 4;
+                    break;
+                case 'yearly':
+                    annualInvestment = this.investmentValue;
+                    break;
+                default:
+                    annualInvestment = this.investmentValue * 12;
+            }
+        }
+        
+        return annualInvestment;
+    }
+
     updateCalculations() {
         const totalMonthly = this.calculateTotalMonthlyExpenses();
         const totalAnnual = this.calculateTotalAnnualExpenses();
-        const remaining = this.maxCash - totalAnnual;
+        const annualInvestment = this.calculateAnnualInvestment();
+        const totalAllocated = totalAnnual + annualInvestment;
+        const remaining = this.maxCash - totalAllocated;
         
         // Update indicators
         const availableAfterExpenses = Math.max(0, remaining);
@@ -469,6 +540,7 @@ class BudgetTracker {
         // Update summary
         document.getElementById('totalMonthly').textContent = `$${totalMonthly.toFixed(2)}`;
         document.getElementById('totalAnnual').textContent = `$${totalAnnual.toFixed(2)}`;
+        document.getElementById('totalInvestment').textContent = `$${annualInvestment.toFixed(2)}`;
         document.getElementById('remainingBudget').textContent = `$${remaining.toFixed(2)}`;
         
         // Update budget status
@@ -507,40 +579,50 @@ class BudgetTracker {
         this.charts.budget = new Chart(budgetCtx, {
             type: 'doughnut',
             data: {
-                labels: [],
-                datasets: [{
-                    data: [],
-                    backgroundColor: [
-                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
-                        '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF',
-                        '#4BC0C0', '#FF6384', '#36A2EB', '#FFCE56'
-                    ]
-                }]
+            labels: [],
+            datasets: [{
+                data: [],
+                backgroundColor: [
+                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF',
+                '#4BC0C0', '#FF6384', '#36A2EB', '#FFCE56',
+                '#8DD17E', '#FF99C8', '#7DA3FF', '#FFC870', '#5AD1D1',
+                '#FFB6C1', '#87CEEB', '#DDA0DD', '#98FB98', '#FFD700',
+                '#00CED1', '#DC143C', '#20B2AA', '#FF7F50', '#B0E0E6',
+                '#FF6347', '#40E0D0', '#E6E6FA', '#F08080', '#BDB76B',
+                '#E0FFFF', '#FA8072', '#AFEEEE', '#FFE4E1', '#D3D3D3',
+                // 20 more colors below
+                '#A0522D', '#8B0000', '#FF4500', '#2E8B57', '#4682B4',
+                '#DAA520', '#7CFC00', '#BA55D3', '#FF69B4', '#CD5C5C',
+                '#1E90FF', '#32CD32', '#FFDAB9', '#8A2BE2', '#00FA9A',
+                '#FF1493', '#00BFFF', '#ADFF2F', '#F5DEB3', '#FFDEAD'
+                ]
+            }]
             },
             options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Budget Breakdown'
-                    },
-                    legend: {
-                        position: 'bottom'
-                    }
+            responsive: true,
+            plugins: {
+                title: {
+                display: true,
+                text: 'Budget Breakdown'
+                },
+                legend: {
+                position: 'bottom'
                 }
+            }
             }
         });
 
-        // Remaining vs Spent Chart
+        // Budget Allocation Chart
         const remainingCtx = document.getElementById('remainingChart').getContext('2d');
         this.charts.remaining = new Chart(remainingCtx, {
             type: 'bar',
             data: {
-                labels: ['Spent', 'Remaining'],
+                labels: ['Expenses', 'Investment', 'Remaining'],
                 datasets: [{
                     label: 'Annual Budget ($)',
-                    data: [0, 0],
-                    backgroundColor: ['#FF6384', '#36A2EB']
+                    data: [0, 0, 0],
+                    backgroundColor: ['#FF6384', '#9966FF', '#36A2EB']
                 }]
             },
             options: {
@@ -548,7 +630,7 @@ class BudgetTracker {
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Budget Overview'
+                        text: 'Budget Allocation'
                     }
                 },
                 scales: {
@@ -602,16 +684,27 @@ class BudgetTracker {
                 data.push(annualAmount);
             }
         });
+
+        // Add investment to budget breakdown if it exists
+        const annualInvestment = this.calculateAnnualInvestment();
+        if (annualInvestment > 0) {
+            labels.push('💹 Investment');
+            data.push(annualInvestment);
+        }
         
         this.charts.budget.data.labels = labels;
         this.charts.budget.data.datasets[0].data = data;
         this.charts.budget.update();
         
-        // Update remaining chart
-        const totalSpent = this.calculateTotalMonthlyExpenses() * 12;
-        const remaining = Math.max(0, this.maxCash - totalSpent);
+        // Update remaining chart to include investment
+        const totalExpenses = this.calculateTotalAnnualExpenses();
+        const totalAllocated = totalExpenses + annualInvestment;
+        const remaining = Math.max(0, this.maxCash - totalAllocated);
         
-        this.charts.remaining.data.datasets[0].data = [totalSpent, remaining];
+        // Update chart to show expenses, investment, and remaining
+        this.charts.remaining.data.labels = ['Expenses', 'Investment', 'Remaining'];
+        this.charts.remaining.data.datasets[0].data = [totalExpenses, annualInvestment, remaining];
+        this.charts.remaining.data.datasets[0].backgroundColor = ['#FF6384', '#9966FF', '#36A2EB'];
         this.charts.remaining.update();
         this.refreshDynamicCharts();
     }

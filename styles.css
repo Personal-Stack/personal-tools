@@ -165,6 +165,63 @@ section h3 {
     margin-bottom: 20px;
 }
 
+/* Investment Controls */
+.investment-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+}
+
+.investment-type,
+.investment-value,
+.investment-frequency {
+    display: flex;
+    flex-direction: column;
+}
+
+.investment-type label,
+.investment-value label,
+.investment-frequency label {
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+.investment-type select,
+.investment-frequency select {
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    background: white;
+}
+
+.investment-value {
+    position: relative;
+}
+
+.investment-value input {
+    padding: 10px 30px 10px 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.investment-unit {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: bold;
+    color: #667eea;
+    pointer-events: none;
+}
+
 .form-group label {
     display: block;
     margin-bottom: 5px;
