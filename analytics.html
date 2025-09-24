@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Analytics - Budget Planner</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="analytics.css">
+    <!-- Chart.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 CSV Analytics</h1>
+            <nav class="page-nav">
+                <a href="index.html" class="nav-btn">🏠 Budget Planner</a>
+            </nav>
+        </header>
+
+        <main>
+            <!-- CSV Upload Section -->
+            <section class="csv-upload full-width">
+                <h2>Upload CSV Data</h2>
+                <p>Upload a CSV file with transaction data to analyze spending patterns and balances.</p>
+                
+                <div class="upload-area">
+                    <div class="upload-group">
+                        <label for="csvFile">Select CSV file:</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="csvFile" accept=".csv,text/csv" style="display: none;">
+                            <span class="file-input-text" onclick="document.getElementById('csvFile').click()">Choose CSV file</span>
+                        </div>
+                        <div id="uploadStatus" class="upload-status"></div>
+                    </div>
+                    
+                    <div class="csv-format-info">
+                        <h3>Expected CSV Format:</h3>
+                        <div class="format-example">
+                            <code>Type,Product,Started Date,Completed Date,Description,Amount,Fee,Currency,State,Balance</code>
+                        </div>
+                        <p><strong>Example row:</strong></p>
+                        <div class="format-example">
+                            <code>Payment,Credit Card,2024-01-15,2024-01-15,Grocery Shopping,-45.50,0.00,USD,Completed,1250.75</code>
+                        </div>
+                        <p><a href="sample-transactions.csv" download class="sample-link">📥 Download Sample CSV</a></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Data Summary Section -->
+            <section class="data-summary full-width" id="dataSummary" style="display: none;">
+                <h2>📋 Data Summary</h2>
+                <div class="summary-grid">
+                    <div class="summary-card">
+                        <div class="summary-label">Total Transactions</div>
+                        <div class="summary-value" id="totalTransactions">0</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Total Amount</div>
+                        <div class="summary-value" id="totalAmount">$0.00</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Average Balance</div>
+                        <div class="summary-value" id="averageBalance">$0.00</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Date Range</div>
+                        <div class="summary-value" id="dateRange">-</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="analytics-charts full-width" id="chartsSection" style="display: none;">
+                <div class="section-header">
+                    <h2>📈 Analytics Charts</h2>
+                    <button type="button" class="refresh-btn" onclick="csvAnalytics.refreshCharts()">🔄 Refresh Charts</button>
+                </div>
+                
+                <div class="charts-grid">
+                    <!-- Description Chart -->
+                    <div class="chart-container">
+                        <div class="chart-row">
+                            <div class="chart-display">
+                                <h3>Spending by Description</h3>
+                                <canvas id="descriptionChart"></canvas>
+                            </div>
+                            <div class="chart-items-list">
+                                <h4>Description Breakdown:</h4>
+                                <div class="items-list-content" id="descriptionItems">
+                                    <!-- Items will be populated here -->
+                                </div>
+                                <div class="chart-total">
+                                    <span class="chart-total-label">Total:</span>
+                                    <span class="chart-total-value" id="descriptionTotal">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- State Chart -->
+                    <div class="chart-container">
+                        <div class="chart-row">
+                            <div class="chart-display">
+                                <h3>Transactions by State</h3>
+                                <canvas id="stateChart"></canvas>
+                            </div>
+                            <div class="chart-items-list">
+                                <h4>State Breakdown:</h4>
+                                <div class="items-list-content" id="stateItems">
+                                    <!-- Items will be populated here -->
+                                </div>
+                                <div class="chart-total">
+                                    <span class="chart-total-label">Total:</span>
+                                    <span class="chart-total-value" id="stateTotal">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Balance Trend Chart -->
+                    <div class="chart-container full-width">
+                        <h3>Balance Over Time</h3>
+                        <div class="chart-display-full">
+                            <canvas id="balanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Data Table Section -->
+            <section class="data-table full-width" id="dataTable" style="display: none;">
+                <div class="section-header">
+                    <h2>📊 Transaction Data</h2>
+                    <div class="table-controls">
+                        <input type="text" id="searchInput" placeholder="Search transactions..." onkeyup="csvAnalytics.filterTable()">
+                        <select id="stateFilter" onchange="csvAnalytics.filterTable()">
+                            <option value="">All States</option>
+                        </select>
+                        <button type="button" class="export-btn" onclick="csvAnalytics.exportFiltered()">📤 Export Filtered</button>
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <table id="transactionsTable">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Product</th>
+                                <th>Started Date</th>
+                                <th>Completed Date</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Fee</th>
+                                <th>Currency</th>
+                                <th>State</th>
+                                <th>Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsBody">
+                            <!-- Data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="analytics.js"></script>
+</body>
+</html>
