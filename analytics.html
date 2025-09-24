@@ -72,6 +72,56 @@
                 </div>
             </section>
 
+            <!-- Advanced Filters Section -->
+            <section class="advanced-filters full-width" id="filtersSection" style="display: none;">
+                <div class="section-header">
+                    <h2>🔍 Advanced Analytics Filters</h2>
+                    <button type="button" class="reset-filters-btn" onclick="csvAnalytics.resetFilters()">↺ Reset Filters</button>
+                </div>
+                
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label for="typeFilter">Transaction Type:</label>
+                        <select id="typeFilter" onchange="csvAnalytics.applyFilters()">
+                            <option value="">All Types</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="dateFromFilter">Date From:</label>
+                        <input type="date" id="dateFromFilter" onchange="csvAnalytics.applyFilters()">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="dateToFilter">Date To:</label>
+                        <input type="date" id="dateToFilter" onchange="csvAnalytics.applyFilters()">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="minAmountFilter">Min Amount:</label>
+                        <input type="number" id="minAmountFilter" placeholder="0.00" step="0.01" onchange="csvAnalytics.applyFilters()">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="maxAmountFilter">Max Amount:</label>
+                        <input type="number" id="maxAmountFilter" placeholder="1000.00" step="0.01" onchange="csvAnalytics.applyFilters()">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="descriptionFilter">Description Contains:</label>
+                        <input type="text" id="descriptionFilter" placeholder="Search descriptions..." onchange="csvAnalytics.applyFilters()">
+                    </div>
+                </div>
+                
+                <!-- Analytics Insights Panel -->
+                <div class="insights-panel">
+                    <h3>📊 Spending Insights</h3>
+                    <div id="insightsContent" class="insights-content">
+                        <!-- Dynamic insights will be populated here -->
+                    </div>
+                </div>
+            </section>
+
             <!-- Charts Section -->
             <section class="analytics-charts full-width" id="chartsSection" style="display: none;">
                 <div class="section-header">
@@ -117,6 +167,26 @@
                                     <span class="chart-total-value" id="stateTotal">$0.00</span>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Spending Trends Chart -->
+                    <div class="chart-container full-width">
+                        <h3>📈 Spending Trends & Patterns</h3>
+                        <div class="chart-controls">
+                            <select id="trendsTimeframe" onchange="csvAnalytics.updateTrendsChart()">
+                                <option value="daily">Daily Trends</option>
+                                <option value="weekly">Weekly Trends</option>
+                                <option value="monthly" selected>Monthly Trends</option>
+                            </select>
+                            <select id="trendsMetric" onchange="csvAnalytics.updateTrendsChart()">
+                                <option value="amount">Total Amount</option>
+                                <option value="count">Transaction Count</option>
+                                <option value="average">Average per Transaction</option>
+                            </select>
+                        </div>
+                        <div class="chart-display-full">
+                            <canvas id="trendsChart"></canvas>
                         </div>
                     </div>
 

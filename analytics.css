@@ -205,6 +205,29 @@
     height: 400px !important;
 }
 
+.chart-controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.chart-controls select {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background: white;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.chart-controls select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
 .chart-items-list {
     flex: 0 0 300px;
     background: #f8f9fa;
@@ -296,6 +319,121 @@
 .chart-total-value {
     font-size: 1.2rem;
     color: #007bff;
+}
+
+/* Advanced Filters Section */
+.advanced-filters {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    border-radius: 10px;
+    margin-bottom: 25px;
+}
+
+.advanced-filters h2 {
+    color: white;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+.filters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-group label {
+    font-weight: 600;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.filter-group select,
+.filter-group input {
+    padding: 10px 12px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.filter-group select:focus,
+.filter-group input:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.8);
+    background: white;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.reset-filters-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.reset-filters-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.insights-panel {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.insights-panel h3 {
+    margin: 0 0 15px 0;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.insights-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.insight-card {
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    padding: 15px;
+    border-radius: 6px;
+    border-left: 4px solid #f5576c;
+}
+
+.insight-title {
+    font-weight: 700;
+    color: #f5576c;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.insight-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.insight-description {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 5px;
 }
 
 /* Data Table Section */

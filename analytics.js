@@ -2,17 +2,35 @@
 class CSVAnalytics {
     constructor() {
         this.csvData = [];
+        this.originalData = []; // Store original data for filtering
+        this.filteredData = [];
         this.processedData = {
             descriptions: {},
             states: {},
-            balanceHistory: []
+            balanceHistory: [],
+            cardPaymentDescriptions: {},
+            nonCardPaymentDescriptions: {}
         };
         this.charts = {
             description: null,
             state: null,
+            trends: null,
             balance: null
         };
-        this.filteredData = [];
+        this.charts = {
+            description: null,
+            state: null,
+            trends: null,
+            balance: null
+        };
+        this.currentFilters = {
+            type: '',
+            dateFrom: '',
+            dateTo: '',
+            minAmount: null,
+            maxAmount: null,
+            description: ''
+        };
         this.init();
     }
 
@@ -168,6 +186,9 @@ class CSVAnalytics {
         if (this.csvData.length === 0) {
             throw new Error('No valid data rows found in CSV');
         }
+
+        // Store original data for filtering
+        this.originalData = [...this.csvData];
 
         this.showStatus(`Successfully loaded ${this.csvData.length} transactions`, 'success');
         this.processData();
@@ -330,13 +351,231 @@ class CSVAnalytics {
 
     showSections() {
         document.getElementById('dataSummary').style.display = 'block';
+        document.getElementById('filtersSection').style.display = 'block';
         document.getElementById('chartsSection').style.display = 'block';
         document.getElementById('dataTable').style.display = 'block';
+        this.populateFilterOptions();
+        this.generateInsights();
+    }
+
+    // Advanced Filtering Methods
+    populateFilterOptions() {
+        // Populate transaction type filter
+        const typeFilter = document.getElementById('typeFilter');
+        if (typeFilter && this.csvData.length > 0) {
+            const types = [...new Set(this.csvData.map(record => record.type))].filter(type => type).sort();
+            typeFilter.innerHTML = '<option value="">All Types</option>' + 
+                types.map(type => `<option value="${type}">${type}</option>`).join('');
+        }
+    }
+
+    applyFilters() {
+        // Get filter values
+        this.currentFilters.type = document.getElementById('typeFilter')?.value || '';
+        this.currentFilters.dateFrom = document.getElementById('dateFromFilter')?.value || '';
+        this.currentFilters.dateTo = document.getElementById('dateToFilter')?.value || '';
+        this.currentFilters.minAmount = parseFloat(document.getElementById('minAmountFilter')?.value) || null;
+        this.currentFilters.maxAmount = parseFloat(document.getElementById('maxAmountFilter')?.value) || null;
+        this.currentFilters.description = document.getElementById('descriptionFilter')?.value.toLowerCase() || '';
+
+        // Apply filters to data
+        this.filteredData = this.csvData.filter(record => {
+            // Type filter
+            if (this.currentFilters.type && record.type !== this.currentFilters.type) return false;
+            
+            // Date filters
+            if (this.currentFilters.dateFrom && record.completedDate < this.currentFilters.dateFrom) return false;
+            if (this.currentFilters.dateTo && record.completedDate > this.currentFilters.dateTo) return false;
+            
+            // Amount filters (use absolute values for expenses)
+            const absAmount = Math.abs(record.amount);
+            if (this.currentFilters.minAmount !== null && absAmount < this.currentFilters.minAmount) return false;
+            if (this.currentFilters.maxAmount !== null && absAmount > this.currentFilters.maxAmount) return false;
+            
+            // Description filter
+            if (this.currentFilters.description && !record.description.toLowerCase().includes(this.currentFilters.description)) return false;
+            
+            return true;
+        });
+
+        // Update data processing with filtered data
+        const originalData = this.csvData;
+        this.csvData = this.filteredData;
+        this.processData();
+        this.createCharts();
+        this.generateInsights();
+        this.csvData = originalData; // Restore original data
+    }
+
+    resetFilters() {
+        // Clear all filter inputs
+        document.getElementById('typeFilter').value = '';
+        document.getElementById('dateFromFilter').value = '';
+        document.getElementById('dateToFilter').value = '';
+        document.getElementById('minAmountFilter').value = '';
+        document.getElementById('maxAmountFilter').value = '';
+        document.getElementById('descriptionFilter').value = '';
+        
+        // Reset filters object
+        this.currentFilters = {
+            type: '',
+            dateFrom: '',
+            dateTo: '',
+            minAmount: null,
+            maxAmount: null,
+            description: ''
+        };
+        
+        // Reprocess with original data
+        this.processData();
+        this.createCharts();
+        this.generateInsights();
+    }
+
+    // Advanced Analytics Methods
+    generateInsights() {
+        const expenseData = this.csvData.filter(record => 
+            record.amount < 0 && 
+            !(record.product && record.product.toLowerCase().includes('savings')) &&
+            !(record.product && record.product.toLowerCase().includes('deposit')) &&
+            !(record.description && record.description.toLowerCase().includes('savings vault topup')) &&
+            !(record.description && record.description.toLowerCase().includes('exchanged to')) &&
+            !(record.description && record.description.toLowerCase().includes('to flexible cash funds'))
+        );
+
+        const insights = this.calculateAdvancedInsights(expenseData);
+        this.displayInsights(insights);
+    }
+
+    calculateAdvancedInsights(data) {
+        if (data.length === 0) return [];
+
+        const amounts = data.map(record => Math.abs(record.amount));
+        const totalSpending = amounts.reduce((sum, amount) => sum + amount, 0);
+        const avgSpending = totalSpending / amounts.length;
+        const medianSpending = this.calculateMedian(amounts);
+        
+        // Calculate standard deviation
+        const variance = amounts.reduce((sum, amount) => sum + Math.pow(amount - avgSpending, 2), 0) / amounts.length;
+        const stdDev = Math.sqrt(variance);
+        
+        // Find frequent small charges (potential subscriptions)
+        const smallCharges = data.filter(record => Math.abs(record.amount) < 50);
+        const frequentSmallCharges = this.findFrequentCharges(smallCharges);
+        
+        // Find large transactions (potential savings opportunities)
+        const largeTransactions = data.filter(record => Math.abs(record.amount) > avgSpending + stdDev);
+        
+        // Calculate spending by day of week
+        const dayOfWeekSpending = this.calculateDayOfWeekSpending(data);
+        
+        // Find spending anomalies
+        const anomalies = data.filter(record => Math.abs(record.amount) > avgSpending + (2 * stdDev));
+
+        return {
+            totalSpending,
+            avgSpending,
+            medianSpending,
+            stdDev,
+            frequentSmallCharges,
+            largeTransactions,
+            dayOfWeekSpending,
+            anomalies,
+            transactionCount: data.length
+        };
+    }
+
+    calculateMedian(numbers) {
+        const sorted = numbers.slice().sort((a, b) => a - b);
+        const mid = Math.floor(sorted.length / 2);
+        return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
+    }
+
+    findFrequentCharges(charges) {
+        const chargeGroups = {};
+        charges.forEach(charge => {
+            const amount = Math.abs(charge.amount);
+            const key = `${charge.description}-${amount}`;
+            if (!chargeGroups[key]) {
+                chargeGroups[key] = { description: charge.description, amount, count: 0, records: [] };
+            }
+            chargeGroups[key].count++;
+            chargeGroups[key].records.push(charge);
+        });
+        
+        return Object.values(chargeGroups)
+            .filter(group => group.count >= 3)
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 5);
+    }
+
+    calculateDayOfWeekSpending(data) {
+        const daySpending = Array(7).fill(0);
+        const dayCounts = Array(7).fill(0);
+        
+        data.forEach(record => {
+            if (record.completedDate) {
+                const date = new Date(record.completedDate);
+                const dayOfWeek = date.getDay();
+                daySpending[dayOfWeek] += Math.abs(record.amount);
+                dayCounts[dayOfWeek]++;
+            }
+        });
+        
+        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        return dayNames.map((name, index) => ({
+            day: name,
+            totalSpending: daySpending[index],
+            avgSpending: dayCounts[index] > 0 ? daySpending[index] / dayCounts[index] : 0,
+            transactionCount: dayCounts[index]
+        })).sort((a, b) => b.totalSpending - a.totalSpending);
+    }
+
+    displayInsights(insights) {
+        const container = document.getElementById('insightsContent');
+        if (!container || !insights.transactionCount) return;
+
+        const highestSpendingDay = insights.dayOfWeekSpending[0];
+        const potentialSavings = insights.frequentSmallCharges.reduce((sum, charge) => 
+            sum + (charge.amount * charge.count), 0);
+
+        container.innerHTML = `
+            <div class="insight-card">
+                <div class="insight-title">📊 Spending Statistics</div>
+                <div class="insight-value">Avg: ${this.formatCurrency(insights.avgSpending)}</div>
+                <div class="insight-description">Median: ${this.formatCurrency(insights.medianSpending)} | Std Dev: ${this.formatCurrency(insights.stdDev)}</div>
+            </div>
+            
+            <div class="insight-card">
+                <div class="insight-title">🔄 Recurring Charges</div>
+                <div class="insight-value">${insights.frequentSmallCharges.length} Found</div>
+                <div class="insight-description">Potential monthly savings: ${this.formatCurrency(potentialSavings)}</div>
+            </div>
+            
+            <div class="insight-card">
+                <div class="insight-title">⚡ Spending Anomalies</div>
+                <div class="insight-value">${insights.anomalies.length} Large Transactions</div>
+                <div class="insight-description">Above 2x standard deviation</div>
+            </div>
+            
+            <div class="insight-card">
+                <div class="insight-title">📅 Peak Spending Day</div>
+                <div class="insight-value">${highestSpendingDay.day}</div>
+                <div class="insight-description">${this.formatCurrency(highestSpendingDay.totalSpending)} total</div>
+            </div>
+            
+            <div class="insight-card">
+                <div class="insight-title">💡 Optimization Tip</div>
+                <div class="insight-value">${insights.largeTransactions.length > 5 ? 'Review Large Purchases' : 'Monitor Small Charges'}</div>
+                <div class="insight-description">${insights.largeTransactions.length} transactions above average + std dev</div>
+            </div>
+        `;
     }
 
     createCharts() {
         this.createDescriptionChart();
         this.createStateChart();
+        this.createTrendsChart();
         this.createBalanceChart();
     }
 
@@ -549,6 +788,179 @@ class CSVAnalytics {
             value: info.totalAmount,
             count: info.count
         })));
+    }
+
+    createTrendsChart() {
+        const ctx = document.getElementById('trendsChart');
+        if (!ctx) return;
+
+        // Destroy existing chart
+        if (this.charts.trends) {
+            this.charts.trends.destroy();
+        }
+
+        const timeframe = document.getElementById('trendsTimeframe')?.value || 'monthly';
+        const metric = document.getElementById('trendsMetric')?.value || 'amount';
+
+        // Filter expense data
+        const expenseData = this.csvData.filter(record => 
+            record.amount < 0 && 
+            !(record.product && record.product.toLowerCase().includes('savings')) &&
+            !(record.product && record.product.toLowerCase().includes('deposit')) &&
+            !(record.description && record.description.toLowerCase().includes('savings vault topup')) &&
+            !(record.description && record.description.toLowerCase().includes('exchanged to')) &&
+            !(record.description && record.description.toLowerCase().includes('to flexible cash funds'))
+        );
+
+        if (expenseData.length === 0) {
+            return;
+        }
+
+        const trendsData = this.calculateTrendsData(expenseData, timeframe, metric);
+
+        this.charts.trends = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: trendsData.labels,
+                datasets: [{
+                    label: this.getTrendsLabel(metric, timeframe),
+                    data: trendsData.values,
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#007bff',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                    title: {
+                        display: true,
+                        text: `Spending ${this.getTrendsLabel(metric, timeframe)}`
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => {
+                                const value = context.parsed.y;
+                                return metric === 'amount' || metric === 'average' 
+                                    ? this.formatCurrency(value)
+                                    : `${value} transactions`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: `${timeframe.charAt(0).toUpperCase() + timeframe.slice(1)} Period`
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: metric === 'amount' ? 'Total Amount' : 
+                                  metric === 'count' ? 'Transaction Count' : 'Average Amount'
+                        },
+                        beginAtZero: true,
+                        ticks: {
+                            callback: (value) => {
+                                return metric === 'amount' || metric === 'average' 
+                                    ? this.formatCurrency(value) 
+                                    : value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    calculateTrendsData(data, timeframe, metric) {
+        const grouped = {};
+        
+        data.forEach(record => {
+            if (!record.completedDate) return;
+            
+            const date = new Date(record.completedDate);
+            let key;
+            
+            switch (timeframe) {
+                case 'daily':
+                    key = record.completedDate;
+                    break;
+                case 'weekly':
+                    const startOfWeek = new Date(date);
+                    startOfWeek.setDate(date.getDate() - date.getDay());
+                    key = startOfWeek.toISOString().split('T')[0];
+                    break;
+                case 'monthly':
+                default:
+                    key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                    break;
+            }
+            
+            if (!grouped[key]) {
+                grouped[key] = { totalAmount: 0, count: 0, transactions: [] };
+            }
+            
+            grouped[key].totalAmount += Math.abs(record.amount);
+            grouped[key].count++;
+            grouped[key].transactions.push(record);
+        });
+        
+        const sortedKeys = Object.keys(grouped).sort();
+        const labels = sortedKeys.map(key => {
+            switch (timeframe) {
+                case 'daily':
+                    return key;
+                case 'weekly':
+                    return `Week of ${key}`;
+                case 'monthly':
+                default:
+                    const [year, month] = key.split('-');
+                    return new Date(year, month - 1).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short' 
+                    });
+            }
+        });
+        
+        const values = sortedKeys.map(key => {
+            const group = grouped[key];
+            switch (metric) {
+                case 'count':
+                    return group.count;
+                case 'average':
+                    return group.count > 0 ? group.totalAmount / group.count : 0;
+                case 'amount':
+                default:
+                    return group.totalAmount;
+            }
+        });
+        
+        return { labels, values };
+    }
+
+    getTrendsLabel(metric, timeframe) {
+        const metricLabel = metric === 'amount' ? 'Amount' : 
+                          metric === 'count' ? 'Count' : 'Average';
+        const timeLabel = timeframe.charAt(0).toUpperCase() + timeframe.slice(1);
+        return `${metricLabel} (${timeLabel})`;
+    }
+
+    updateTrendsChart() {
+        this.createTrendsChart();
     }
 
     createBalanceChart() {
