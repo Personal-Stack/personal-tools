@@ -1182,7 +1182,20 @@ class BudgetTracker {
                 <h3>${title}</h3>
                 <button type="button" class="remove-chart-btn" onclick="budgetTracker.removeDynamicChart('${key}')">×</button>
             </div>
-            <canvas></canvas>
+            <div class="chart-content-row">
+                <div class="chart-display">
+                    <canvas></canvas>
+                </div>
+                <div class="chart-items-list">
+                    <h4>Items in this chart:</h4>
+                    <div class="items-list-content" id="chartItems_${key}">
+                        <!-- Items will be populated here -->
+                    </div>
+                    <div class="chart-total">
+                        <strong>Total: <span class="total-amount" id="chartTotal_${key}">$0.00</span></strong>
+                    </div>
+                </div>
+            </div>
         `;
         container.appendChild(wrapper);
 
@@ -1295,7 +1308,43 @@ class BudgetTracker {
             chart.data.datasets[0].backgroundColor = data.map((_, index) => colors[index % colors.length]);
         }
         
+        // Update the items list
+        this.updateChartItemsList(key, filtered, filterConfig);
+        
         chart.update();
+    }
+
+    updateChartItemsList(key, filteredItems, filterConfig) {
+        const itemsContainer = document.getElementById(`chartItems_${key}`);
+        const totalContainer = document.getElementById(`chartTotal_${key}`);
+        
+        if (!itemsContainer || !totalContainer) return;
+        
+        if (filteredItems.length === 0) {
+            itemsContainer.innerHTML = '<div class="no-items">No items match the current filter.</div>';
+            totalContainer.textContent = this.formatCurrency(0);
+            return;
+        }
+        
+        let totalValue = 0;
+        const itemsHtml = filteredItems.map(item => {
+            const convertedValue = this.convertToTargetFrequency(item, filterConfig);
+            totalValue += convertedValue;
+            
+            return `
+                <div class="chart-item">
+                    <span class="item-name">${item.name}</span>
+                    <div class="item-details">
+                        <span class="item-tags">${item.tags.length > 0 ? item.tags.join(', ') : 'No tags'}</span>
+                        <span class="item-frequency">${item.frequency}</span>
+                    </div>
+                    <span class="item-value">${this.formatCurrency(convertedValue)}</span>
+                </div>
+            `;
+        }).join('');
+        
+        itemsContainer.innerHTML = itemsHtml;
+        totalContainer.textContent = this.formatCurrency(totalValue);
     }
 
     filterItems(filterConfig) {
