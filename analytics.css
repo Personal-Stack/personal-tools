@@ -436,7 +436,61 @@
     margin-top: 5px;
 }
 
-/* Data Table Section */
+/* Data Grid Section */
+.data-grid {
+    margin-top: 25px;
+}
+
+.grid-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.grid-container {
+    width: 100%;
+    height: 500px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.grid-controls input {
+    flex: 1;
+    min-width: 200px;
+    max-width: 400px;
+}
+
+.reset-btn {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+.reset-btn:hover {
+    background: #5a6268;
+}
+
+/* ag-Grid theme customization */
+.ag-theme-alpine {
+    --ag-header-height: 40px;
+    --ag-row-height: 36px;
+    --ag-font-size: 14px;
+    --ag-header-background-color: #f8f9fa;
+    --ag-header-foreground-color: #495057;
+    --ag-odd-row-background-color: rgba(0, 0, 0, 0.02);
+    --ag-row-hover-color: #f8f9fa;
+    --ag-border-color: #dee2e6;
+}
+
+/* Data Table Section (Legacy - keeping for compatibility) */
 .table-controls {
     display: flex;
     gap: 15px;

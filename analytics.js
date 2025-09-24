@@ -31,6 +31,8 @@ class CSVAnalytics {
             maxAmount: null,
             description: ''
         };
+        this.gridApi = null;
+        this.gridColumnApi = null;
         this.init();
     }
 
@@ -194,7 +196,6 @@ class CSVAnalytics {
         this.processData();
         this.showSections();
         this.createCharts();
-        this.populateTable();
     }
 
     parseCSVRow(row) {
@@ -353,9 +354,10 @@ class CSVAnalytics {
         document.getElementById('dataSummary').style.display = 'block';
         document.getElementById('filtersSection').style.display = 'block';
         document.getElementById('chartsSection').style.display = 'block';
-        document.getElementById('dataTable').style.display = 'block';
+        document.getElementById('dataGrid').style.display = 'block';
         this.populateFilterOptions();
         this.generateInsights();
+        this.initializeGrid();
     }
 
     // Advanced Filtering Methods
@@ -372,6 +374,7 @@ class CSVAnalytics {
     applyFilters() {
         // Get filter values
         this.currentFilters.type = document.getElementById('typeFilter')?.value || '';
+        this.currentFilters.product = document.getElementById('productFilter')?.value || '';
         this.currentFilters.dateFrom = document.getElementById('dateFromFilter')?.value || '';
         this.currentFilters.dateTo = document.getElementById('dateToFilter')?.value || '';
         this.currentFilters.minAmount = parseFloat(document.getElementById('minAmountFilter')?.value) || null;
@@ -382,6 +385,9 @@ class CSVAnalytics {
         this.filteredData = this.csvData.filter(record => {
             // Type filter
             if (this.currentFilters.type && record.type !== this.currentFilters.type) return false;
+            
+            // Product filter
+            if (this.currentFilters.product && record.product !== this.currentFilters.product) return false;
             
             // Date filters
             if (this.currentFilters.dateFrom && record.completedDate < this.currentFilters.dateFrom) return false;
@@ -410,6 +416,7 @@ class CSVAnalytics {
     resetFilters() {
         // Clear all filter inputs
         document.getElementById('typeFilter').value = '';
+        document.getElementById('productFilter').value = '';
         document.getElementById('dateFromFilter').value = '';
         document.getElementById('dateToFilter').value = '';
         document.getElementById('minAmountFilter').value = '';
@@ -575,6 +582,7 @@ class CSVAnalytics {
     createCharts() {
         this.createDescriptionChart();
         this.createStateChart();
+        this.createTransactionTypeChart();
         this.createTrendsChart();
         this.createBalanceChart();
     }
@@ -787,6 +795,99 @@ class CSVAnalytics {
             name: `${desc} (${info.count}x Non-Card Payments)`,
             value: info.totalAmount,
             count: info.count
+        })));
+    }
+
+    createTransactionTypeChart() {
+        const ctx = document.getElementById('typeChart');
+        if (!ctx) return;
+
+        // Destroy existing chart
+        if (this.charts.transactionType) {
+            this.charts.transactionType.destroy();
+        }
+
+        // Calculate transaction type breakdown
+        const typeBreakdown = {};
+        const typeLabels = ['Card Payment', 'Transfer', 'Exchange', 'Topup', 'ATM'];
+        
+        // Initialize with zero values
+        typeLabels.forEach(type => {
+            typeBreakdown[type] = { totalAmount: 0, count: 0 };
+        });
+
+        // Process data
+        this.filteredData.forEach(record => {
+            const amount = Math.abs(parseFloat(record.amount) || 0);
+            const type = record.type || 'Other';
+            
+            if (!typeBreakdown[type]) {
+                typeBreakdown[type] = { totalAmount: 0, count: 0 };
+            }
+            
+            typeBreakdown[type].totalAmount += amount;
+            typeBreakdown[type].count += 1;
+        });
+
+        // Prepare chart data
+        const labels = Object.keys(typeBreakdown).filter(type => typeBreakdown[type].count > 0);
+        const data = labels.map(type => typeBreakdown[type].totalAmount);
+        const counts = labels.map(type => typeBreakdown[type].count);
+
+        // Color scheme for transaction types
+        const colors = [
+            '#FF6B6B', // Card Payment - Red
+            '#4ECDC4', // Transfer - Teal
+            '#45B7D1', // Exchange - Blue
+            '#96CEB4', // Topup - Green
+            '#FFEAA7', // ATM - Yellow
+            '#DDA0DD', // Other - Purple
+            '#FFB347'  // Additional - Orange
+        ];
+
+        this.charts.transactionType = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: colors.slice(0, labels.length),
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            usePointStyle: true,
+                            font: { size: 12 }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => {
+                                const label = context.label;
+                                const value = this.formatCurrency(context.parsed);
+                                const count = counts[context.dataIndex];
+                                const percentage = ((context.parsed / data.reduce((a, b) => a + b, 0)) * 100).toFixed(1);
+                                return `${label}: ${value} (${count} transactions, ${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Update items list
+        this.updateChartItemsList('typeItems', 'typeTotal', labels.map((type, index) => ({
+            name: `${type} (${counts[index]}x)`,
+            value: typeBreakdown[type].totalAmount,
+            count: typeBreakdown[type].count
         })));
     }
 
@@ -1050,51 +1151,175 @@ class CSVAnalytics {
         totalEl.textContent = this.formatCurrency(total);
     }
 
-    populateTable() {
-        const tbody = document.getElementById('transactionsBody');
-        const stateFilter = document.getElementById('stateFilter');
-        
-        if (!tbody) return;
+    initializeGrid() {
+        const gridDiv = document.getElementById('transactionsGrid');
+        if (!gridDiv) return;
 
-        // Populate state filter options
-        if (stateFilter) {
-            const states = [...new Set(this.csvData.map(record => record.state))].sort();
-            stateFilter.innerHTML = '<option value="">All States</option>' + 
-                states.map(state => `<option value="${state}">${state}</option>`).join('');
+        // Check if ag-Grid is loaded
+        if (typeof agGrid === 'undefined') {
+            console.error('ag-Grid not loaded, falling back to basic table');
+            this.createBasicTable();
+            return;
         }
 
-        // Set filtered data to all data initially
-        this.filteredData = [...this.csvData];
-        this.renderTable();
+        // Define column definitions
+        const columnDefs = [
+            { 
+                field: 'type', 
+                headerName: 'Type',
+                filter: 'agTextColumnFilter',
+                width: 130,
+                cellClass: 'cell-wrap-text'
+            },
+            { 
+                field: 'product', 
+                headerName: 'Product',
+                filter: 'agTextColumnFilter',
+                width: 150,
+                cellClass: 'cell-wrap-text'
+            },
+            { 
+                field: 'startedDate', 
+                headerName: 'Started Date',
+                filter: 'agTextColumnFilter',
+                width: 130,
+                cellRenderer: (params) => this.formatDate(params.value)
+            },
+            { 
+                field: 'completedDate', 
+                headerName: 'Completed Date',
+                filter: 'agTextColumnFilter',
+                width: 140,
+                cellRenderer: (params) => this.formatDate(params.value)
+            },
+            { 
+                field: 'description', 
+                headerName: 'Description',
+                filter: 'agTextColumnFilter',
+                flex: 1,
+                minWidth: 200,
+                cellClass: 'cell-wrap-text',
+                wrapText: true,
+                autoHeight: true
+            },
+            { 
+                field: 'amount', 
+                headerName: 'Amount',
+                filter: 'agTextColumnFilter',
+                width: 120,
+                cellRenderer: (params) => this.formatCurrency(params.value),
+                cellClass: (params) => params.value >= 0 ? 'amount-positive' : 'amount-negative',
+                type: 'numericColumn'
+            },
+            { 
+                field: 'fee', 
+                headerName: 'Fee',
+                filter: 'agTextColumnFilter',
+                width: 100,
+                cellRenderer: (params) => this.formatCurrency(params.value),
+                type: 'numericColumn'
+            },
+            { 
+                field: 'currency', 
+                headerName: 'Currency',
+                filter: 'agTextColumnFilter',
+                width: 100
+            },
+            { 
+                field: 'state', 
+                headerName: 'State',
+                filter: 'agTextColumnFilter',
+                width: 120,
+                cellRenderer: (params) => {
+                    const stateClass = params.value.toLowerCase().replace(/\\s+/g, '-');
+                    return `<span class="state-${stateClass}">${params.value}</span>`;
+                }
+            },
+            { 
+                field: 'balance', 
+                headerName: 'Balance',
+                filter: 'agTextColumnFilter',
+                width: 120,
+                cellRenderer: (params) => this.formatCurrency(params.value),
+                type: 'numericColumn'
+            }
+        ];
+
+        // Grid options
+        const gridOptions = {
+            columnDefs: columnDefs,
+            rowData: this.csvData,
+            theme: 'ag-theme-quartz', // Use the new Theming API
+            defaultColDef: {
+                sortable: true,
+                resizable: true,
+                filter: true,
+                floatingFilter: true
+            },
+            animateRows: true,
+            pagination: true,
+            paginationPageSize: 50,
+            rowSelection: 'multiple',
+            suppressRowClickSelection: true,
+            onGridReady: (params) => {
+                this.gridApi = params.api;
+                this.gridColumnApi = params.columnApi;
+                
+                // Auto-size columns to fit
+                if (params.api.sizeColumnsToFit) {
+                    params.api.sizeColumnsToFit();
+                }
+            },
+            onFirstDataRendered: (params) => {
+                if (params.api.sizeColumnsToFit) {
+                    params.api.sizeColumnsToFit();
+                }
+            }
+        };
+
+        // Create the grid - check if agGrid is available
+        if (typeof agGrid !== 'undefined' && agGrid.createGrid) {
+            agGrid.createGrid(gridDiv, gridOptions);
+        } else {
+            console.error('ag-Grid library not loaded');
+            gridDiv.innerHTML = '<p>Error: ag-Grid library failed to load. Please check your internet connection.</p>';
+        }
     }
 
-    renderTable() {
-        const tbody = document.getElementById('transactionsBody');
-        if (!tbody) return;
+    updateGridData() {
+        if (this.gridApi) {
+            // In modern ag-Grid, we recreate the grid with new data
+            this.initializeGrid();
+        }
+    }
 
-        tbody.innerHTML = this.filteredData.map(record => `
-            <tr>
-                <td>${record.type}</td>
-                <td>${record.product}</td>
-                <td>${record.startedDate}</td>
-                <td>${record.completedDate}</td>
-                <td>${record.description}</td>
-                <td class="${record.amount >= 0 ? 'amount-positive' : 'amount-negative'}">
-                    ${this.formatCurrency(record.amount)}
-                </td>
-                <td>${this.formatCurrency(record.fee)}</td>
-                <td>${record.currency}</td>
-                <td>
-                    <span class="state-${record.state.toLowerCase().replace(/\\s+/g, '-')}">
-                        ${record.state}
-                    </span>
-                </td>
-                <td>${this.formatCurrency(record.balance)}</td>
-            </tr>
-        `).join('');
+    // Utility method for currency formatting
+    formatCurrency(value) {
+        if (value === null || value === undefined || value === '') return '';
+        const num = parseFloat(value);
+        if (isNaN(num)) return value;
+        return '$' + num.toFixed(2);
+    }
+
+    // Utility method for date formatting
+    formatDate(dateStr) {
+        if (!dateStr) return '';
+        try {
+            const date = new Date(dateStr);
+            if (isNaN(date.getTime())) return dateStr;
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: '2-digit', 
+                day: '2-digit' 
+            });
+        } catch (e) {
+            return dateStr;
+        }
     }
 
     filterTable() {
+        if (!this.gridApi) return;
+
         const searchInput = document.getElementById('searchInput');
         const stateFilter = document.getElementById('stateFilter');
         
@@ -1103,22 +1328,48 @@ class CSVAnalytics {
         const searchTerm = searchInput.value.toLowerCase();
         const stateValue = stateFilter.value;
 
-        this.filteredData = this.csvData.filter(record => {
-            const matchesSearch = !searchTerm || 
-                Object.values(record).some(value => 
-                    String(value).toLowerCase().includes(searchTerm)
-                );
-            
-            const matchesState = !stateValue || record.state === stateValue;
-            
-            return matchesSearch && matchesState;
-        });
+        try {
+            // Apply quick filter for global search
+            if (this.gridApi.setQuickFilter) {
+                if (searchTerm) {
+                    this.gridApi.setQuickFilter(searchTerm);
+                } else {
+                    this.gridApi.setQuickFilter('');
+                }
+            }
 
-        this.renderTable();
+            // Apply column filter for state
+            if (this.gridApi.setFilterModel) {
+                if (stateValue) {
+                    this.gridApi.setFilterModel({
+                        'state': {
+                            filterType: 'text',
+                            type: 'equals',
+                            filter: stateValue
+                        }
+                    });
+                } else {
+                    this.gridApi.setFilterModel(null);
+                }
+            }
+        } catch (error) {
+            console.warn('Error applying grid filters:', error);
+        }
     }
 
     exportFiltered() {
-        if (this.filteredData.length === 0) {
+        if (!this.gridApi) {
+            alert('Grid not initialized');
+            return;
+        }
+
+        // Get filtered data from ag-Grid
+        const filteredData = [];
+        this.gridApi.forEachNodeAfterFilter(node => {
+            filteredData.push(node.data);
+        });
+
+        if (filteredData.length === 0) {
             alert('No data to export');
             return;
         }
@@ -1126,7 +1377,7 @@ class CSVAnalytics {
         const headers = ['Type', 'Product', 'Started Date', 'Completed Date', 'Description', 'Amount', 'Fee', 'Currency', 'State', 'Balance'];
         const csvContent = [
             headers.join(','),
-            ...this.filteredData.map(record => [
+            ...filteredData.map(record => [
                 record.type,
                 record.product,
                 record.startedDate,
@@ -1138,7 +1389,7 @@ class CSVAnalytics {
                 record.state,
                 record.balance
             ].join(','))
-        ].join('\\n');
+        ].join('\n');
 
         const blob = new Blob([csvContent], { type: 'text/csv' });
         const link = document.createElement('a');
@@ -1166,6 +1417,105 @@ class CSVAnalytics {
         if (statusEl) {
             statusEl.textContent = message;
             statusEl.className = `upload-status ${type}`;
+        }
+    }
+
+    exportGridData() {
+        this.exportFiltered();
+    }
+
+    resetGridFilters() {
+        if (this.gridApi) {
+            try {
+                if (this.gridApi.setFilterModel) {
+                    this.gridApi.setFilterModel(null);
+                }
+                if (this.gridApi.setQuickFilter) {
+                    this.gridApi.setQuickFilter('');
+                }
+            } catch (error) {
+                console.warn('Error resetting grid filters:', error);
+            }
+        }
+        // Also reset the search input
+        const searchInput = document.getElementById('searchInput');
+        const stateFilter = document.getElementById('stateFilter');
+        if (searchInput) searchInput.value = '';
+        if (stateFilter) stateFilter.value = '';
+    }
+
+    createBasicTable() {
+        const gridDiv = document.getElementById('transactionsGrid');
+        if (!gridDiv || !this.csvData || this.csvData.length === 0) return;
+
+        // Create a basic HTML table as fallback
+        const table = document.createElement('table');
+        table.className = 'basic-table';
+        table.style.width = '100%';
+        table.style.borderCollapse = 'collapse';
+        
+        // Create header
+        const headers = ['Type', 'Product', 'Started Date', 'Completed Date', 'Description', 'Amount', 'Fee', 'Currency', 'State', 'Balance'];
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        headers.forEach(header => {
+            const th = document.createElement('th');
+            th.textContent = header;
+            th.style.padding = '10px';
+            th.style.border = '1px solid #ddd';
+            th.style.backgroundColor = '#f5f5f5';
+            headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        // Create body
+        const tbody = document.createElement('tbody');
+        this.csvData.slice(0, 100).forEach(record => { // Limit to 100 rows for performance
+            const row = document.createElement('tr');
+            [
+                record.type,
+                record.product, 
+                record.startedDate,
+                record.completedDate,
+                record.description,
+                this.formatCurrency(record.amount),
+                this.formatCurrency(record.fee),
+                record.currency,
+                record.state,
+                this.formatCurrency(record.balance)
+            ].forEach(cellData => {
+                const td = document.createElement('td');
+                td.textContent = cellData || '';
+                td.style.padding = '8px';
+                td.style.border = '1px solid #ddd';
+                row.appendChild(td);
+            });
+            tbody.appendChild(row);
+        });
+        table.appendChild(tbody);
+
+        // Clear and add table
+        gridDiv.innerHTML = '';
+        gridDiv.appendChild(table);
+        
+        if (this.csvData.length > 100) {
+            const note = document.createElement('p');
+            note.textContent = `Showing first 100 of ${this.csvData.length} records. ag-Grid required for full functionality.`;
+            note.style.fontStyle = 'italic';
+            note.style.color = '#666';
+            gridDiv.appendChild(note);
+        }
+    }
+
+    updateQuickFilter() {
+        const quickFilterInput = document.getElementById('quickFilterInput');
+        if (this.gridApi && quickFilterInput && this.gridApi.setQuickFilter) {
+            try {
+                this.gridApi.setQuickFilter(quickFilterInput.value);
+            } catch (error) {
+                console.warn('Error applying quick filter:', error);
+            }
         }
     }
 }

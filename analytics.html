@@ -6,9 +6,18 @@
     <title>CSV Analytics - Budget Planner</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="analytics.css">
+     <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&amp;display=swap"
+      rel="stylesheet"
+    />
     <!-- Chart.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <!-- ag-Grid library -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ag-grid-community/styles@34.2.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ag-grid-community/styles@34.2.0/ag-grid.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ag-grid-community/styles@34.2.0/ag-theme-quartz.css">
+    <script src="https://unpkg.com/ag-grid-community/dist/ag-grid-community.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -84,6 +93,21 @@
                         <label for="typeFilter">Transaction Type:</label>
                         <select id="typeFilter" onchange="csvAnalytics.applyFilters()">
                             <option value="">All Types</option>
+                            <option value="Card Payment">Card Payment</option>
+                            <option value="Transfer">Transfer</option>
+                            <option value="Exchange">Exchange</option>
+                            <option value="Topup">Topup</option>
+                            <option value="ATM">ATM</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="productFilter">Product Type:</label>
+                        <select id="productFilter" onchange="csvAnalytics.applyFilters()">
+                            <option value="">All Products</option>
+                            <option value="Current">Current</option>
+                            <option value="Savings">Savings</option>
+                            <option value="Deposit">Deposit</option>
                         </select>
                     </div>
                     
@@ -170,6 +194,26 @@
                         </div>
                     </div>
 
+                    <!-- Transaction Type Chart -->
+                    <div class="chart-container">
+                        <div class="chart-row">
+                            <div class="chart-display">
+                                <h3>Transactions by Type</h3>
+                                <canvas id="typeChart"></canvas>
+                            </div>
+                            <div class="chart-items-list">
+                                <h4>Type Breakdown:</h4>
+                                <div class="items-list-content" id="typeItems">
+                                    <!-- Items will be populated here -->
+                                </div>
+                                <div class="chart-total">
+                                    <span class="chart-total-label">Total:</span>
+                                    <span class="chart-total-value" id="typeTotal">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Spending Trends Chart -->
                     <div class="chart-container full-width">
                         <h3>📈 Spending Trends & Patterns</h3>
@@ -200,38 +244,18 @@
                 </div>
             </section>
 
-            <!-- Data Table Section -->
-            <section class="data-table full-width" id="dataTable" style="display: none;">
+            <!-- Data Grid Section -->
+            <section class="data-grid full-width" id="dataGrid" style="display: none;">
                 <div class="section-header">
-                    <h2>📊 Transaction Data</h2>
-                    <div class="table-controls">
-                        <input type="text" id="searchInput" placeholder="Search transactions..." onkeyup="csvAnalytics.filterTable()">
-                        <select id="stateFilter" onchange="csvAnalytics.filterTable()">
-                            <option value="">All States</option>
-                        </select>
-                        <button type="button" class="export-btn" onclick="csvAnalytics.exportFiltered()">📤 Export Filtered</button>
+                    <h2>📊 Transaction Data Grid</h2>
+                    <div class="grid-controls">
+                        <input type="text" id="quickFilterInput" placeholder="Quick filter transactions..." onkeyup="csvAnalytics.updateQuickFilter()">
+                        <button type="button" class="export-btn" onclick="csvAnalytics.exportGridData()">📤 Export Data</button>
+                        <button type="button" class="reset-btn" onclick="csvAnalytics.resetGridFilters()">� Reset Filters</button>
                     </div>
                 </div>
-                <div class="table-wrapper">
-                    <table id="transactionsTable">
-                        <thead>
-                            <tr>
-                                <th>Type</th>
-                                <th>Product</th>
-                                <th>Started Date</th>
-                                <th>Completed Date</th>
-                                <th>Description</th>
-                                <th>Amount</th>
-                                <th>Fee</th>
-                                <th>Currency</th>
-                                <th>State</th>
-                                <th>Balance</th>
-                            </tr>
-                        </thead>
-                        <tbody id="transactionsBody">
-                            <!-- Data will be populated here -->
-                        </tbody>
-                    </table>
+                <div id="transactionsGrid" class="ag-theme-quartz grid-container">
+                    <!-- ag-Grid will be rendered here -->
                 </div>
             </section>
         </main>
