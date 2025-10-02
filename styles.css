@@ -55,6 +55,21 @@ header h1 {
     transform: translateY(-2px);
 }
 
+/* Export Complete Data Button */
+.export-complete-btn {
+    background: rgba(40, 167, 69, 0.8) !important;
+    border-color: rgba(40, 167, 69, 0.6) !important;
+    margin-left: 10px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.export-complete-btn:hover {
+    background: rgba(40, 167, 69, 1) !important;
+    border-color: rgba(40, 167, 69, 0.8) !important;
+    box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
 /* Sections */
 section {
     background: white;

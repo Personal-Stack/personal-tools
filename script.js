@@ -1836,6 +1836,75 @@ class BudgetTracker {
 
         alert(`Successfully imported ${validEntries.length} history entries. Total entries: ${this.changeHistory.length}`);
     }
+
+    // Export complete budget data including settings, items, and history
+    exportCompleteData() {
+        try {
+            // Create a comprehensive export with metadata
+            const exportData = {
+                exportInfo: {
+                    exportDate: new Date().toISOString(),
+                    exportVersion: "1.0",
+                    exportedFrom: "Budget Planner",
+                    description: "Complete budget data export including settings, items, and change history"
+                },
+                settings: {
+                    maxCash: this.maxCash,
+                    currency: this.currency,
+                    investment: {
+                        type: this.investmentType,
+                        value: this.investmentValue,
+                        frequency: this.investmentFrequency
+                    }
+                },
+                items: this.items.map(item => ({
+                    name: item.name,
+                    value: item.value,
+                    frequency: item.frequency,
+                    tags: item.tags || []
+                })),
+                changeHistory: this.changeHistory.map(entry => ({
+                    timestamp: entry.timestamp,
+                    action: entry.action,
+                    details: entry.details || {},
+                    comment: entry.comment || '',
+                    currency: entry.currency || this.currency
+                }))
+            };
+
+            // Create and download the file
+            const jsonString = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            
+            // Generate filename with current date
+            const now = new Date();
+            const dateStr = now.toISOString().slice(0, 10); // YYYY-MM-DD format
+            link.download = `budget-complete-${dateStr}.json`;
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Show success message (temporary visual feedback)
+            const originalTitle = document.querySelector('header h1').textContent;
+            document.querySelector('header h1').textContent = `✅ Exported budget-complete-${dateStr}.json`;
+            setTimeout(() => {
+                document.querySelector('header h1').textContent = originalTitle;
+            }, 3000);
+            
+            console.log('Complete budget data exported:', {
+                items: exportData.items.length,
+                historyEntries: exportData.changeHistory.length,
+                settings: exportData.settings
+            });
+            
+        } catch (error) {
+            console.error('Error exporting complete data:', error);
+            alert('Error exporting budget data. Please try again.');
+        }
+    }
 }
 
 // Global functions for HTML onclick events
