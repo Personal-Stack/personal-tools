@@ -1905,11 +1905,56 @@ class BudgetTracker {
             alert('Error exporting budget data. Please try again.');
         }
     }
+
+    // Help popup functionality
+    showHelpPopup() {
+        const modal = document.getElementById('helpModal');
+        if (modal) {
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            
+            // Add click outside to close
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    this.closeHelpPopup();
+                }
+            });
+            
+            // Add escape key to close
+            const escapeHandler = (e) => {
+                if (e.key === 'Escape') {
+                    this.closeHelpPopup();
+                    document.removeEventListener('keydown', escapeHandler);
+                }
+            };
+            document.addEventListener('keydown', escapeHandler);
+        }
+    }
+
+    closeHelpPopup() {
+        const modal = document.getElementById('helpModal');
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    }
 }
 
 // Global functions for HTML onclick events
 function addItem() {
     budgetTracker.addItem();
+}
+
+function showHelp() {
+    budgetTracker.showHelpPopup();
+}
+
+function closeHelp() {
+    budgetTracker.closeHelpPopup();
+}
+
+function exportCompleteData() {
+    budgetTracker.exportCompleteData();
 }
 
 // Initialize the budget tracker when the page loads

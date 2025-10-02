@@ -37,6 +37,9 @@
                 <button type="button" class="nav-btn export-complete-btn" onclick="budgetTracker.exportCompleteData()" title="Export complete budget data with history as JSON">
                     📥 Export Complete Data
                 </button>
+                <button type="button" class="nav-btn help-btn" onclick="budgetTracker.showHelpPopup()" title="Show usage hints and tips">
+                    ❓ Help & Tips
+                </button>
             </nav>
         </header>
 
@@ -331,6 +334,89 @@
                 </div>
             </section>
         </main>
+
+        <!-- Help Popup Modal -->
+        <div id="helpModal" class="modal-overlay" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>💡 Budget Planner - Help & Tips</h2>
+                    <button type="button" class="close-btn" onclick="budgetTracker.closeHelpPopup()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="help-section">
+                        <h3>🚀 Getting Started</h3>
+                        <ul>
+                            <li><strong>Set Your Annual Budget:</strong> Enter your total available cash per year</li>
+                            <li><strong>Choose Currency:</strong> Select your preferred currency (converts existing data automatically)</li>
+                            <li><strong>Investment Allocation:</strong> Set aside money for investments (percentage or fixed amount)</li>
+                            <li><strong>Add Budget Items:</strong> Create entries for rent, groceries, utilities, etc. with frequencies</li>
+                        </ul>
+                    </div>
+
+                    <div class="help-section">
+                        <h3>📊 Using Budget Features</h3>
+                        <ul>
+                            <li><strong>Tags:</strong> Organize items with tags like "essential", "housing", "entertainment"</li>
+                            <li><strong>Frequencies:</strong> Set items as daily, weekly, monthly, or yearly</li>
+                            <li><strong>Custom Charts:</strong> Create visual breakdowns by tags or frequencies</li>
+                            <li><strong>Budget Indicators:</strong> See your remaining budget per day/week/month/year</li>
+                            <li><strong>Change History:</strong> Track all modifications with timestamps and comments</li>
+                        </ul>
+                    </div>
+
+                    <div class="help-section">
+                        <h3>💾 Data Management & Privacy</h3>
+                        <div class="privacy-notice">
+                            <p><strong>🔒 Your Data Stays Yours:</strong> All budget data is stored locally in your browser. Nothing is sent to external servers.</p>
+                        </div>
+                        <ul>
+                            <li><strong>Export Complete Data:</strong> Click "📥 Export Complete Data" to download everything (settings + items + history)</li>
+                            <li><strong>Import Data:</strong> Use "Import Budget Data" to restore from a JSON file</li>
+                            <li><strong>Backup Regularly:</strong> Export your data periodically to avoid loss</li>
+                            <li><strong>Cross-Device Sync:</strong> Export from one device, import on another</li>
+                            <li><strong>Version Control:</strong> Keep dated exports to track your budget evolution</li>
+                        </ul>
+                    </div>
+
+                    <div class="help-section">
+                        <h3>📈 Analytics Features</h3>
+                        <ul>
+                            <li><strong>CSV Analytics:</strong> Upload bank transaction files for spending analysis</li>
+                            <li><strong>Visual Charts:</strong> See spending patterns by description, type, and trends</li>
+                            <li><strong>Advanced Filters:</strong> Filter transactions by date, amount, type, and description</li>
+                            <li><strong>Data Grid:</strong> Professional table view with sorting and filtering</li>
+                            <li><strong>Export Filtered:</strong> Download filtered transaction data</li>
+                        </ul>
+                    </div>
+
+                    <div class="help-section">
+                        <h3>💡 Pro Tips</h3>
+                        <ul>
+                            <li><strong>Start Simple:</strong> Begin with major expenses (rent, groceries, utilities)</li>
+                            <li><strong>Use Meaningful Tags:</strong> Group similar expenses for better insights</li>
+                            <li><strong>Review Regularly:</strong> Check your budget monthly and adjust as needed</li>
+                            <li><strong>Emergency Fund:</strong> Keep some budget unallocated for unexpected expenses</li>
+                            <li><strong>Export Before Changes:</strong> Back up data before major modifications</li>
+                            <li><strong>Combine with Analytics:</strong> Use CSV analytics to validate your budget assumptions</li>
+                        </ul>
+                    </div>
+
+                    <div class="help-section">
+                        <h3>🔧 Troubleshooting</h3>
+                        <ul>
+                            <li><strong>Data Missing?</strong> Check browser storage or import your latest export</li>
+                            <li><strong>Import Errors?</strong> Ensure JSON file matches the expected format</li>
+                            <li><strong>Charts Not Showing?</strong> Refresh the page or add some budget items</li>
+                            <li><strong>Currency Issues?</strong> Currency changes convert all existing values automatically</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="modal-btn primary" onclick="budgetTracker.closeHelpPopup()">Got it!</button>
+                    <button type="button" class="modal-btn secondary" onclick="budgetTracker.exportCompleteData()">📥 Export My Data Now</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
