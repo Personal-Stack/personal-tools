@@ -3,422 +3,811 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Budget Planner - Comprehensive Budget Tracking with Multi-Currency Support</title>
-    <meta name="description" content="A comprehensive budget tracking application with multi-currency support, investment allocation, dynamic charts, and change history tracking. Plan your finances with real-time calculations and visual analytics.">
-    <meta name="keywords" content="budget tracker, budget planner, personal finance, multi-currency, investment tracking, expense management, financial planning">
-    <meta name="author" content="Budget Planner">
+    <title>Personal Tools - Home</title>
     
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Budget Planner - Comprehensive Budget Tracking">
-    <meta property="og:description" content="Track your budget with multi-currency support, investment allocation, and dynamic charts. Complete with change history and data import/export.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://bbogdanov.github.io/simple-budget/">
-    <meta property="og:image" content="https://bbogdanov.github.io/simple-budget/preview.png">
+    <!-- Design System -->
+    <link rel="stylesheet" href="design_system/design-system.css">
+    <link rel="stylesheet" href="design_system/themes/dark.css">
     
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Budget Planner - Comprehensive Budget Tracking">
-    <meta name="twitter:description" content="Track your budget with multi-currency support, investment allocation, and dynamic charts.">
-    <meta name="twitter:image" content="https://bbogdanov.github.io/simple-budget/preview.png">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
-    
-    <link rel="stylesheet" href="styles.css">
-    <!-- Chart.js library - can be replaced with local file -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <!-- Custom Home Page Styles -->
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--color-background);
+            color: var(--color-text-primary);
+            min-height: 100vh;
+            transition: var(--transition-all);
+        }
+
+        .hero-section {
+            background: var(--color-primary-gradient);
+            color: var(--color-white);
+            padding: var(--spacing-24) var(--spacing-10) var(--spacing-20);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: 50px 50px;
+            opacity: 0.5;
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: heroGlow 8s ease-in-out infinite;
+        }
+
+        @keyframes heroGlow {
+            0%, 100% { 
+                transform: scale(1) rotate(0deg);
+                opacity: 0.3;
+            }
+            50% { 
+                transform: scale(1.1) rotate(180deg);
+                opacity: 0.1;
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            animation: heroFadeIn 1.2s ease-out;
+        }
+
+        @keyframes heroFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-title {
+            font-size: var(--font-size-6xl);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-6);
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+            background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+
+        .hero-title::after {
+            content: '✨';
+            position: absolute;
+            top: -10px;
+            right: -20px;
+            font-size: 2rem;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { 
+                transform: scale(1) rotate(0deg);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: scale(1.2) rotate(180deg);
+                opacity: 1;
+            }
+        }
+
+        .hero-subtitle {
+            font-size: var(--font-size-2xl);
+            margin-bottom: var(--spacing-12);
+            opacity: 0.95;
+            line-height: var(--line-height-relaxed);
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .hero-features {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-8);
+            margin-top: var(--spacing-8);
+            flex-wrap: wrap;
+        }
+
+        .hero-feature {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            background: rgba(255, 255, 255, 0.15);
+            padding: var(--spacing-3) var(--spacing-5);
+            border-radius: var(--radius-full);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            font-size: var(--font-size-base);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .hero-feature-icon {
+            font-size: 1.2rem;
+        }
+
+        .theme-toggle-container {
+            position: absolute;
+            top: var(--spacing-6);
+            right: var(--spacing-6);
+            z-index: 10;
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: var(--color-white);
+            padding: var(--spacing-3);
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.25rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-toggle:active {
+            transform: translateY(0px);
+        }
+
+        .theme-icon {
+            font-size: 1.1em;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover .theme-icon {
+            transform: scale(1.1);
+        }
+
+        /* Dark theme overrides for toggle */
+        [ds-theme="dark"] .theme-toggle {
+            background: rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: var(--color-text-primary);
+        }
+
+        [ds-theme="dark"] .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-16) var(--spacing-6);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--spacing-8);
+            margin-top: var(--spacing-12);
+        }
+
+        .feature-card {
+            background: var(--color-white);
+            border-radius: var(--radius-4xl);
+            padding: var(--spacing-10);
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition-all);
+            border: 1px solid var(--color-border-light);
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-2xl);
+            border-color: var(--color-primary-light);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-6);
+            display: block;
+        }
+
+        .feature-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-4);
+            color: var(--color-text-primary);
+        }
+
+        .feature-description {
+            color: var(--color-text-secondary);
+            line-height: var(--line-height-relaxed);
+            margin-bottom: var(--spacing-6);
+        }
+
+        .feature-button {
+            background: var(--color-primary-gradient);
+            color: var(--color-white);
+            padding: var(--spacing-3) var(--spacing-6);
+            border-radius: var(--radius-2xl);
+            border: none;
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: var(--transition-all);
+            font-size: var(--font-size-base);
+        }
+
+        .feature-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .stats-section {
+            text-align: center;
+            margin: var(--spacing-20) 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-8);
+            margin-top: var(--spacing-10);
+        }
+
+        .stat-card {
+            background: var(--color-surface);
+            padding: var(--spacing-8);
+            border-radius: var(--radius-3xl);
+            border: 1px solid var(--color-border);
+        }
+
+        .stat-value {
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary-light);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .stat-label {
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-base);
+        }
+
+        /* Dark theme overrides */
+        [ds-theme="dark"] .feature-card {
+            background: var(--color-surface);
+            border-color: var(--color-border);
+        }
+
+        [ds-theme="dark"] .feature-card:hover {
+            border-color: var(--color-primary-light);
+        }
+
+        /* Privacy notice dark theme */
+        [ds-theme="dark"] .privacy-notice {
+            background: rgba(34, 197, 94, 0.1) !important;
+            border-color: rgba(34, 197, 94, 0.2) !important;
+        }
+
+        /* Beautiful Footer Styles - Following Hero Design Pattern */
+        .beautiful-footer {
+            background: var(--color-primary-gradient);
+            color: var(--color-white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .beautiful-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: 50px 50px;
+            opacity: 0.5;
+        }
+
+        .footer-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-16) var(--spacing-6) var(--spacing-12);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-12);
+            margin-bottom: var(--spacing-10);
+        }
+
+        .footer-section h3, .footer-section h4 {
+            color: var(--color-white);
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--spacing-5);
+            font-weight: var(--font-weight-semibold);
+            position: relative;
+        }
+
+        .footer-section h3::after, .footer-section h4::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 2px;
+        }
+
+        .footer-brand {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            padding: var(--spacing-8);
+            border-radius: var(--radius-3xl);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .footer-brand-logo {
+            font-size: 2rem;
+            margin-bottom: var(--spacing-4);
+        }
+
+        .privacy-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            background: var(--color-success-bg);
+            color: var(--color-success-dark);
+            padding: var(--spacing-2) var(--spacing-4);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            border: 1px solid var(--color-success-border);
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+            padding: var(--spacing-2) 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: var(--radius-lg);
+        }
+
+        .footer-link:hover {
+            color: var(--color-white);
+            transform: translateX(8px);
+            background: rgba(255, 255, 255, 0.1);
+            padding-left: var(--spacing-3);
+        }
+
+        .footer-link-icon {
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .footer-link:hover .footer-link-icon {
+            transform: scale(1.2);
+        }
+
+        .privacy-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .privacy-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+            margin-bottom: var(--spacing-4);
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .privacy-check {
+            background: var(--color-success-dark);
+            color: var(--color-white);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: var(--spacing-8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-6);
+            background: rgba(0, 0, 0, 0.2);
+            margin: 0 calc(-1 * var(--spacing-6));
+            padding-left: var(--spacing-6);
+            padding-right: var(--spacing-6);
+            border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+        }
+
+        .footer-love {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: var(--font-size-sm);
+        }
+
+        .footer-heart {
+            color: var(--color-danger);
+            font-size: 1.2rem;
+            animation: heartbeat 2s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 50%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+        }
+
+        /* Dark theme overrides for footer */
+        [ds-theme="dark"] .footer-brand {
+            background: var(--color-surface);
+            border-color: var(--color-border);
+        }
+
+        [ds-theme="dark"] .privacy-badge {
+            background: rgba(34, 197, 94, 0.15);
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+
+        [ds-theme="dark"] .footer-link:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        [ds-theme="dark"] .footer-bottom {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-8);
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .hero-section {
+                min-height: 70vh;
+                padding: var(--spacing-16) var(--spacing-6) var(--spacing-12);
+            }
+
+            .hero-title {
+                font-size: var(--font-size-4xl);
+            }
+
+            .hero-title::after {
+                font-size: 1.5rem;
+                top: -5px;
+                right: -10px;
+            }
+
+            .hero-subtitle {
+                font-size: var(--font-size-xl);
+            }
+
+            .hero-features {
+                gap: var(--spacing-4);
+            }
+
+            .hero-feature {
+                font-size: var(--font-size-sm);
+                padding: var(--spacing-2) var(--spacing-4);
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-6);
+            }
+
+            .main-content {
+                padding: var(--spacing-10) var(--spacing-4);
+            }
+
+            .theme-toggle-container {
+                position: relative;
+                top: auto;
+                right: auto;
+                text-align: center;
+                margin-bottom: var(--spacing-4);
+            }
+
+            .theme-toggle {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+                padding: var(--spacing-2);
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Budget Planner</h1>
-            <nav class="page-nav">
-                <a href="/analytics/index.html" class="nav-btn">📊 CSV Analytics</a>
-                <button type="button" class="nav-btn export-complete-btn" onclick="budgetTracker.exportCompleteData()" title="Export complete budget data with history as JSON">
-                    📥 Export Complete Data
-                </button>
-                <button type="button" class="nav-btn help-btn" onclick="budgetTracker.showHelpPopup()" title="Show usage hints and tips">
-                    ❓ Help & Tips
-                </button>
-            </nav>
-        </header>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle-container">
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle dark/light mode">
+            <span id="theme-icon" class="theme-icon">🌙</span>
+        </button>
+    </div>
 
-        <main>
-            <!-- Annual Budget Section -->
-            <section class="annual-budget full-width">
-                <h2>Annual Budget Setup</h2>
-                <div class="budget-setup-grid">
-                    <div class="form-group">
-                        <label for="currency">Currency:</label>
-                        <select id="currency">
-                            <option value="USD">USD ($)</option>
-                            <option value="EUR">EUR (€)</option>
-                            <option value="BGN">BGN (лв)</option>
-                            <option value="GBP">GBP (£)</option>
-                            <option value="JPY">JPY (¥)</option>
-                            <option value="CAD">CAD (C$)</option>
-                            <option value="AUD">AUD (A$)</option>
-                            <option value="CHF">CHF (Fr)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="maxCash">Max Available Cash Per Year (<span id="currencySymbol">$</span>):</label>
-                        <input type="number" id="maxCash" placeholder="Enter your annual budget" min="0" step="0.01">
-                    </div>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Personal Tools</h1>
+            <p class="hero-subtitle">Simple tools to help you understand and manage your personal information better</p>
+            
+            <div class="hero-features">
+                <div class="hero-feature">
+                    <span class="hero-feature-icon">🔒</span>
+                    <span>Your Data Stays Here</span>
                 </div>
-                <div class="form-group">
-                    <h3>💹 Investment Allocation</h3>
-                    <div class="investment-controls">
-                        <div class="investment-type">
-                            <label>Investment Type:</label>
-                            <select id="investmentType">
-                                <option value="amount">Fixed Amount ($)</option>
-                                <option value="percentage">Percentage (%)</option>
-                            </select>
-                        </div>
-                        <div class="investment-value">
-                            <label for="investmentValue">Investment Value:</label>
-                            <input type="number" id="investmentValue" placeholder="Enter amount or percentage" min="0" step="0.01">
-                            <span class="investment-unit" id="investmentUnit">$</span>
-                        </div>
-                        <div class="investment-frequency">
-                            <label for="investmentFrequency">Investment Frequency:</label>
-                            <select id="investmentFrequency">
-                                <option value="monthly" selected>Monthly</option>
-                                <option value="quarterly">Quarterly</option>
-                                <option value="yearly">Yearly</option>
-                            </select>
-                        </div>
-                    </div>
+                <div class="hero-feature">
+                    <span class="hero-feature-icon">💻</span>
+                    <span>Works Offline</span>
                 </div>
-                <div class="import-section">
-                    <h3>Import Budget Data</h3>
-                    <p>Select a feed.json file to instantly import and populate your budget items and settings.</p>
-                    
-                    <div class="import-group">
-                        <label for="feedFile">Select feed.json file:</label>
-                        <div class="file-input-wrapper">
-                            <input type="file" id="feedFile" accept="application/json,.json" onchange="budgetTracker.handleFeedImport()">
-                        </div>
-                        <span id="importStatus" class="import-status"></span>
-                    </div>
-                    
-
-                    
-                    <details class="json-format-help">
-                        <summary>Expected JSON Format</summary>
-                        <pre><code>{
-  "settings": {
-    "maxCash": 100000,
-    "currency": "USD",
-    "investment": {
-      "type": "percentage",
-      "value": 10,
-      "frequency": "yearly"
-    }
-  },
-  "items": [
-    {
-      "name": "rent",
-      "value": 1200,
-      "frequency": "monthly",
-      "tags": ["housing", "essential"]
-    }
-  ],
-  "changeHistory": [
-    {
-      "timestamp": "2024-01-15T10:30:00.000Z",
-      "action": "item_added",
-      "details": { "itemName": "rent", "value": 1200 },
-      "comment": "Added monthly rent expense",
-      "currency": "USD"
-    }
-  ]
-}</code></pre>
-                    </details>
-                </div>
-            </section>
-
-            <!-- Budget Summary Section -->
-            <section class="summary full-width">
-                <h2>💰 Budget Summary</h2>
-                <div class="summary-grid">
-                    <div class="summary-item">
-                        <span class="label">📅 Total Monthly Expenses:</span>
-                        <span class="value" id="totalMonthly">$0.00</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="label">📊 Total Annual Expenses:</span>
-                        <span class="value" id="totalAnnual">$0.00</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="label">� Annual Investment:</span>
-                        <span class="value" id="totalInvestment">$0.00</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="label">�💵 Remaining Annual Budget:</span>
-                        <span class="value" id="remainingBudget">$0.00</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="label">🎯 Budget Status:</span>
-                        <span class="value" id="budgetStatus">-</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Budget Indicators Section -->
-            <section class="budget-indicators full-width">
-                <h2>Budget Indicators</h2>
-                <div class="indicators-grid">
-                    <div class="indicator">
-                        <h3>Daily</h3>
-                        <div class="indicator-value" id="dailyMax">$0.00</div>
-                        <small>Max per day</small>
-                    </div>
-                    <div class="indicator">
-                        <h3>Weekly</h3>
-                        <div class="indicator-value" id="weeklyMax">$0.00</div>
-                        <small>Max per week</small>
-                    </div>
-                    <div class="indicator">
-                        <h3>Monthly</h3>
-                        <div class="indicator-value" id="monthlyMax">$0.00</div>
-                        <small>Max per month</small>
-                    </div>
-                    <div class="indicator">
-                        <h3>Yearly</h3>
-                        <div class="indicator-value" id="yearlyMax">$0.00</div>
-                        <small>Max per year</small>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Charts Section -->
-            <section class="charts full-width">
-                <div class="section-header">
-                    <h2>Budget Visualization</h2>
-                    <button type="button" id="refreshChartsBtn" class="refresh-btn" onclick="budgetTracker.updateCharts()">🔄 Refresh Charts</button>
-                </div>
-                <div class="charts-container">
-                    <div class="chart-wrapper">
-                        <canvas id="budgetChart"></canvas>
-                    </div>
-                    <div class="chart-wrapper">
-                        <canvas id="remainingChart"></canvas>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Dynamic Charts Section -->
-            <section class="dynamic-charts full-width">
-                <div class="section-header">
-                    <h2>Custom Charts</h2>
-                    <button type="button" id="refreshDynamicChartsBtn" class="refresh-btn" onclick="budgetTracker.refreshDynamicCharts()">🔄 Refresh Custom Charts</button>
-                </div>
-                <p>Create custom pie charts to analyze your budget by specific tags, frequencies, or combinations.</p>
-                
-                <div class="chart-controls">
-                    <div class="control-group">
-                        <h3>Add New Chart</h3>
-                        <div class="chart-options">
-                            <div class="filter-option">
-                                <label for="chartType">Chart Type:</label>
-                                <select id="chartType">
-                                    <option value="tag">By Tag</option>
-                                    <option value="frequency">By Frequency</option>
-                                    <option value="combined">Tag + Frequency</option>
-                                </select>
-                            </div>
-                            
-                            <div class="filter-option" id="tagFilterGroup">
-                                <label for="tagChartSelect">Select Tag:</label>
-                                <select id="tagChartSelect">
-                                    <option value="" disabled selected>Choose tag</option>
-                                    <option value="__all__">All Items</option>
-                                </select>
-                            </div>
-                            
-                            <div class="filter-option" id="freqFilterGroup" style="display: none;">
-                                <label for="freqChartSelect">Select Frequency:</label>
-                                <select id="freqChartSelect">
-                                    <option value="" disabled selected>Choose frequency</option>
-                                    <option value="daily">Daily</option>
-                                    <option value="weekly">Weekly</option>
-                                    <option value="monthly">Monthly</option>
-                                    <option value="yearly">Yearly</option>
-                                </select>
-                            </div>
-                            
-                            <div class="filter-option" id="combinedFilterGroup" style="display: none;">
-                                <label for="combinedTagSelect">Tag:</label>
-                                <select id="combinedTagSelect">
-                                    <option value="" disabled selected>Choose tag</option>
-                                    <option value="__all__">All Tags</option>
-                                </select>
-                                <label for="combinedFreqSelect">Frequency:</label>
-                                <select id="combinedFreqSelect">
-                                    <option value="" disabled selected>Choose frequency</option>
-                                    <option value="__all__">All Frequencies</option>
-                                    <option value="daily">Daily</option>
-                                    <option value="weekly">Weekly</option>
-                                    <option value="monthly">Monthly</option>
-                                    <option value="yearly">Yearly</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="chart-actions">
-                            <button type="button" id="addCustomChartBtn" class="add-chart-btn">Add Chart</button>
-                            <button type="button" id="clearAllChartsBtn" class="clear-charts-btn">Clear All Charts</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="dynamicCharts" class="dynamic-charts-container">
-                    <!-- Dynamic charts will be added here -->
-                </div>
-                
-                <div class="no-charts-message" id="noChartsMessage">
-                    <p>No custom charts created yet. Use the controls above to create your first chart!</p>
-                </div>
-            </section>
-
-            <!-- Change History Section -->
-            <section class="change-history full-width">
-                <div class="section-header">
-                    <h2>Change History</h2>
-                    <button type="button" id="toggleHistoryBtn" class="refresh-btn" onclick="budgetTracker.toggleHistory()">📋 Show/Hide History</button>
-                </div>
-                <div id="historyContainer" class="history-container" style="display: none;">
-                    <div class="history-filters">
-                        <label for="historyActionFilter">Filter by Action:</label>
-                        <select id="historyActionFilter" onchange="budgetTracker.filterHistory()">
-                            <option value="">All Actions</option>
-                            <option value="item_added">Items Added</option>
-                            <option value="item_removed">Items Removed</option>
-                            <option value="item_edited">Items Edited</option>
-                            <option value="max_cash_updated">Budget Changes</option>
-                            <option value="currency_changed">Currency Changes</option>
-                            <option value="investment_value_changed">Investment Changes</option>
-                            <option value="feed_imported">Feed Imports</option>
-                        </select>
-                        <button type="button" class="export-history-btn" onclick="budgetTracker.exportHistory()">Export History</button>
-                        <button type="button" class="import-history-btn" onclick="budgetTracker.importHistory()">Import History</button>
-                        <button type="button" class="clear-history-btn" onclick="budgetTracker.clearHistory()">Clear History</button>
-                    </div>
-                    <div class="history-list" id="historyList">
-                        <!-- History entries will be displayed here -->
-                    </div>
-                </div>
-            </section>
-
-            <!-- Budget Items Section -->
-            <section class="budget-items full-width">
-                <h2>Budget Items</h2>
-                <div class="add-item-form">
-                    <div class="form-row">
-                        <input type="text" id="itemName" placeholder="Item name" required>
-                        <input type="number" id="itemValue" placeholder="Amount ($)" min="0" step="0.01" required>
-                        <input type="text" id="itemTags" placeholder="Tags (optional)">
-                        <select id="itemFrequency">
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly" selected>Monthly</option>
-                            <option value="yearly">Yearly</option>
-                        </select>
-                        <button id="addItemBtn" onclick="addItem()">Add Item</button>
-                    </div>
-                </div>
-                <div class="items-list" id="itemsList">
-                    <!-- Items will be added here dynamically -->
-                </div>
-            </section>
-        </main>
-
-        <!-- Help Popup Modal -->
-        <div id="helpModal" class="modal-overlay" style="display: none;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>💡 Budget Planner - Help & Tips</h2>
-                    <button type="button" class="close-btn" onclick="budgetTracker.closeHelpPopup()">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="help-section">
-                        <h3>🚀 Getting Started</h3>
-                        <ul>
-                            <li><strong>Set Your Annual Budget:</strong> Enter your total available cash per year</li>
-                            <li><strong>Choose Currency:</strong> Select your preferred currency (converts existing data automatically)</li>
-                            <li><strong>Investment Allocation:</strong> Set aside money for investments (percentage or fixed amount)</li>
-                            <li><strong>Add Budget Items:</strong> Create entries for rent, groceries, utilities, etc. with frequencies</li>
-                        </ul>
-                    </div>
-
-                    <div class="help-section">
-                        <h3>📊 Using Budget Features</h3>
-                        <ul>
-                            <li><strong>Tags:</strong> Organize items with tags like "essential", "housing", "entertainment"</li>
-                            <li><strong>Frequencies:</strong> Set items as daily, weekly, monthly, or yearly</li>
-                            <li><strong>Custom Charts:</strong> Create visual breakdowns by tags or frequencies</li>
-                            <li><strong>Budget Indicators:</strong> See your remaining budget per day/week/month/year</li>
-                            <li><strong>Change History:</strong> Track all modifications with timestamps and comments</li>
-                        </ul>
-                    </div>
-
-                    <div class="help-section">
-                        <h3>💾 Data Management & Privacy</h3>
-                        <div class="privacy-notice">
-                            <p><strong>🔒 Your Data Stays Yours:</strong> All budget data is stored locally in your browser. Nothing is sent to external servers.</p>
-                        </div>
-                        <ul>
-                            <li><strong>Export Complete Data:</strong> Click "📥 Export Complete Data" to download everything (settings + items + history)</li>
-                            <li><strong>Import Data:</strong> Use "Import Budget Data" to restore from a JSON file</li>
-                            <li><strong>Backup Regularly:</strong> Export your data periodically to avoid loss</li>
-                            <li><strong>Cross-Device Sync:</strong> Export from one device, import on another</li>
-                            <li><strong>Version Control:</strong> Keep dated exports to track your budget evolution</li>
-                        </ul>
-                    </div>
-
-                    <div class="help-section">
-                        <h3>📈 Analytics Features</h3>
-                        <ul>
-                            <li><strong>CSV Analytics:</strong> Upload bank transaction files for spending analysis</li>
-                            <li><strong>Visual Charts:</strong> See spending patterns by description, type, and trends</li>
-                            <li><strong>Advanced Filters:</strong> Filter transactions by date, amount, type, and description</li>
-                            <li><strong>Data Grid:</strong> Professional table view with sorting and filtering</li>
-                            <li><strong>Export Filtered:</strong> Download filtered transaction data</li>
-                        </ul>
-                    </div>
-
-                    <div class="help-section">
-                        <h3>💡 Pro Tips</h3>
-                        <ul>
-                            <li><strong>Start Simple:</strong> Begin with major expenses (rent, groceries, utilities)</li>
-                            <li><strong>Use Meaningful Tags:</strong> Group similar expenses for better insights</li>
-                            <li><strong>Review Regularly:</strong> Check your budget monthly and adjust as needed</li>
-                            <li><strong>Emergency Fund:</strong> Keep some budget unallocated for unexpected expenses</li>
-                            <li><strong>Export Before Changes:</strong> Back up data before major modifications</li>
-                            <li><strong>Combine with Analytics:</strong> Use CSV analytics to validate your budget assumptions</li>
-                        </ul>
-                    </div>
-
-                    <div class="help-section">
-                        <h3>🔧 Troubleshooting</h3>
-                        <ul>
-                            <li><strong>Data Missing?</strong> Check browser storage or import your latest export</li>
-                            <li><strong>Import Errors?</strong> Ensure JSON file matches the expected format</li>
-                            <li><strong>Charts Not Showing?</strong> Refresh the page or add some budget items</li>
-                            <li><strong>Currency Issues?</strong> Currency changes convert all existing values automatically</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="modal-btn primary" onclick="budgetTracker.closeHelpPopup()">Got it!</button>
-                    <button type="button" class="modal-btn secondary" onclick="budgetTracker.exportCompleteData()">📥 Export My Data Now</button>
+                <div class="hero-feature">
+                    <span class="hero-feature-icon">📱</span>
+                    <span>Any Device</span>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <script src="script.js"></script>
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Features Section -->
+        <section class="features-section">
+            <h2 style="text-align: center; font-size: var(--font-size-3xl); margin-bottom: var(--spacing-4); color: var(--color-text-primary);">
+                Available Tools
+            </h2>
+            <p style="text-align: center; color: var(--color-text-secondary); margin-bottom: var(--spacing-8); font-size: var(--font-size-lg);">
+                Tools to help you better understand your personal information
+            </p>
+
+            <div class="features-grid">
+                <!-- Budget Planner Card -->
+                <a href="budget/index.html" class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3 class="feature-title">Budget Planner</h3>
+                    <p class="feature-description">
+                        This tool helps you get a clear picture of what is happening with your finances overall. See where your money comes from and where it goes.
+                    </p>
+                    <button class="feature-button">Open Budget Tool</button>
+                </a>
+
+                <!-- Analytics Dashboard Card -->
+                <a href="revolut-analytics/index.html" class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Revolut Statement Analytics</h3>
+                    <p class="feature-description">
+                        Upload your Revolut statement to see your spending patterns in easy-to-understand charts. Helps you understand where your money goes each month.
+                    </p>
+                    <button class="feature-button">Analyze Revolut Statement</button>
+                </a>
+
+
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <h2 style="font-size: var(--font-size-3xl); margin-bottom: var(--spacing-4); color: var(--color-text-primary);">
+                Simple and Safe
+            </h2>
+            <p style="color: var(--color-text-secondary); font-size: var(--font-size-lg);">
+                Easy to use tools that keep your information private
+            </p>
+            
+            <!-- Privacy Notice -->
+            <div class="privacy-notice" style="background: var(--color-success-bg); border: 1px solid var(--color-success-border); border-radius: var(--radius-2xl); padding: var(--spacing-6); margin: var(--spacing-8) auto; max-width: 600px; text-align: center;">
+                <div style="font-size: 1.5rem; margin-bottom: var(--spacing-3);">🔒</div>
+                <h3 style="color: var(--color-success-dark); margin-bottom: var(--spacing-3); font-size: var(--font-size-lg);">Your Information Stays With You</h3>
+                <p style="color: var(--color-text-secondary); margin: 0; font-size: var(--font-size-base);">
+                    Everything works on your computer. Your information never leaves your device. No accounts needed, no data collected.
+                </p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">Core Features</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">0%</div>
+                    <div class="stat-label">Data Shared</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">Responsive Design</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">∞</div>
+                    <div class="stat-label">Possibilities</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Beautiful Footer -->
+    <footer class="beautiful-footer" style="margin-top: var(--spacing-20);">
+        <div class="footer-content">
+            <div class="footer-grid">
+                
+                <!-- Brand Section -->
+                <div class="footer-section">
+                    <div class="footer-brand">
+                        <div class="footer-brand-logo">💰✨</div>
+                        <h3>Personal Tools</h3>
+                        <p style="color: rgba(255, 255, 255, 0.9); line-height: var(--line-height-relaxed); margin-bottom: var(--spacing-5);">
+                            Simple tools that help you understand your information better, while keeping everything private on your device.
+                        </p>
+                        <div class="privacy-badge">
+                            <span>🔒</span>
+                            <span>Private & Local</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Features Section -->
+                <div class="footer-section">
+                    <h4>Features</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li>
+                            <a href="budget/index.html" class="footer-link">
+                                <span class="footer-link-icon">💰</span>
+                                <span>Budget Tool</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="revolut-analytics/index.html" class="footer-link">
+                                <span class="footer-link-icon">📊</span>
+                                <span>Revolut Analytics</span>
+                            </a>
+                        </li>
+                        <li>
+                            <div class="footer-link" style="opacity: 0.6; cursor: not-allowed;">
+                                <span class="footer-link-icon">🏦</span>
+                                <span>Other Banks Support</span>
+                                <span style="font-size: var(--font-size-xs); color: var(--color-text-tertiary);">(Coming Soon)</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Privacy & Trust Section -->
+                <div class="footer-section">
+                    <h4>Privacy First</h4>
+                    <ul class="privacy-list">
+                        <li class="privacy-item">
+                            <div class="privacy-check">✓</div>
+                            <span>No data collection</span>
+                        </li>
+                        <li class="privacy-item">
+                            <div class="privacy-check">✓</div>
+                            <span>Local processing only</span>
+                        </li>
+                        <li class="privacy-item">
+                            <div class="privacy-check">✓</div>
+                            <span>No server storage</span>
+                        </li>
+                        <li class="privacy-item">
+                            <div class="privacy-check">✓</div>
+                            <span>Open source</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="footer-bottom">
+                <div style="color: rgba(255, 255, 255, 0.8); font-size: var(--font-size-sm);">
+                    © 2025 Personal Tools. Simple and private.
+                </div>
+                <div class="footer-love">
+                    <span>Made with</span>
+                    <span class="footer-heart">❤️</span>
+                    <span>to be helpful</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Theme Manager -->
+    <script src="design_system/themes/theme-manager.js"></script>
+    
+    <!-- Custom Home Page JavaScript -->
+    <script>
+        // Theme toggle functionality
+        function toggleTheme() {
+            if (window.theme && typeof window.theme.toggle === 'function') {
+                window.theme.toggle();
+                updateThemeUI();
+            }
+        }
+
+        function updateThemeUI() {
+            const icon = document.getElementById('theme-icon');
+            
+            if (window.theme && typeof window.theme.isDark === 'function') {
+                try {
+                    const isDark = window.theme.isDark();
+                    icon.textContent = isDark ? '☀️' : '🌙';
+                } catch (e) {
+                    console.warn('Error updating theme UI:', e);
+                }
+            }
+        }
+
+        // Initialize theme UI when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait a moment for theme manager to initialize
+            setTimeout(updateThemeUI, 100);
+            
+            // Listen for theme changes
+            if (window.theme && typeof window.theme.onChange === 'function') {
+                window.theme.onChange(updateThemeUI);
+            }
+        });
+
+        // Add smooth scroll behavior for better UX
+        document.documentElement.style.scrollBehavior = 'smooth';
+    </script>
 </body>
 </html>
