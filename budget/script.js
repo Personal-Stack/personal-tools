@@ -217,42 +217,49 @@ class BudgetTracker {
 
     createItemElement(item, index) {
         const div = document.createElement('div');
-        div.className = 'item-row';
+        div.className = 'card-item';
 
         if (this.editingIndex === index) {
-            // Inline edit mode
+            // Inline edit mode using design system form components
             div.innerHTML = `
-                <form class="inline-edit" onsubmit="budgetTracker.saveEditItem(event, ${index})">
-                    <div class="inline-edit-grid">
-                        <input type="text" name="name" value="${item.name}" required />
-                        <input type="number" name="value" value="${item.value}" min="0" step="0.01" required />
-                        <input type="text" name="tags" value="${(item.tags||[]).join(', ')}" placeholder="Tags (comma separated)" list="existingTags" />
-                        <select name="frequency">
+                <form class="inline-edit-form" onsubmit="budgetTracker.saveEditItem(event, ${index})">
+                    <div class="form-group">
+                        <input type="text" name="name" value="${item.name}" class="form-input" placeholder="Item name" required />
+                    </div>
+                    <div class="form-group">
+                        <input type="number" name="value" value="${item.value}" min="0" step="0.01" class="form-input" placeholder="Amount" required />
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="tags" value="${(item.tags||[]).join(', ')}" class="form-input" placeholder="Tags (comma separated)" list="existingTags" />
+                    </div>
+                    <div class="form-group">
+                        <select name="frequency" class="form-input">
                             <option value="daily" ${item.frequency==='daily'?'selected':''}>Daily</option>
                             <option value="weekly" ${item.frequency==='weekly'?'selected':''}>Weekly</option>
                             <option value="monthly" ${item.frequency==='monthly'?'selected':''}>Monthly</option>
                             <option value="yearly" ${item.frequency==='yearly'?'selected':''}>Yearly</option>
                         </select>
-                        <div class="inline-buttons">
-                            <button type="submit" class="save-btn">Save</button>
-                            <button type="button" class="cancel-btn" onclick="budgetTracker.cancelEditItem()">Cancel</button>
-                        </div>
+                    </div>
+                    <div class="card-item-actions">
+                        <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="budgetTracker.cancelEditItem()">Cancel</button>
                     </div>
                 </form>
             `;
         } else {
+            // Display mode using exact card-item structure from design system
             div.innerHTML = `
-                <div class="item-info">
-                    <div class="item-name">${item.name}</div>
-                    <div class="item-details">
-                        <span class="item-value">${this.formatCurrency(item.value)}</span>
-                        <span class="item-frequency">${item.frequency}</span>
-                        <span class="item-tags">${(item.tags && item.tags.length ? item.tags.join(', ') : 'No tags')}</span>
+                <div class="card-item-info">
+                    <div class="card-item-name">${item.name}</div>
+                    <div class="card-item-details">
+                        <span class="card-item-value">${this.formatCurrency(item.value)}</span>
+                        <span class="card-item-frequency">${item.frequency}</span>
+                        <span class="card-item-tags">${(item.tags && item.tags.length ? item.tags.join(', ') : 'No tags')}</span>
                     </div>
                 </div>
-                <div class="item-actions">
-                    <button class="edit-btn" onclick="budgetTracker.startEditItem(${index})">Edit</button>
-                    <button class="remove-btn" onclick="budgetTracker.removeItem(${index})">Remove</button>
+                <div class="card-item-actions">
+                    <button class="btn btn-info btn-sm" onclick="budgetTracker.startEditItem(${index})">Edit</button>
+                    <button class="btn btn-danger btn-sm" onclick="budgetTracker.removeItem(${index})">Remove</button>
                 </div>`;
         }
         return div;
@@ -1180,19 +1187,27 @@ class BudgetTracker {
         wrapper.innerHTML = `
             <div class="dynamic-chart-header">
                 <h3>${title}</h3>
-                <button type="button" class="remove-chart-btn" onclick="budgetTracker.removeDynamicChart('${key}')">×</button>
+                <button type="button" class="remove-chart-btn btn btn-danger btn-sm" onclick="budgetTracker.removeDynamicChart('${key}')">×</button>
             </div>
             <div class="chart-content-row">
                 <div class="chart-display">
-                    <canvas></canvas>
-                </div>
-                <div class="chart-items-list">
-                    <h4>Items in this chart:</h4>
-                    <div class="items-list-content" id="chartItems_${key}">
-                        <!-- Items will be populated here -->
+                    <div class="chart-canvas-container">
+                        <canvas></canvas>
                     </div>
-                    <div class="chart-total">
-                        <strong>Total: <span class="total-amount" id="chartTotal_${key}">$0.00</span></strong>
+                </div>
+                <div class="chart-items-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Items in this chart</h4>
+                            <div class="chart-total-badge">
+                                <span class="badge badge-primary">Total: <span id="chartTotal_${key}">$0.00</span></span>
+                            </div>
+                        </div>
+                        <div class="card-body chart-items-scrollable">
+                            <div class="items-list" id="chartItems_${key}">
+                                <!-- Chart items will be populated here -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1321,7 +1336,7 @@ class BudgetTracker {
         if (!itemsContainer || !totalContainer) return;
         
         if (filteredItems.length === 0) {
-            itemsContainer.innerHTML = '<div class="no-items">No items match the current filter.</div>';
+            itemsContainer.innerHTML = '<div class="empty-state">No items match the current filter.</div>';
             totalContainer.textContent = this.formatCurrency(0);
             return;
         }
@@ -1332,13 +1347,15 @@ class BudgetTracker {
             totalValue += convertedValue;
             
             return `
-                <div class="chart-item">
-                    <span class="item-name">${item.name}</span>
-                    <div class="item-details">
-                        <span class="item-tags">${item.tags.length > 0 ? item.tags.join(', ') : 'No tags'}</span>
-                        <span class="item-frequency">${item.frequency}</span>
+                <div class="card-item">
+                    <div class="card-item-info">
+                        <div class="card-item-name">${item.name}</div>
+                        <div class="card-item-details">
+                            <span class="card-item-value">${this.formatCurrency(convertedValue)}</span>
+                            <span class="card-item-frequency">${item.frequency}</span>
+                            <span class="card-item-tags">${item.tags && item.tags.length > 0 ? item.tags.join(', ') : 'No tags'}</span>
+                        </div>
                     </div>
-                    <span class="item-value">${this.formatCurrency(convertedValue)}</span>
                 </div>
             `;
         }).join('');
@@ -1567,7 +1584,7 @@ class BudgetTracker {
         }
 
         if (filteredHistory.length === 0) {
-            historyList.innerHTML = '<div class="no-history">No history entries found.</div>';
+            historyList.innerHTML = '<div class="empty-state">No history entries found.</div>';
             return;
         }
 
@@ -1584,16 +1601,20 @@ class BudgetTracker {
         const detailsText = this.getDetailsText(entry);
         
         return `
-            <div class="history-entry" data-index="${originalIndex}">
-                <div class="history-timestamp">${timestamp}</div>
-                <div class="history-action">
-                    <div class="history-action-type">${actionText}</div>
-                    <div class="history-details">${detailsText}</div>
-                    ${entry.comment ? `<div class="history-comment">💬 ${entry.comment}</div>` : ''}
+            <div class="card-item history-entry" data-index="${originalIndex}">
+                <div class="card-item-info">
+                    <div class="card-item-name history-action-type">${actionText}</div>
+                    <div class="card-item-details">
+                        <span class="history-timestamp">${timestamp}</span>
+                        <span class="history-details">${detailsText}</span>
+                        ${entry.comment ? `<span class="history-comment">💬 ${entry.comment}</span>` : ''}
+                    </div>
                 </div>
-                <button class="comment-btn" onclick="budgetTracker.editComment(${originalIndex})">
-                    ${entry.comment ? 'Edit' : 'Add'} Comment
-                </button>
+                <div class="card-item-actions">
+                    <button class="btn btn-info btn-sm" onclick="budgetTracker.editComment(${originalIndex})">
+                        ${entry.comment ? 'Edit' : 'Add'} Comment
+                    </button>
+                </div>
             </div>
         `;
     }

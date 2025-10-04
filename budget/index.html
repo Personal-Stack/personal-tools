@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budget Planner - Comprehensive Budget Tracking with Multi-Currency Support</title>
     <meta name="description" content="A comprehensive budget tracking application with multi-currency support, investment allocation, dynamic charts, and change history tracking. Plan your finances with real-time calculations and visual analytics.">
@@ -24,33 +23,50 @@
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
     
-    <link rel="stylesheet" href="../styles.css">
+    <!-- Design System Imports -->
+    <link rel="stylesheet" href="../design_system/design-system.css">
+    <link rel="stylesheet" href="../design_system/themes/dark.css">
+    <link rel="stylesheet" href="budget-compatibility.css">
+    
     <!-- Chart.js library - can be replaced with local file -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="../design_system/themes/theme-manager.js"></script>
 </head>
 <body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" onclick="window.toggleTheme()" aria-label="Toggle theme">
+        <span id="theme-icon">🌙</span>
+    </button>
+    
+    <!-- Utility Buttons -->
+    <div class="utility-buttons">
+        <button type="button" class="utility-btn export-btn" onclick="budgetTracker.exportCompleteData()" title="Export complete budget data with history as JSON" aria-label="Export data">
+            <span>📥 </span>
+        </button>
+        <button type="button" class="utility-btn help-btn" onclick="budgetTracker.showHelpPopup()" title="Show usage hints and tips" aria-label="Help & Tips">
+            <span>❓</span>
+        </button>
+    </div>
+
     <div class="container">
-        <header>
-            <h1>Budget Planner</h1>
+        <header class="card-header">
+            <h1>💰 Budget Planner</h1>
+            
             <nav class="page-nav">
-                <a href="/analytics/index.html" class="nav-btn">📊 CSV Analytics</a>
-                <button type="button" class="nav-btn export-complete-btn" onclick="budgetTracker.exportCompleteData()" title="Export complete budget data with history as JSON">
-                    📥 Export Complete Data
-                </button>
-                <button type="button" class="nav-btn help-btn" onclick="budgetTracker.showHelpPopup()" title="Show usage hints and tips">
-                    ❓ Help & Tips
-                </button>
+                <a href="../index.html" class="nav-btn">🏠 Home</a>
+                <a href="../revolut-analytics/index.html" class="nav-btn">📊 Analytics</a>
             </nav>
         </header>
 
         <main>
             <!-- Annual Budget Section -->
-            <section class="annual-budget full-width">
+            <div class="card-section">
                 <h2>Annual Budget Setup</h2>
+                
                 <div class="budget-setup-grid">
                     <div class="form-group">
                         <label for="currency">Currency:</label>
-                        <select id="currency">
+                        <select id="currency" class="form-input">
                             <option value="USD">USD ($)</option>
                             <option value="EUR">EUR (€)</option>
                             <option value="BGN">BGN (лв)</option>
@@ -61,44 +77,56 @@
                             <option value="CHF">CHF (Fr)</option>
                         </select>
                     </div>
+                    
                     <div class="form-group">
                         <label for="maxCash">Max Available Cash Per Year (<span id="currencySymbol">$</span>):</label>
-                        <input type="number" id="maxCash" placeholder="Enter your annual budget" min="0" step="0.01">
+                        <input type="number" id="maxCash" class="form-input" placeholder="Enter your annual budget" min="0" step="0.01">
                     </div>
                 </div>
-                <div class="form-group">
-                    <h3>💹 Investment Allocation</h3>
-                    <div class="investment-controls">
-                        <div class="investment-type">
-                            <label>Investment Type:</label>
-                            <select id="investmentType">
-                                <option value="amount">Fixed Amount ($)</option>
-                                <option value="percentage">Percentage (%)</option>
-                            </select>
-                        </div>
-                        <div class="investment-value">
-                            <label for="investmentValue">Investment Value:</label>
-                            <input type="number" id="investmentValue" placeholder="Enter amount or percentage" min="0" step="0.01">
-                            <span class="investment-unit" id="investmentUnit">$</span>
-                        </div>
-                        <div class="investment-frequency">
-                            <label for="investmentFrequency">Investment Frequency:</label>
-                            <select id="investmentFrequency">
-                                <option value="monthly" selected>Monthly</option>
-                                <option value="quarterly">Quarterly</option>
-                                <option value="yearly">Yearly</option>
-                            </select>
+                
+                <div class="investment-form-compact">
+                    <div class="investment-header-compact">
+                        <h3>💹 Investment Allocation</h3>
+                    </div>
+                    
+                    <div class="investment-inline-form">
+                        <div class="investment-form-row">
+                            <div class="form-field-compact">
+                                <label for="investmentType" class="form-label-compact">Type:</label>
+                                <select id="investmentType" class="form-input form-input-compact">
+                                    <option value="amount">Amount ($)</option>
+                                    <option value="percentage">Percent (%)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-field-compact">
+                                <label for="investmentValue" class="form-label-compact">Value:</label>
+                                <div class="input-group-compact">
+                                    <input type="number" id="investmentValue" class="form-input form-input-compact" placeholder="0.00" min="0" step="0.01">
+                                    <span class="input-group-text-compact" id="investmentUnit">$</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-field-compact">
+                                <label for="investmentFrequency" class="form-label-compact">Frequency:</label>
+                                <select id="investmentFrequency" class="form-input form-input-compact">
+                                    <option value="monthly" selected>Monthly</option>
+                                    <option value="quarterly">Quarterly</option>
+                                    <option value="yearly">Yearly</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
+                
                 <div class="import-section">
                     <h3>Import Budget Data</h3>
                     <p>Select a feed.json file to instantly import and populate your budget items and settings.</p>
                     
-                    <div class="import-group">
+                    <div class="form-group">
                         <label for="feedFile">Select feed.json file:</label>
                         <div class="file-input-wrapper">
-                            <input type="file" id="feedFile" accept="application/json,.json" onchange="budgetTracker.handleFeedImport()">
+                            <input type="file" id="feedFile" class="form-input" accept="application/json,.json" onchange="budgetTracker.handleFeedImport()">
                         </div>
                         <span id="importStatus" class="import-status"></span>
                     </div>
@@ -137,110 +165,144 @@
 }</code></pre>
                     </details>
                 </div>
-            </section>
+            </div>
 
             <!-- Budget Summary Section -->
-            <section class="summary full-width">
+            <div class="card-section">
                 <h2>💰 Budget Summary</h2>
-                <div class="summary-grid">
-                    <div class="summary-item">
-                        <span class="label">📅 Total Monthly Expenses:</span>
-                        <span class="value" id="totalMonthly">$0.00</span>
+                
+                <div class="analytics-overview">
+                    <div class="card card-summary card-summary-primary">
+                        <div class="card-summary-content">
+                            <div class="card-summary-label">📅 Total Monthly Expenses</div>
+                            <div class="card-summary-value" id="totalMonthly">$0.00</div>
+                        </div>
                     </div>
-                    <div class="summary-item">
-                        <span class="label">📊 Total Annual Expenses:</span>
-                        <span class="value" id="totalAnnual">$0.00</span>
+                    
+                    <div class="card card-summary card-summary-danger">
+                        <div class="card-summary-content">
+                            <div class="card-summary-label">📊 Total Expenses</div>
+                            <div class="card-summary-value" id="totalAnnual">$0.00</div>
+                        </div>
                     </div>
-                    <div class="summary-item">
-                        <span class="label">� Annual Investment:</span>
-                        <span class="value" id="totalInvestment">$0.00</span>
+                    
+                    <div class="card card-summary card-summary-success">
+                        <div class="card-summary-content">
+                            <div class="card-summary-label">💹 Investment</div>
+                            <div class="card-summary-value" id="totalInvestment">$0.00</div>
+                        </div>
                     </div>
-                    <div class="summary-item">
-                        <span class="label">�💵 Remaining Annual Budget:</span>
-                        <span class="value" id="remainingBudget">$0.00</span>
+                    
+                    <div class="card card-summary">
+                        <div class="card-summary-content">
+                            <div class="card-summary-label">� Remaining Budget</div>
+                            <div class="card-summary-value" id="remainingBudget">$0.00</div>
+                        </div>
                     </div>
-                    <div class="summary-item">
-                        <span class="label">🎯 Budget Status:</span>
-                        <span class="value" id="budgetStatus">-</span>
+                    
+                    <div class="card card-summary">
+                        <div class="card-summary-content">
+                            <div class="card-summary-label">🎯 Status</div>
+                            <div class="card-summary-value" id="budgetStatus">-</div>
+                        </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
             <!-- Budget Indicators Section -->
-            <section class="budget-indicators full-width">
+            <div class="card-section">
                 <h2>Budget Indicators</h2>
-                <div class="indicators-grid">
-                    <div class="indicator">
-                        <h3>Daily</h3>
-                        <div class="indicator-value" id="dailyMax">$0.00</div>
-                        <small>Max per day</small>
+                
+                <div class="analytics-overview">
+                    <div class="card card-summary">
+                        <div class="card-summary-content">
+                            <div class="card-summary-label">Daily</div>
+                            <div class="card-summary-value" id="dailyMax">$0.00</div>
+                        </div>
                     </div>
-                    <div class="indicator">
-                        <h3>Weekly</h3>
-                        <div class="indicator-value" id="weeklyMax">$0.00</div>
-                        <small>Max per week</small>
+                    
+                    <div class="card card-summary">
+                        <div class="card-summary-content">
+                            <div class="card-summary-label">Weekly</div>
+                            <div class="card-summary-value" id="weeklyMax">$0.00</div>
+                        </div>
                     </div>
-                    <div class="indicator">
-                        <h3>Monthly</h3>
-                        <div class="indicator-value" id="monthlyMax">$0.00</div>
-                        <small>Max per month</small>
+                    
+                    <div class="card card-summary">
+                        <div class="card-summary-content">
+                            <div class="card-summary-label">Monthly</div>
+                            <div class="card-summary-value" id="monthlyMax">$0.00</div>
+                        </div>
                     </div>
-                    <div class="indicator">
-                        <h3>Yearly</h3>
-                        <div class="indicator-value" id="yearlyMax">$0.00</div>
-                        <small>Max per year</small>
+                    
+                    <div class="card card-summary">
+                        <div class="card-summary-content">
+                            <div class="card-summary-label">Yearly</div>
+                            <div class="card-summary-value" id="yearlyMax">$0.00</div>
+                        </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
             <!-- Charts Section -->
-            <section class="charts full-width">
+            <div class="card-section">
                 <div class="section-header">
                     <h2>Budget Visualization</h2>
-                    <button type="button" id="refreshChartsBtn" class="refresh-btn" onclick="budgetTracker.updateCharts()">🔄 Refresh Charts</button>
+                    <button type="button" id="refreshChartsBtn" class="btn btn-secondary" onclick="budgetTracker.updateCharts()">🔄 Refresh Charts</button>
                 </div>
-                <div class="charts-container">
-                    <div class="chart-wrapper">
-                        <canvas id="budgetChart"></canvas>
+                
+                <div class="charts-grid">
+                    <div class="card">
+                        <div class="card-body">
+                            <canvas id="budgetChart"></canvas>
+                        </div>
                     </div>
-                    <div class="chart-wrapper">
-                        <canvas id="remainingChart"></canvas>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <canvas id="remainingChart"></canvas>
+                        </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
             <!-- Dynamic Charts Section -->
-            <section class="dynamic-charts full-width">
+            <div class="card-section">
                 <div class="section-header">
                     <h2>Custom Charts</h2>
-                    <button type="button" id="refreshDynamicChartsBtn" class="refresh-btn" onclick="budgetTracker.refreshDynamicCharts()">🔄 Refresh Custom Charts</button>
                 </div>
+                
                 <p>Create custom pie charts to analyze your budget by specific tags, frequencies, or combinations.</p>
                 
-                <div class="chart-controls">
-                    <div class="control-group">
+                
+                <div class="chart-controls-compact">
+                    <div class="chart-controls-header">
                         <h3>Add New Chart</h3>
-                        <div class="chart-options">
-                            <div class="filter-option">
-                                <label for="chartType">Chart Type:</label>
-                                <select id="chartType">
+                        <button type="button" id="refreshDynamicChartsBtn" class="btn btn-secondary btn-sm" onclick="budgetTracker.refreshDynamicCharts()">🔄 Refresh</button>
+                    </div>
+                    
+                    <div class="chart-form-inline">
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label for="chartType" class="form-label-compact">Type:</label>
+                                <select id="chartType" class="form-input form-input-compact">
                                     <option value="tag">By Tag</option>
                                     <option value="frequency">By Frequency</option>
                                     <option value="combined">Tag + Frequency</option>
                                 </select>
                             </div>
                             
-                            <div class="filter-option" id="tagFilterGroup">
-                                <label for="tagChartSelect">Select Tag:</label>
-                                <select id="tagChartSelect">
+                            <div class="form-col" id="tagFilterGroup">
+                                <label for="tagChartSelect" class="form-label-compact">Tag:</label>
+                                <select id="tagChartSelect" class="form-input form-input-compact">
                                     <option value="" disabled selected>Choose tag</option>
                                     <option value="__all__">All Items</option>
                                 </select>
                             </div>
                             
-                            <div class="filter-option" id="freqFilterGroup" style="display: none;">
-                                <label for="freqChartSelect">Select Frequency:</label>
-                                <select id="freqChartSelect">
+                            <div class="form-col" id="freqFilterGroup" style="display: none;">
+                                <label for="freqChartSelect" class="form-label-compact">Frequency:</label>
+                                <select id="freqChartSelect" class="form-input form-input-compact">
                                     <option value="" disabled selected>Choose frequency</option>
                                     <option value="daily">Daily</option>
                                     <option value="weekly">Weekly</option>
@@ -249,30 +311,35 @@
                                 </select>
                             </div>
                             
-                            <div class="filter-option" id="combinedFilterGroup" style="display: none;">
-                                <label for="combinedTagSelect">Tag:</label>
-                                <select id="combinedTagSelect">
-                                    <option value="" disabled selected>Choose tag</option>
-                                    <option value="__all__">All Tags</option>
-                                </select>
-                                <label for="combinedFreqSelect">Frequency:</label>
-                                <select id="combinedFreqSelect">
-                                    <option value="" disabled selected>Choose frequency</option>
-                                    <option value="__all__">All Frequencies</option>
-                                    <option value="daily">Daily</option>
-                                    <option value="weekly">Weekly</option>
-                                    <option value="monthly">Monthly</option>
-                                    <option value="yearly">Yearly</option>
-                                </select>
+                            <div class="form-col-group" id="combinedFilterGroup" style="display: none;">
+                                <div class="form-col">
+                                    <label for="combinedTagSelect" class="form-label-compact">Tag:</label>
+                                    <select id="combinedTagSelect" class="form-input form-input-compact">
+                                        <option value="" disabled selected>Choose tag</option>
+                                        <option value="__all__">All Tags</option>
+                                    </select>
+                                </div>
+                                <div class="form-col">
+                                    <label for="combinedFreqSelect" class="form-label-compact">Freq:</label>
+                                    <select id="combinedFreqSelect" class="form-input form-input-compact">
+                                        <option value="" disabled selected>Choose frequency</option>
+                                        <option value="__all__">All Frequencies</option>
+                                        <option value="daily">Daily</option>
+                                        <option value="weekly">Weekly</option>
+                                        <option value="monthly">Monthly</option>
+                                        <option value="yearly">Yearly</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="chart-actions">
-                            <button type="button" id="addCustomChartBtn" class="add-chart-btn">Add Chart</button>
-                            <button type="button" id="clearAllChartsBtn" class="clear-charts-btn">Clear All Charts</button>
+                            
+                            <div class="form-actions">
+                                <button type="button" id="addCustomChartBtn" class="btn btn-primary btn-sm">+ Add</button>
+                                <button type="button" id="clearAllChartsBtn" class="btn btn-outline btn-sm">Clear All</button>
+                            </div>
                         </div>
                     </div>
                 </div>
+                
                 
                 <div id="dynamicCharts" class="dynamic-charts-container">
                     <!-- Dynamic charts will be added here -->
@@ -281,67 +348,102 @@
                 <div class="no-charts-message" id="noChartsMessage">
                     <p>No custom charts created yet. Use the controls above to create your first chart!</p>
                 </div>
-            </section>
+            </div>
 
             <!-- Change History Section -->
-            <section class="change-history full-width">
+            <div class="card-section">
                 <div class="section-header">
                     <h2>Change History</h2>
-                    <button type="button" id="toggleHistoryBtn" class="refresh-btn" onclick="budgetTracker.toggleHistory()">📋 Show/Hide History</button>
+                    <button type="button" id="toggleHistoryBtn" class="btn btn-secondary" onclick="budgetTracker.toggleHistory()">📋 Show/Hide History</button>
                 </div>
+                
                 <div id="historyContainer" class="history-container" style="display: none;">
                     <div class="history-filters">
-                        <label for="historyActionFilter">Filter by Action:</label>
-                        <select id="historyActionFilter" onchange="budgetTracker.filterHistory()">
-                            <option value="">All Actions</option>
-                            <option value="item_added">Items Added</option>
-                            <option value="item_removed">Items Removed</option>
-                            <option value="item_edited">Items Edited</option>
-                            <option value="max_cash_updated">Budget Changes</option>
-                            <option value="currency_changed">Currency Changes</option>
-                            <option value="investment_value_changed">Investment Changes</option>
-                            <option value="feed_imported">Feed Imports</option>
-                        </select>
-                        <button type="button" class="export-history-btn" onclick="budgetTracker.exportHistory()">Export History</button>
-                        <button type="button" class="import-history-btn" onclick="budgetTracker.importHistory()">Import History</button>
-                        <button type="button" class="clear-history-btn" onclick="budgetTracker.clearHistory()">Clear History</button>
+                        <div class="form-group">
+                            <label for="historyActionFilter">Filter by Action:</label>
+                            <select id="historyActionFilter" class="form-input" onchange="budgetTracker.filterHistory()">
+                                <option value="">All Actions</option>
+                                <option value="item_added">Items Added</option>
+                                <option value="item_removed">Items Removed</option>
+                                <option value="item_edited">Items Edited</option>
+                                <option value="max_cash_updated">Budget Changes</option>
+                                <option value="currency_changed">Currency Changes</option>
+                                <option value="investment_value_changed">Investment Changes</option>
+                                <option value="feed_imported">Feed Imports</option>
+                            </select>
+                        </div>
+                        
+                        <div class="history-actions">
+                            <button type="button" class="btn btn-secondary" onclick="budgetTracker.exportHistory()">Export History</button>
+                            <button type="button" class="btn btn-secondary" onclick="budgetTracker.importHistory()">Import History</button>
+                            <button type="button" class="btn btn-outline" onclick="budgetTracker.clearHistory()">Clear History</button>
+                        </div>
                     </div>
                     <div class="history-list" id="historyList">
                         <!-- History entries will be displayed here -->
                     </div>
                 </div>
-            </section>
+            </div>
 
             <!-- Budget Items Section -->
-            <section class="budget-items full-width">
-                <h2>Budget Items</h2>
-                <div class="add-item-form">
-                    <div class="form-row">
-                        <input type="text" id="itemName" placeholder="Item name" required>
-                        <input type="number" id="itemValue" placeholder="Amount ($)" min="0" step="0.01" required>
-                        <input type="text" id="itemTags" placeholder="Tags (optional)">
-                        <select id="itemFrequency">
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly" selected>Monthly</option>
-                            <option value="yearly">Yearly</option>
-                        </select>
-                        <button id="addItemBtn" onclick="addItem()">Add Item</button>
+            <div class="card-section">
+                <div class="section-header">
+                    <h2>Budget Items</h2>
+                </div>
+                
+                <div class="add-item-form-compact">
+                    <div class="form-header-compact">
+                        <h3>Add New Item</h3>
+                    </div>
+                    
+                    <div class="form-inline-compact">
+                        <div class="form-row-compact">
+                            <div class="form-field-group">
+                                <label for="itemName" class="form-label-compact">Name:</label>
+                                <input type="text" id="itemName" class="form-input form-input-compact" placeholder="Item name" required>
+                            </div>
+                            
+                            <div class="form-field-group">
+                                <label for="itemValue" class="form-label-compact">Amount:</label>
+                                <input type="number" id="itemValue" class="form-input form-input-compact" placeholder="0.00" min="0" step="0.01" required>
+                            </div>
+                            
+                            <div class="form-field-group">
+                                <label for="itemFrequency" class="form-label-compact">Frequency:</label>
+                                <select id="itemFrequency" class="form-input form-input-compact">
+                                    <option value="daily">Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly" selected>Monthly</option>
+                                    <option value="yearly">Yearly</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-field-group">
+                                <label for="itemTags" class="form-label-compact">Tags:</label>
+                                <input type="text" id="itemTags" class="form-input form-input-compact" placeholder="Optional tags">
+                            </div>
+                            
+                            <div class="form-actions-compact">
+                                <button id="addItemBtn" class="btn btn-primary btn-sm" onclick="addItem()">+ Add Item</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                
                 <div class="items-list" id="itemsList">
                     <!-- Items will be added here dynamically -->
                 </div>
-            </section>
+            </div>
         </main>
+    </div>
 
-        <!-- Help Popup Modal -->
-        <div id="helpModal" class="modal-overlay" style="display: none;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>💡 Budget Planner - Help & Tips</h2>
-                    <button type="button" class="close-btn" onclick="budgetTracker.closeHelpPopup()">&times;</button>
-                </div>
+    <!-- Help Popup Modal -->
+    <div id="helpModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>💡 Budget Planner - Help & Tips</h2>
+                <button type="button" class="modal-close" onclick="budgetTracker.closeHelpPopup()">&times;</button>
+            </div>
                 <div class="modal-body">
                     <div class="help-section">
                         <h3>🚀 Getting Started</h3>
@@ -411,14 +513,47 @@
                         </ul>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="modal-btn primary" onclick="budgetTracker.closeHelpPopup()">Got it!</button>
-                    <button type="button" class="modal-btn secondary" onclick="budgetTracker.exportCompleteData()">📥 Export My Data Now</button>
-                </div>
+            <div class="modal-footer">
+                <button type="button" class="modal-btn primary" onclick="budgetTracker.closeHelpPopup()">Got it!</button>
+                <button type="button" class="modal-btn secondary" onclick="budgetTracker.exportCompleteData()">📥 Export My Data Now</button>
+            </div>
             </div>
         </div>
     </div>
 
     <script src="script.js"></script>
+    
+    <!-- Initialize Theme Manager -->
+    <script>
+        // Initialize theme manager
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof ThemeManager !== 'undefined') {
+                window.themeManager = new ThemeManager();
+                console.log('Theme Manager initialized');
+                
+                // Update theme icon based on current theme
+                function updateThemeIcon() {
+                    const currentTheme = window.themeManager.getCurrentTheme();
+                    const themeIcon = document.getElementById('theme-icon');
+                    if (themeIcon) {
+                        themeIcon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+                    }
+                }
+                
+                // Set up theme toggle function
+                window.toggleTheme = function() {
+                    const currentTheme = window.themeManager.getCurrentTheme();
+                    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                    window.themeManager.setTheme(newTheme);
+                    updateThemeIcon();
+                };
+                
+                // Update icon on load
+                updateThemeIcon();
+            } else {
+                console.error('ThemeManager not found');
+            }
+        });
+    </script>
 </body>
 </html>
