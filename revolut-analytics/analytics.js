@@ -14,7 +14,6 @@ class RevolutAnalytics {
         this.defaultExclusions = [
             'savings vault topup',
             'to flexible cash funds',
-            'Topup',
             'Transfer from',
             'To pocket',
             'Pocket Withdrawal',
@@ -24,7 +23,7 @@ class RevolutAnalytics {
         
         // Description chart filters
         this.descriptionFilters = {
-            type: 'all', // all, expenses, income
+            type: 'expenses', // all, expenses, income - default to expenses for spending analysis
             limit: 10,   // number or 'all'
             sort: 'value' // value, count
         };
@@ -813,7 +812,10 @@ class RevolutAnalytics {
     
     getChartData(field) {
         const counts = {};
-        this.filteredTransactions.forEach(transaction => {
+        // Filter to only include spending (negative amounts)
+        const spendingTransactions = this.filteredTransactions.filter(transaction => transaction.Amount < 0);
+        
+        spendingTransactions.forEach(transaction => {
             const value = transaction[field];
             counts[value] = (counts[value] || 0) + 1;
         });
