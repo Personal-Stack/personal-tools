@@ -71,8 +71,8 @@
 
 /* Headings */
 h1, .heading-1 {
-  font-size: var(--font-size-7xl);
-  font-weight: var(--font-weight-light);
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-medium);
   line-height: var(--line-height-tight);
   color: var(--color-text-primary);
 }
