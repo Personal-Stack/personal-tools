@@ -96,6 +96,7 @@
                 <a href="#cards" class="nav-link">Cards</a>
                 <a href="#navigation" class="nav-link">Navigation</a>
                 <a href="#tooltip" class="nav-link">Tooltips</a>
+                <a href="#spinner" class="nav-link">Spinners</a>
             </nav>
         </header>
 
@@ -799,6 +800,202 @@
             </div>
         </section>
 
+        <!-- Spinner Section -->
+        <section id="spinner" class="example-section">
+            <h2>Spinner Components</h2>
+            <p>Loading indicators and spinners for providing visual feedback during async operations.</p>
+            
+            <div class="example-grid">
+                <div class="example-item">
+                    <h4>Basic Spinners</h4>
+                    <div style="display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; padding: 1rem;">
+                        <div class="spinner-with-text">
+                            <div class="spinner-circle"></div>
+                            <span>Loading...</span>
+                        </div>
+                        
+                        <div class="spinner-circle spinner-primary"></div>
+                        <div class="spinner-circle spinner-success"></div>
+                        <div class="spinner-circle spinner-warning"></div>
+                        <div class="spinner-circle spinner-danger"></div>
+                    </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Basic Circle Spinner --&gt;
+&lt;div class="spinner-circle"&gt;&lt;/div&gt;
+
+&lt;!-- Spinner with Text --&gt;
+&lt;div class="spinner-with-text"&gt;
+    &lt;div class="spinner-circle"&gt;&lt;/div&gt;
+    &lt;span&gt;Loading...&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;!-- Colored Spinners --&gt;
+&lt;div class="spinner-circle spinner-primary"&gt;&lt;/div&gt;
+&lt;div class="spinner-circle spinner-success"&gt;&lt;/div&gt;
+&lt;div class="spinner-circle spinner-warning"&gt;&lt;/div&gt;
+&lt;div class="spinner-circle spinner-danger"&gt;&lt;/div&gt;</code></pre>
+                    </div>
+                </div>
+                
+                <div class="example-item">
+                    <h4>Spinner Sizes</h4>
+                    <div style="display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; padding: 1rem;">
+                        <div class="spinner-circle spinner-sm"></div>
+                        <div class="spinner-circle spinner-md"></div>
+                        <div class="spinner-circle spinner-lg"></div>
+                        <div class="spinner-circle spinner-xl"></div>
+                    </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Spinner Sizes --&gt;
+&lt;div class="spinner-circle spinner-sm"&gt;&lt;/div&gt;
+&lt;div class="spinner-circle spinner-md"&gt;&lt;/div&gt;
+&lt;div class="spinner-circle spinner-lg"&gt;&lt;/div&gt;
+&lt;div class="spinner-circle spinner-xl"&gt;&lt;/div&gt;</code></pre>
+                    </div>
+                </div>
+                
+                <div class="example-item">
+                    <h4>Spinner Variants</h4>
+                    <div style="display: flex; gap: 2rem; align-items: center; flex-wrap: wrap; padding: 1rem;">
+                        <div class="spinner-dots"></div>
+                        <div class="spinner-pulse"></div>
+                        <div class="spinner-bars"></div>
+                        <div class="spinner-ring"></div>
+                        <div class="spinner-ripple"></div>
+                    </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Different Spinner Types --&gt;
+&lt;div class="spinner-dots"&gt;&lt;/div&gt;
+&lt;div class="spinner-pulse"&gt;&lt;/div&gt;
+&lt;div class="spinner-bars"&gt;&lt;/div&gt;
+&lt;div class="spinner-ring"&gt;&lt;/div&gt;
+&lt;div class="spinner-ripple"&gt;&lt;/div&gt;</code></pre>
+                    </div>
+                </div>
+                
+                <div class="example-item">
+                    <h4>Button Loading States</h4>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; padding: 1rem;">
+                        <!-- Center Loading -->
+                        <button class="btn btn-primary loading btn-loading-center">
+                            <span class="btn-text">Save Changes</span>
+                            <div class="btn-loading-content">
+                                <div class="btn-spinner"></div>
+                            </div>
+                        </button>
+                        
+                        <!-- Left Loading -->
+                        <button class="btn btn-secondary loading btn-loading-left">
+                            <span class="btn-text">Process</span>
+                            <div class="btn-loading-content">
+                                <div class="btn-spinner"></div>
+                                <span class="btn-loading-text">Processing...</span>
+                            </div>
+                        </button>
+                        
+                        <!-- Right Loading -->
+                        <button class="btn btn-success loading btn-loading-right">
+                            <span class="btn-text">Upload</span>
+                            <div class="btn-loading-content">
+                                <span class="btn-loading-text">Uploading...</span>
+                                <div class="btn-spinner"></div>
+                            </div>
+                        </button>
+                        
+                        <!-- Interactive Button -->
+                        <button class="btn btn-warning" onclick="toggleButtonLoading(this)">Click to Load</button>
+                    </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Center Loading (spinner only) --&gt;
+&lt;button class="btn btn-primary loading btn-loading-center"&gt;
+    &lt;span class="btn-text"&gt;Save Changes&lt;/span&gt;
+    &lt;div class="btn-loading-content"&gt;
+        &lt;div class="btn-spinner"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/button&gt;
+
+&lt;!-- Left Loading (spinner + text) --&gt;
+&lt;button class="btn btn-secondary loading btn-loading-left"&gt;
+    &lt;span class="btn-text"&gt;Process&lt;/span&gt;
+    &lt;div class="btn-loading-content"&gt;
+        &lt;div class="btn-spinner"&gt;&lt;/div&gt;
+        &lt;span class="btn-loading-text"&gt;Processing...&lt;/span&gt;
+    &lt;/div&gt;
+&lt;/button&gt;
+
+&lt;!-- Right Loading (text + spinner) --&gt;
+&lt;button class="btn btn-success loading btn-loading-right"&gt;
+    &lt;span class="btn-text"&gt;Upload&lt;/span&gt;
+    &lt;div class="btn-loading-content"&gt;
+        &lt;span class="btn-loading-text"&gt;Uploading...&lt;/span&gt;
+        &lt;div class="btn-spinner"&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/button&gt;
+
+&lt;!-- JavaScript Control --&gt;
+&lt;script&gt;
+function startLoading(button) {
+    button.classList.add('loading');
+}
+function stopLoading(button) {
+    button.classList.remove('loading');
+}
+&lt;/script&gt;</code></pre>
+                    </div>
+                </div>
+                
+                <div class="example-item">
+                    <h4>Centered Spinners</h4>
+                    <div class="spinner-center" style="min-height: 120px;">
+                        <div class="spinner-circle spinner-lg spinner-primary"></div>
+                    </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Centered Spinner --&gt;
+&lt;div class="spinner-center"&gt;
+    &lt;div class="spinner-circle spinner-lg spinner-primary"&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Full Page Overlay --&gt;
+&lt;div class="spinner-overlay"&gt;
+    &lt;div class="spinner-circle"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                    </div>
+                </div>
+                
+                <div class="example-item">
+                    <h4>Interactive Demo</h4>
+                    <div style="padding: 1rem;">
+                        <button class="btn btn-primary" onclick="showSpinnerDemo()" style="margin-bottom: 1rem;">Show Loading Demo</button>
+                        <div id="spinner-demo-area" style="min-height: 60px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">
+                            <span style="color: #6c757d;">Click button to see loading demo</span>
+                        </div>
+                    </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Interactive Loading Demo --&gt;
+&lt;button onclick="showSpinnerDemo()"&gt;Show Loading Demo&lt;/button&gt;
+&lt;div id="spinner-demo-area"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+function showSpinnerDemo() {
+    const area = document.getElementById('spinner-demo-area');
+    area.innerHTML = '&lt;div class="spinner-with-text"&gt;&lt;div class="spinner-circle"&gt;&lt;/div&gt;&lt;span&gt;Processing...&lt;/span&gt;&lt;/div&gt;';
+    
+    setTimeout(() => {
+        area.innerHTML = '&lt;span style="color: #28a745;"&gt;✓ Complete!&lt;/span&gt;';
+    }, 2000);
+}
+&lt;/script&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Modal Section -->
         <section id="modal" class="example-section">
             <h2>Modal Example</h2>
@@ -901,6 +1098,41 @@ function hideModal(id) {
                 codeExample.classList.add('hidden');
                 button.textContent = 'Show Code';
             }
+        }
+        
+        // Spinner demo
+        function showSpinnerDemo() {
+            const area = document.getElementById('spinner-demo-area');
+            area.innerHTML = '<div class="spinner-with-text"><div class="spinner-circle"></div><span>Processing...</span></div>';
+            
+            setTimeout(() => {
+                area.innerHTML = '<span style="color: #28a745; font-weight: 500;">✓ Complete!</span>';
+                setTimeout(() => {
+                    area.innerHTML = '<span style="color: #6c757d;">Click button to see loading demo</span>';
+                }, 2000);
+            }, 2000);
+        }
+        
+        // Button loading demo
+        function toggleButtonLoading(button) {
+            if (button.classList.contains('loading')) {
+                return; // Prevent multiple clicks
+            }
+            
+            // Add loading state with structure
+            button.innerHTML = `
+                <span class="btn-text">${button.textContent}</span>
+                <div class="btn-loading-content">
+                    <div class="btn-spinner"></div>
+                    <span class="btn-loading-text">Loading...</span>
+                </div>
+            `;
+            button.classList.add('loading', 'btn-loading-left');
+            
+            setTimeout(() => {
+                button.classList.remove('loading', 'btn-loading-left');
+                button.innerHTML = 'Click to Load';
+            }, 3000);
         }
         
         // Close modal when clicking overlay

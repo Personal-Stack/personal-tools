@@ -301,18 +301,7 @@
   color: var(--color-text-secondary);
 }
 
-.modal-loading::before {
-  content: "";
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--color-gray-300);
-  border-top: 2px solid var(--color-primary-light);
-  border-radius: var(--radius-round);
-  animation: spin 1s linear infinite;
+/* Modal loading now uses the spinner component system */
+.modal-loading .spinner-circle {
   margin-right: var(--spacing-3);
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
 }

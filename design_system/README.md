@@ -25,7 +25,8 @@ design_system/
 │   ├── cards.css     # Card layouts and containers
 │   ├── modal.css     # Modal overlays and dialogs
 │   ├── navigation.css # Navigation patterns
-│   └── tooltip.css   # Tooltip and contextual help
+│   ├── tooltip.css   # Tooltip and contextual help
+│   └── spinner.css   # Loading indicators and spinners
 ├── examples/         # Usage examples
 │   └── component-showcase.html # Interactive component demo
 ├── design-system.css # Main consolidated stylesheet
@@ -344,6 +345,82 @@ Extend components with custom variants:
   background: linear-gradient(45deg, #ee5a24, #ff6b6b);
 }
 ```
+
+### 🔄 Spinners
+
+Loading indicators and spinners for providing visual feedback during async operations:
+
+```html
+<!-- Basic Circle Spinner -->
+<div class="spinner-circle"></div>
+
+<!-- Spinner with Text -->
+<div class="spinner-with-text">
+  <div class="spinner-circle"></div>
+  <span>Loading...</span>
+</div>
+
+<!-- Spinner Sizes -->
+<div class="spinner-circle spinner-sm"></div>
+<div class="spinner-circle spinner-md"></div>
+<div class="spinner-circle spinner-lg"></div>
+<div class="spinner-circle spinner-xl"></div>
+
+<!-- Colored Spinners -->
+<div class="spinner-circle spinner-primary"></div>
+<div class="spinner-circle spinner-success"></div>
+<div class="spinner-circle spinner-warning"></div>
+<div class="spinner-circle spinner-danger"></div>
+<div class="spinner-circle spinner-white"></div>
+
+<!-- Spinner Variants -->
+<div class="spinner-dots"></div>
+<div class="spinner-pulse"></div>
+<div class="spinner-bars"></div>
+<div class="spinner-ring"></div>
+<div class="spinner-ripple"></div>
+
+<!-- Button Loading States -->
+<!-- Center Loading (spinner only) -->
+<button class="btn btn-primary loading btn-loading-center">
+  <span class="btn-text">Save Changes</span>
+  <div class="btn-loading-content">
+    <div class="btn-spinner"></div>
+  </div>
+</button>
+
+<!-- Left Loading (spinner + text) -->
+<button class="btn btn-secondary loading btn-loading-left">
+  <span class="btn-text">Process</span>
+  <div class="btn-loading-content">
+    <div class="btn-spinner"></div>
+    <span class="btn-loading-text">Processing...</span>
+  </div>
+</button>
+
+<!-- Right Loading (text + spinner) -->
+<button class="btn btn-success loading btn-loading-right">
+  <span class="btn-text">Upload</span>
+  <div class="btn-loading-content">
+    <span class="btn-loading-text">Uploading...</span>
+    <div class="btn-spinner"></div>
+  </div>
+</button>
+
+<!-- Centered Spinner -->
+<div class="spinner-center">
+  <div class="spinner-circle spinner-lg"></div>
+</div>
+
+<!-- Full Page Overlay -->
+<div class="spinner-overlay">
+  <div class="spinner-circle"></div>
+</div>
+```
+
+**Available Sizes**: `spinner-sm`, `spinner-md`, `spinner-lg`, `spinner-xl`  
+**Available Colors**: `spinner-primary`, `spinner-success`, `spinner-warning`, `spinner-danger`, `spinner-white`  
+**Available Types**: `spinner-circle`, `spinner-dots`, `spinner-pulse`, `spinner-bars`, `spinner-ring`, `spinner-ripple`
 
 ## 🛠 Development Guidelines
 

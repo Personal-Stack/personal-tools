@@ -18,6 +18,7 @@
 @import 'components/modal.css';
 @import 'components/navigation.css';
 @import 'components/tooltip.css';
+@import 'components/spinner.css';
 
 /* Base Reset and Global Styles */
 * {
@@ -119,30 +120,7 @@ body {
   box-shadow: var(--focus-ring);
 }
 
-/* Loading States */
-.loading {
-  position: relative;
-  pointer-events: none;
-}
 
-.loading::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 20px;
-  height: 20px;
-  margin: -10px 0 0 -10px;
-  border: 2px solid var(--color-gray-300);
-  border-top: 2px solid var(--color-primary-light);
-  border-radius: var(--radius-round);
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
 
 /* Print Styles */
 @media print {
