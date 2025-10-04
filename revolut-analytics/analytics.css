@@ -3,6 +3,33 @@
 /* Container customization */
 /* Using design system nav-btn for theme toggle - no custom styling needed */
 
+/* Body and main layout with proper spacing */
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/* Theme toggle button positioning */
+.theme-toggle {
+    position: fixed;
+    top: var(--spacing-4);
+    right: var(--spacing-4);
+    z-index: 1000;
+}
+
+/* Add spacing between main sections */
+.card-section {
+    margin-bottom: var(--spacing-6);
+}
+
+/* Add responsive spacing for theme toggle */
+@media (max-width: 768px) {
+    .theme-toggle {
+        top: var(--spacing-3);
+        right: var(--spacing-3);
+    }
+}
+
 /* Main container and layout */
 .container {
     max-width: 1400px;

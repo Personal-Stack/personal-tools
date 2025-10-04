@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,27 +13,31 @@
 </head>
 
 <body>
-    <header class="card-header">
-        <h1>💳 Revolut Analytics Dashboard</h1>
-        <nav class="page-nav">
-            <a href="../index.html" class="nav-btn">🏠 Home</a>
-            <a href="../budget/index.html" class="nav-btn">� Budget Tool</a>
-        </nav>
-    </header>
-
     <!-- Theme Toggle Button -->
     <button class="theme-toggle" onclick="window.toggleTheme()" aria-label="Toggle theme">
         <span id="theme-icon">🌙</span>
     </button>
 
-    <!-- Main Content -->
-    <main>
+    <div class="container">
+        <header class="card-header">
+            <h1>💳 Revolut Analytics Dashboard</h1>
+            
+            <nav class="page-nav">
+                <a href="../index.html" class="nav-btn">🏠 Home</a>
+                <a href="../budget/index.html" class="nav-btn">📊 Budget Tool</a>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main>
         <!-- CSV File Upload with Exclusion Filters -->
         <div class="card-section">
             <div class="upload-header">
                 <h2>Import Transaction Data</h2>
+                
                 <div class="exclusion-controls">
                     <button id="openExclusionModal" class="btn btn-secondary btn-sm">Configure filters</button>
+                    
                     <span class="tooltip">
                         <button class="btn btn-icon btn-sm" aria-label="Show default exclusions">ℹ️</button>
                         <div class="tooltip-content top">
@@ -46,13 +53,16 @@
                     </span>
                 </div>
             </div>
+            
             <div class="form-group">
                 <label for="csvFile">Choose CSV File:</label>
                 <input type="file" id="csvFile" accept=".csv" class="form-input">
             </div>
+            
             <div id="exclusionStatus" class="exclusion-status-compact">
                 <!-- Status will be shown here -->
             </div>
+            
             <div class="upload-actions">
                 <button id="loadSampleData" class="btn btn-secondary">Load Sample Data</button>
                 <button id="clearData" class="btn btn-outline">Clear All Data</button>
@@ -62,6 +72,7 @@
         <!-- Analytics Overview Cards -->
         <div class="card-section">
             <h2>Overview</h2>
+            
             <div class="analytics-overview">
                 <div class="card card-summary card-summary-primary">
                     <div class="card-summary-content">
@@ -69,18 +80,21 @@
                         <div class="card-summary-value" id="totalTransactions">0</div>
                     </div>
                 </div>
+                
                 <div class="card card-summary card-summary-danger">
                     <div class="card-summary-content">
                         <div class="card-summary-label">Total Spent</div>
                         <div class="card-summary-value" id="totalSpent">0.00</div>
                     </div>
                 </div>
+                
                 <div class="card card-summary card-summary-success">
                     <div class="card-summary-content">
                         <div class="card-summary-label">Total Income</div>
                         <div class="card-summary-value" id="totalIncome">0.00</div>
                     </div>
                 </div>
+                
                 <div class="card card-summary">
                     <div class="card-summary-content">
                         <div class="card-summary-label">Current Balance</div>
@@ -93,16 +107,20 @@
         <!-- Pie Charts Section -->
         <div class="card-section">
             <h2>Transaction Distribution</h2>
+            
             <div class="charts-grid">
                 <div class="card">
                     <div class="card-body">
                         <h3>By Type</h3>
+                        
                         <canvas id="typeChart"></canvas>
                     </div>
                 </div>
+                
                 <div class="card">
                     <div class="card-body">
                         <h3>By Product</h3>
+                        
                         <canvas id="productChart"></canvas>
                     </div>
                 </div>
@@ -113,6 +131,7 @@
         <div class="card-section">
             <div class="description-chart-header">
                 <h2>Transactions by Description</h2>
+                
                 <div class="description-filters">
                     <div class="form-group">
                         <label for="descriptionFilter">Filter by:</label>
@@ -122,6 +141,7 @@
                             <option value="income">Income Only</option>
                         </select>
                     </div>
+                    
                     <div class="form-group">
                         <label for="descriptionLimit">Show Top:</label>
                         <select id="descriptionLimit" class="form-input">
@@ -131,6 +151,7 @@
                             <option value="all">All Items</option>
                         </select>
                     </div>
+                    
                     <div class="form-group">
                         <label for="descriptionSort">Sort by:</label>
                         <select id="descriptionSort" class="form-input">
@@ -140,6 +161,7 @@
                     </div>
                 </div>
             </div>
+            
             <div class="card description-chart-container">
                 <div class="card-body">
                     <canvas id="descriptionChart"></canvas>
@@ -150,6 +172,7 @@
         <!-- Advanced Analytics Section -->
         <div class="card-section">
             <h2>Card Payment Analysis</h2>
+            
             <div class="analytics-filters">
                 <div class="form-group">
                     <label for="dateRange">Date Range:</label>
@@ -159,6 +182,7 @@
                         <option value="week">Last Week</option>
                     </select>
                 </div>
+                
                 <div class="form-group">
                     <label for="amountRange">Amount Range:</label>
                     <select id="amountRange" class="form-input">
@@ -177,18 +201,21 @@
                         <div class="card-summary-value" id="avgTransaction">0.00</div>
                     </div>
                 </div>
+                
                 <div class="card card-summary">
                     <div class="card-summary-content">
                         <div class="card-summary-label">Most Frequent Category</div>
                         <div class="card-summary-value" id="topCategory">-</div>
                     </div>
                 </div>
+                
                 <div class="card card-summary">
                     <div class="card-summary-content">
                         <div class="card-summary-label">Largest Purchase</div>
                         <div class="card-summary-value" id="largestPurchase">0.00</div>
                     </div>
                 </div>
+                
                 <div class="card card-summary card-summary-danger">
                     <div class="card-summary-content">
                         <div class="card-summary-label">Total Fees Paid</div>
@@ -269,17 +296,20 @@
                 <h2>Configure Exclusion Filters</h2>
                 <button id="closeExclusionModal" class="modal-close">&times;</button>
             </div>
+            
             <div class="modal-body">
                 <p>
                     Transactions containing these text patterns will be excluded from charts and tables.
                     Enter one pattern per line (case-insensitive matching).
                 </p>
+                
                 <div class="form-group">
                     <label for="exclusionList">Excluded Text Patterns:</label>
                     <textarea id="exclusionList" class="form-input" rows="6"
                         placeholder="Enter text patterns to exclude...&#10;Example:&#10;savings vault topup&#10;Transfer from&#10;Topup"></textarea>
                 </div>
             </div>
+            
             <div class="modal-footer">
                 <button id="clearExclusions" class="modal-btn">Clear All</button>
                 <button id="resetExclusions" class="modal-btn secondary">Reset to Defaults</button>
