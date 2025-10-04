@@ -447,6 +447,14 @@ class RevolutAnalytics {
                 this.updateDescriptionChart();
             });
         }
+
+        // Theme toggle event listener
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                this.toggleTheme();
+            });
+        }
     }
     
     handleFileUpload(file) {
@@ -657,16 +665,9 @@ class RevolutAnalytics {
                 labels: typeData.labels,
                 datasets: [{
                     data: typeData.values,
-                    backgroundColor: [
-                        '#FF6384',
-                        '#36A2EB',
-                        '#FFCE56',
-                        '#4BC0C0',
-                        '#9966FF',
-                        '#FF9F40'
-                    ],
+                    backgroundColor: this.getThemeColors().pieColors,
                     borderWidth: 2,
-                    borderColor: '#fff'
+                    borderColor: this.getThemeColors().borderColor
                 }]
             },
             options: {
@@ -706,15 +707,9 @@ class RevolutAnalytics {
                 labels: productData.labels,
                 datasets: [{
                     data: productData.values,
-                    backgroundColor: [
-                        '#FF6384',
-                        '#36A2EB',
-                        '#FFCE56',
-                        '#4BC0C0',
-                        '#9966FF'
-                    ],
+                    backgroundColor: this.getThemeColors().pieColors.slice(0, 5),
                     borderWidth: 2,
-                    borderColor: '#fff'
+                    borderColor: this.getThemeColors().borderColor
                 }]
             },
             options: {
@@ -757,11 +752,11 @@ class RevolutAnalytics {
                 datasets: [{
                     label: chartLabel,
                     data: descriptionData.values,
-                    backgroundColor: '#36A2EB',
-                    borderColor: '#1E88E5',
+                    backgroundColor: this.getThemeColors().barColor.background,
+                    borderColor: this.getThemeColors().barColor.border,
                     borderWidth: 1,
-                    hoverBackgroundColor: '#42A5F5',
-                    hoverBorderColor: '#1976D2'
+                    hoverBackgroundColor: this.getThemeColors().barColor.hover,
+                    hoverBorderColor: this.getThemeColors().barColor.hoverBorder
                 }]
             },
             options: {
@@ -1148,12 +1143,68 @@ class RevolutAnalytics {
             this.renderTable();
         }
     }
+
+    // Theme Management - using global theme approach
+
+    getThemeColors() {
+        const isDark = document.documentElement.getAttribute('ds-theme') === 'dark';
+        
+        return {
+            borderColor: isDark ? '#334155' : '#fff',
+            pieColors: [
+                '#FF6384',
+                '#36A2EB', 
+                '#FFCE56',
+                '#4BC0C0',
+                '#9966FF',
+                '#FF9F40',
+                '#FF6B6B',
+                '#4ECDC4'
+            ],
+            barColor: {
+                background: '#36A2EB',
+                border: '#1E88E5',
+                hover: '#42A5F5',
+                hoverBorder: '#1976D2'
+            }
+        };
+    }
+}
+
+// Theme toggle functionality (same as home page)
+function toggleTheme() {
+    if (window.theme && typeof window.theme.toggle === 'function') {
+        window.theme.toggle();
+        updateThemeUI();
+    }
+}
+
+function updateThemeUI() {
+    const icon = document.getElementById('theme-icon');
+    
+    if (window.theme && typeof window.theme.isDark === 'function') {
+        try {
+            const isDark = window.theme.isDark();
+            icon.textContent = isDark ? '☀️' : '🌙';
+        } catch (e) {
+            console.warn('Error updating theme UI:', e);
+        }
+    }
 }
 
 // Initialize the analytics dashboard
 let analytics;
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded, initializing RevolutAnalytics');
+    
+    // Initialize theme UI when page loads
+    setTimeout(updateThemeUI, 100);
+    
+    // Listen for theme changes
+    if (window.theme && typeof window.theme.onChange === 'function') {
+        window.theme.onChange(updateThemeUI);
+    }
+    
     analytics = new RevolutAnalytics();
     console.log('Calling init() after DOM is ready');
     analytics.init();

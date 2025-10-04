@@ -14,14 +14,14 @@
   /* Background colors */
   --color-background: #0f172a;
   --color-background-secondary: #1e293b;
-  --color-surface: #334155;
-  --color-surface-secondary: #475569;
+  --color-surface: #1e293b;
+  --color-surface-secondary: #334155;
   
   /* Text colors */
-  --color-text-primary: #f8fafc;
-  --color-text-secondary: #cbd5e1;
-  --color-text-tertiary: #94a3b8;
-  --color-text-disabled: #64748b;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #e2e8f0;
+  --color-text-tertiary: #cbd5e1;
+  --color-text-disabled: #94a3b8;
   
   /* Gray scale for dark theme */
   --color-gray-50: #f8fafc;
@@ -36,14 +36,14 @@
   --color-gray-900: #0f172a;
   
   /* Border colors */
-  --color-border: #334155;
-  --color-border-secondary: #475569;
-  --color-border-light: #64748b;
+  --color-border: #475569;
+  --color-border-secondary: #64748b;
+  --color-border-light: #94a3b8;
   
   /* Primary colors - adjusted for dark theme visibility */
-  --color-primary-light: #667eea;
-  --color-primary-dark: #764ba2;
-  --color-primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --color-primary-light: #818cf8;
+  --color-primary-dark: #6366f1;
+  --color-primary-gradient: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
   
   /* Success colors - muted for better readability */
   --color-success-light: #22c55e;
@@ -78,6 +78,60 @@
   
   /* Focus rings */
   --focus-ring: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+/* Card Components Dark Theme Support */
+[ds-theme="dark"] .card-summary {
+  background: var(--color-background-secondary) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .card-summary-label {
+  color: var(--color-text-secondary) !important;
+}
+
+[ds-theme="dark"] .card-summary-title {
+  color: var(--color-text-secondary) !important;
+}
+
+[ds-theme="dark"] .card-summary-value {
+  color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .card-summary-content {
+  color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .card-section {
+  background: var(--color-background) !important;
+  color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .card-section h2 {
+  color: var(--color-text-primary) !important;
+  border-color: var(--color-border) !important;
+}
+
+[ds-theme="dark"] .card-section h3 {
+  color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .card {
+  background: var(--color-background-secondary) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .card-header {
+  background: var(--color-primary-gradient) !important;
+  color: var(--color-white) !important;
+}
+
+[ds-theme="dark"] .card-item {
+  background: var(--color-surface) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text-primary) !important;
 }
 
 /* Base body styling for dark theme */

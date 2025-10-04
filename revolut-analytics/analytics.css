@@ -1,10 +1,298 @@
 /* Analytics Page Styles - Using Design System */
 
 /* Container customization */
+/* Using design system nav-btn for theme toggle - no custom styling needed */
+
+/* Main container and layout */
 .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: var(--spacing-5);
+    padding: var(--spacing-6) var(--spacing-4);
+    background: var(--color-background);
+}
+
+/* Header with theme toggle */
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-4);
+}
+
+.header-text {
+    flex: 1;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+}
+
+/* Old theme toggle styles removed - using home page approach */
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .header-controls {
+        align-self: flex-end;
+    }
+}
+
+/* Dark Theme Overrides for Analytics Page */
+html[ds-theme="dark"],
+body[ds-theme="dark"],
+[ds-theme="dark"] html,
+[ds-theme="dark"] body {
+    background-color: var(--color-background) !important;
+    color: var(--color-text-primary) !important;
+    min-height: 100vh;
+}
+
+html[ds-theme="dark"] .container,
+[ds-theme="dark"] .container {
+    background-color: var(--color-background);
+}
+
+[ds-theme="dark"] .card-section {
+    background-color: var(--color-background);
+}
+
+[ds-theme="dark"] .card-section h2 {
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .card {
+    background-color: var(--color-background-secondary) !important;
+    border-color: var(--color-border) !important;
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .card h3,
+[ds-theme="dark"] .card h2,
+[ds-theme="dark"] .card h1 {
+    color: var(--color-text-primary) !important;
+}
+
+/* Card header styles removed - now using design system navigation */
+
+[ds-theme="dark"] .form-input {
+    background-color: var(--color-surface) !important;
+    border-color: var(--color-border) !important;
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .form-input:focus {
+    border-color: var(--color-primary-light) !important;
+    box-shadow: var(--focus-ring) !important;
+}
+
+[ds-theme="dark"] .btn {
+    background-color: var(--color-surface) !important;
+    border-color: var(--color-border) !important;
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .btn:hover {
+    background-color: var(--color-surface-secondary) !important;
+}
+
+[ds-theme="dark"] .btn-secondary {
+    background-color: var(--color-surface) !important;
+    border-color: var(--color-border) !important;
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .btn-outline {
+    background-color: transparent !important;
+    border-color: var(--color-border) !important;
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .data-table {
+    background-color: var(--color-background-secondary) !important;
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .data-table th {
+    background-color: var(--color-surface) !important;
+    border-color: var(--color-border) !important;
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .data-table td {
+    border-color: var(--color-border) !important;
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .data-table tbody tr:hover {
+    background-color: var(--color-surface) !important;
+}
+
+/* Dark theme alternating row colors with proper contrast */
+[ds-theme="dark"] .data-table tr:nth-child(even) {
+    background-color: var(--color-surface) !important;
+}
+
+[ds-theme="dark"] .data-table tr:nth-child(odd) {
+    background-color: var(--color-background-secondary) !important;
+}
+
+[ds-theme="dark"] .data-table tr:nth-child(even):hover {
+    background-color: var(--color-surface-secondary) !important;
+}
+
+[ds-theme="dark"] .data-table tr:nth-child(odd):hover {
+    background-color: var(--color-surface) !important;
+}
+
+[ds-theme="dark"] .modal-overlay {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+[ds-theme="dark"] .modal-content {
+    background-color: var(--color-background-secondary) !important;
+    border-color: var(--color-border) !important;
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .modal-header {
+    border-color: var(--color-border) !important;
+}
+
+[ds-theme="dark"] .modal-footer {
+    border-color: var(--color-border) !important;
+}
+
+[ds-theme="dark"] .tooltip-content {
+    background-color: var(--color-surface) !important;
+    border-color: var(--color-border) !important;
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .exclusion-status-compact {
+    background-color: var(--color-surface) !important;
+    color: var(--color-text-secondary) !important;
+}
+
+[ds-theme="dark"] .pagination button {
+    background-color: var(--color-surface) !important;
+    border-color: var(--color-border) !important;
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .pagination button:hover {
+    background-color: var(--color-surface-secondary) !important;
+}
+
+[ds-theme="dark"] .pagination button.active {
+    background-color: var(--color-primary-light) !important;
+    border-color: var(--color-primary-light) !important;
+    color: var(--color-white) !important;
+}
+
+/* Additional text contrast fixes */
+[ds-theme="dark"] label {
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] p {
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] span {
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .form-group label {
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .table-controls label {
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .analytics-filters label {
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .description-filters label {
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .page-info {
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .sort-arrow {
+    color: var(--color-text-secondary) !important;
+}
+
+/* Amount styling for better contrast */
+[ds-theme="dark"] .amount-positive {
+    color: #22c55e !important; /* Brighter green for dark theme */
+}
+
+[ds-theme="dark"] .amount-negative {
+    color: #ef4444 !important; /* Brighter red for dark theme */
+}
+
+[ds-theme="dark"] .state-completed {
+    color: #22c55e !important;
+}
+
+[ds-theme="dark"] .state-failed {
+    color: #ef4444 !important;
+}
+
+/* Chart section headers */
+[ds-theme="dark"] .charts-grid h3 {
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .description-chart-header h2 {
+    color: var(--color-text-primary) !important;
+}
+
+/* Modal text */
+[ds-theme="dark"] .modal-content p {
+    color: var(--color-text-primary) !important;
+}
+
+[ds-theme="dark"] .modal-header h2 {
+    color: var(--color-text-primary) !important;
+}
+
+/* Placeholder text */
+[ds-theme="dark"] .form-input::placeholder {
+    color: var(--color-text-tertiary) !important;
+}
+
+/* Option text in selects */
+[ds-theme="dark"] option {
+    background-color: var(--color-surface) !important;
+    color: var(--color-text-primary) !important;
+}
+
+/* Ensure proper border colors */
+[ds-theme="dark"] * {
+    border-color: var(--color-border);
+}
+
+/* Better text inheritance for cards */
+[ds-theme="dark"] .card {
+    color: var(--color-text-primary);
+}
+
+[ds-theme="dark"] .card-summary-title {
+    color: var(--color-text-secondary);
+}
+
+[ds-theme="dark"] .card-summary-value {
+    color: var(--color-text-primary);
 }
 
 /* Upload Section with Compact Exclusions */

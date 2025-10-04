@@ -1,22 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Revolut Analytics - Transaction Insights</title>
     <link rel="stylesheet" href="../design_system/design-system.css">
+    <link rel="stylesheet" href="../design_system/themes/dark.css">
     <link rel="stylesheet" href="analytics.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../design_system/themes/theme-manager.js"></script>
 </head>
+
 <body>
-    <!-- Header Section -->
-    <div class="card-header">
+    <header class="card-header">
         <h1>💳 Revolut Analytics Dashboard</h1>
-        <p>Comprehensive analysis of your Revolut transaction data</p>
-    </div>
+        <nav class="page-nav">
+            <a href="../index.html" class="nav-btn">🏠 Home</a>
+            <a href="../budget/index.html" class="nav-btn">� Budget Tool</a>
+        </nav>
+    </header>
+
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" onclick="window.toggleTheme()" aria-label="Toggle theme">
+        <span id="theme-icon">🌙</span>
+    </button>
 
     <!-- Main Content -->
-    <main class="container">
+    <main>
         <!-- CSV File Upload with Exclusion Filters -->
         <div class="card-section">
             <div class="upload-header">
@@ -25,16 +33,16 @@
                     <button id="openExclusionModal" class="btn btn-secondary btn-sm">Configure filters</button>
                     <span class="tooltip">
                         <button class="btn btn-icon btn-sm" aria-label="Show default exclusions">ℹ️</button>
-                                            <div class="tooltip-content top">
-                        <strong>Default Exclusions:</strong><br>
-                        • savings vault topup<br>
-                        • to flexible cash funds<br>
-                        • Topup<br>
-                        • Transfer from<br>
-                        • To pocket<br>
-                        • Pocket Withdrawal<br>
-                        • Exchanged to
-                    </div>
+                        <div class="tooltip-content top">
+                            <strong>Default Exclusions:</strong><br>
+                            • savings vault topup<br>
+                            • to flexible cash funds<br>
+                            • Topup<br>
+                            • Transfer from<br>
+                            • To pocket<br>
+                            • Pocket Withdrawal<br>
+                            • Exchanged to
+                        </div>
                     </span>
                 </div>
             </div>
@@ -57,25 +65,25 @@
             <div class="analytics-overview">
                 <div class="card card-summary card-summary-primary">
                     <div class="card-summary-content">
-                        <div class="card-summary-title">Total Transactions</div>
+                        <div class="card-summary-label">Total Transactions</div>
                         <div class="card-summary-value" id="totalTransactions">0</div>
                     </div>
                 </div>
                 <div class="card card-summary card-summary-danger">
                     <div class="card-summary-content">
-                        <div class="card-summary-title">Total Spent</div>
+                        <div class="card-summary-label">Total Spent</div>
                         <div class="card-summary-value" id="totalSpent">0.00</div>
                     </div>
                 </div>
                 <div class="card card-summary card-summary-success">
                     <div class="card-summary-content">
-                        <div class="card-summary-title">Total Income</div>
+                        <div class="card-summary-label">Total Income</div>
                         <div class="card-summary-value" id="totalIncome">0.00</div>
                     </div>
                 </div>
                 <div class="card card-summary">
                     <div class="card-summary-content">
-                        <div class="card-summary-title">Current Balance</div>
+                        <div class="card-summary-label">Current Balance</div>
                         <div class="card-summary-value" id="currentBalance">0.00</div>
                     </div>
                 </div>
@@ -161,30 +169,30 @@
                     </select>
                 </div>
             </div>
-            
+
             <div class="spending-insights">
                 <div class="card card-summary">
                     <div class="card-summary-content">
-                        <div class="card-summary-title">Average Transaction</div>
+                        <div class="card-summary-label">Average Transaction</div>
                         <div class="card-summary-value" id="avgTransaction">0.00</div>
                     </div>
                 </div>
                 <div class="card card-summary">
                     <div class="card-summary-content">
-                        <div class="card-summary-title">Most Frequent Category</div>
+                        <div class="card-summary-label">Most Frequent Category</div>
                         <div class="card-summary-value" id="topCategory">-</div>
                     </div>
                 </div>
                 <div class="card card-summary">
                     <div class="card-summary-content">
-                        <div class="card-summary-title">Largest Purchase</div>
+                        <div class="card-summary-label">Largest Purchase</div>
                         <div class="card-summary-value" id="largestPurchase">0.00</div>
                     </div>
                 </div>
                 <div class="card card-summary card-summary-danger">
                     <div class="card-summary-content">
-                        <div class="card-summary-title">Total Fees Paid</div>
-                        <div class="card-summary-value" id="totalFees">$0.00</div>
+                        <div class="card-summary-label">Total Fees Paid</div>
+                        <div class="card-summary-value" id="totalFees">0.00</div>
                     </div>
                 </div>
             </div>
@@ -193,14 +201,14 @@
         <!-- Transaction Table Section -->
         <div class="card-section">
             <h2>All Transactions</h2>
-            
+
             <!-- Table Controls -->
             <div class="table-controls">
                 <div class="form-group">
                     <label for="searchInput">Search:</label>
                     <input type="text" id="searchInput" class="form-input" placeholder="Search transactions...">
                 </div>
-                
+
                 <div class="filter-controls">
                     <div class="form-group">
                         <label for="typeFilter">Type:</label>
@@ -208,14 +216,14 @@
                             <option value="">All Types</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="productFilter">Product:</label>
                         <select id="productFilter" class="form-input">
                             <option value="">All Products</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="stateFilter">State:</label>
                         <select id="stateFilter" class="form-input">
@@ -224,7 +232,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Transaction Table -->
             <div class="table-container">
                 <table id="transactionsTable" class="data-table">
@@ -245,13 +253,14 @@
                     </tbody>
                 </table>
             </div>
-            
+
             <!-- Pagination -->
             <div class="pagination" id="pagination">
                 <!-- Pagination controls will be generated by JavaScript -->
             </div>
         </div>
     </main>
+    </div>
 
     <!-- Exclusion Filters Modal -->
     <div id="exclusionModal" class="modal-overlay">
@@ -262,12 +271,13 @@
             </div>
             <div class="modal-body">
                 <p>
-                    Transactions containing these text patterns will be excluded from charts and tables. 
+                    Transactions containing these text patterns will be excluded from charts and tables.
                     Enter one pattern per line (case-insensitive matching).
                 </p>
                 <div class="form-group">
                     <label for="exclusionList">Excluded Text Patterns:</label>
-                    <textarea id="exclusionList" class="form-input" rows="6" placeholder="Enter text patterns to exclude...&#10;Example:&#10;savings vault topup&#10;Transfer from&#10;Topup"></textarea>
+                    <textarea id="exclusionList" class="form-input" rows="6"
+                        placeholder="Enter text patterns to exclude...&#10;Example:&#10;savings vault topup&#10;Transfer from&#10;Topup"></textarea>
                 </div>
             </div>
             <div class="modal-footer">
@@ -285,4 +295,5 @@
 
     <script src="analytics.js"></script>
 </body>
+
 </html>
