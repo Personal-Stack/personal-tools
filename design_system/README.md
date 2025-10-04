@@ -24,7 +24,8 @@ design_system/
 │   ├── forms.css     # Form inputs, selects, validation
 │   ├── cards.css     # Card layouts and containers
 │   ├── modal.css     # Modal overlays and dialogs
-│   └── navigation.css # Navigation patterns
+│   ├── navigation.css # Navigation patterns
+│   └── tooltip.css   # Tooltip and contextual help
 ├── examples/         # Usage examples
 │   └── component-showcase.html # Interactive component demo
 ├── design-system.css # Main consolidated stylesheet
@@ -249,6 +250,49 @@ Modal system for overlays and dialogs:
     </div>
   </div>
 </div>
+```
+
+### Tooltips
+
+Interactive tooltips for contextual help and information:
+
+```html
+<!-- Basic tooltip -->
+<span class="tooltip">
+  Hover for help
+  <span class="tooltip-content">This provides helpful information</span>
+</span>
+
+<!-- Positioned tooltips -->
+<span class="tooltip">
+  Bottom tooltip
+  <span class="tooltip-content bottom">Appears below the element</span>
+</span>
+
+<!-- Colored tooltips -->
+<button class="btn btn-primary tooltip">
+  Save
+  <span class="tooltip-content success">Changes will be saved locally</span>
+</button>
+
+<!-- Form field tooltip -->
+<div class="form-group">
+  <label>
+    Budget Amount
+    <span class="tooltip">
+      <span class="tooltip-content multiline">
+        Enter your total monthly budget. This will be used to calculate spending limits.
+      </span>
+    </span>
+  </label>
+  <input type="number" class="form-input">
+</div>
+
+<!-- Icon tooltip -->
+<span class="tooltip">
+  <span class="tooltip-icon">?</span>
+  <span class="tooltip-content">Additional information available</span>
+</span>
 ```
 
 ## 📱 Responsive Design

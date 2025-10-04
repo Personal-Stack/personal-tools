@@ -17,6 +17,7 @@
 @import 'components/cards.css';
 @import 'components/modal.css';
 @import 'components/navigation.css';
+@import 'components/tooltip.css';
 
 /* Base Reset and Global Styles */
 * {

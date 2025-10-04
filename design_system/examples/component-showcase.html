@@ -16,7 +16,7 @@
         .example-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
+            gap: 2rem;
             margin-top: 1rem;
         }
         .example-item {
@@ -24,6 +24,13 @@
             background: #f8f9fa;
             border-radius: 8px;
             border: 1px solid #e9ecef;
+            overflow: visible; /* Allow tooltips to show outside container */
+        }
+        .example-section {
+            overflow: visible; /* Ensure section doesn't clip tooltips */
+        }
+        .example-grid {
+            overflow: visible; /* Ensure grid doesn't clip tooltips */
         }
         .color-swatch {
             width: 100%;
@@ -36,6 +43,43 @@
             color: white;
             font-weight: 600;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        .code-example {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+        .code-example pre {
+            margin: 0;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        .example-with-code {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .code-toggle {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .code-toggle:hover {
+            background: #5a6268;
+        }
+        .code-example.hidden {
+            display: none;
         }
     </style>
 </head>
@@ -51,6 +95,7 @@
                 <a href="#forms" class="nav-link">Forms</a>
                 <a href="#cards" class="nav-link">Cards</a>
                 <a href="#navigation" class="nav-link">Navigation</a>
+                <a href="#tooltip" class="nav-link">Tooltips</a>
             </nav>
         </header>
 
@@ -129,6 +174,19 @@
                         <button class="btn btn-secondary">Secondary Button</button>
                         <button class="btn btn-primary" disabled>Disabled Button</button>
                     </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Primary Actions --&gt;
+&lt;button class="btn btn-primary"&gt;Primary Button&lt;/button&gt;
+&lt;button class="btn btn-secondary"&gt;Secondary Button&lt;/button&gt;
+&lt;button class="btn btn-primary" disabled&gt;Disabled Button&lt;/button&gt;
+
+&lt;!-- Button Group --&gt;
+&lt;div class="btn-group vertical"&gt;
+    &lt;button class="btn btn-primary"&gt;Save Changes&lt;/button&gt;
+    &lt;button class="btn btn-secondary"&gt;Cancel&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+                    </div>
                 </div>
                 
                 <div class="example-item">
@@ -139,6 +197,14 @@
                         <button class="btn btn-warning">Warning Action</button>
                         <button class="btn btn-info">Info Action</button>
                     </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- State-specific Buttons --&gt;
+&lt;button class="btn btn-success"&gt;Confirm Purchase&lt;/button&gt;
+&lt;button class="btn btn-danger"&gt;Delete Item&lt;/button&gt;
+&lt;button class="btn btn-warning"&gt;Reset Data&lt;/button&gt;
+&lt;button class="btn btn-info"&gt;Edit Details&lt;/button&gt;</code></pre>
+                    </div>
                 </div>
                 
                 <div class="example-item">
@@ -148,6 +214,15 @@
                         <button class="btn btn-nav btn-export">📥 Export Data</button>
                         <button class="btn btn-nav btn-help">❓ Help</button>
                     </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Navigation Buttons (for colored backgrounds) --&gt;
+&lt;nav class="page-nav"&gt;
+    &lt;a href="/analytics" class="btn btn-nav"&gt;📊 Analytics&lt;/a&gt;
+    &lt;button class="btn btn-nav btn-export"&gt;📥 Export Data&lt;/button&gt;
+    &lt;button class="btn btn-nav btn-help"&gt;❓ Help&lt;/button&gt;
+&lt;/nav&gt;</code></pre>
+                    </div>
                 </div>
                 
                 <div class="example-item">
@@ -156,6 +231,13 @@
                         <button class="btn btn-primary btn-sm">Small Button</button>
                         <button class="btn btn-primary">Regular Button</button>
                         <button class="btn btn-primary btn-lg">Large Button</button>
+                    </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Button Sizes --&gt;
+&lt;button class="btn btn-primary btn-sm"&gt;Small Button&lt;/button&gt;
+&lt;button class="btn btn-primary"&gt;Regular Button&lt;/button&gt;
+&lt;button class="btn btn-primary btn-lg"&gt;Large Button&lt;/button&gt;</code></pre>
                     </div>
                 </div>
             </div>
@@ -185,6 +267,30 @@
                             <option value="option2">Option 2</option>
                         </select>
                     </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Basic Form Elements --&gt;
+&lt;div class="form-group"&gt;
+    &lt;label for="budget-name"&gt;Budget Name&lt;/label&gt;
+    &lt;input type="text" id="budget-name" class="form-input" 
+           placeholder="Enter budget name..."&gt;
+&lt;/div&gt;
+
+&lt;div class="form-group"&gt;
+    &lt;label for="amount"&gt;Amount&lt;/label&gt;
+    &lt;input type="number" id="amount" class="form-input" 
+           placeholder="0.00" min="0" step="0.01"&gt;
+&lt;/div&gt;
+
+&lt;div class="form-group"&gt;
+    &lt;label for="currency"&gt;Currency&lt;/label&gt;
+    &lt;select id="currency" class="form-select"&gt;
+        &lt;option value=""&gt;Select currency...&lt;/option&gt;
+        &lt;option value="USD"&gt;USD ($)&lt;/option&gt;
+        &lt;option value="EUR"&gt;EUR (€)&lt;/option&gt;
+    &lt;/select&gt;
+&lt;/div&gt;</code></pre>
+                    </div>
                 </div>
                 
                 <div class="example-item">
@@ -204,6 +310,30 @@
                             <label for="file-input" class="form-file-label">Choose File</label>
                         </div>
                     </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Input with Unit Indicator --&gt;
+&lt;div class="form-group"&gt;
+    &lt;label for="investment"&gt;Investment Amount&lt;/label&gt;
+    &lt;div class="form-input-with-unit"&gt;
+        &lt;input type="number" id="investment" class="form-input" 
+               placeholder="0.00"&gt;
+        &lt;span class="form-input-unit"&gt;$&lt;/span&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- File Upload --&gt;
+&lt;div class="form-group"&gt;
+    &lt;label for="budget-file"&gt;Import Budget Data&lt;/label&gt;
+    &lt;div class="form-file-wrapper"&gt;
+        &lt;input type="file" id="budget-file" class="form-file" 
+               accept=".json,.csv"&gt;
+        &lt;label for="budget-file" class="form-file-label"&gt;
+            Choose File
+        &lt;/label&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                    </div>
                 </div>
                 
                 <div class="example-item">
@@ -217,6 +347,32 @@
                         <label for="invalid-input">Invalid Input</label>
                         <input type="text" id="invalid-input" class="form-input invalid" value="Invalid input">
                         <span class="form-status error">This field has an error</span>
+                    </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Form Validation States --&gt;
+&lt;div class="form-group"&gt;
+    &lt;label for="email"&gt;Email Address&lt;/label&gt;
+    &lt;input type="email" id="email" class="form-input valid" 
+           value="user@example.com"&gt;
+    &lt;span class="form-status success"&gt;Email format is valid&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;div class="form-group"&gt;
+    &lt;label for="password"&gt;Password&lt;/label&gt;
+    &lt;input type="password" id="password" class="form-input invalid" 
+           value="123"&gt;
+    &lt;span class="form-status error"&gt;
+        Password must be at least 8 characters
+    &lt;/span&gt;
+&lt;/div&gt;
+
+&lt;div class="form-group"&gt;
+    &lt;label for="budget"&gt;Budget Amount&lt;/label&gt;
+    &lt;input type="number" id="budget" class="form-input" 
+           placeholder="0.00"&gt;
+    &lt;span class="form-status warning"&gt;Optional field&lt;/span&gt;
+&lt;/div&gt;</code></pre>
                     </div>
                 </div>
             </div>
@@ -248,6 +404,29 @@
                 </div>
             </div>
             
+            <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+            <div class="code-example hidden">
+                <pre><code>&lt;!-- Indicator Card (for key metrics) --&gt;
+&lt;div class="card-indicator"&gt;
+    &lt;h3&gt;Monthly Budget&lt;/h3&gt;
+    &lt;div class="card-indicator-value"&gt;$2,500&lt;/div&gt;
+    &lt;small&gt;Available this month&lt;/small&gt;
+&lt;/div&gt;
+
+&lt;!-- Summary Card (for statistics) --&gt;
+&lt;div class="card-summary"&gt;
+    &lt;div class="card-summary-label"&gt;Total Transactions&lt;/div&gt;
+    &lt;div class="card-summary-value"&gt;142&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Basic Content Card --&gt;
+&lt;section class="card-section"&gt;
+    &lt;h2&gt;Budget Overview&lt;/h2&gt;
+    &lt;p&gt;Your budget summary and key insights...&lt;/p&gt;
+    &lt;button class="btn btn-primary"&gt;View Details&lt;/button&gt;
+&lt;/section&gt;</code></pre>
+            </div>
+            
             <div style="margin-top: 2rem;">
                 <div class="card-item">
                     <div class="card-item-info">
@@ -262,6 +441,32 @@
                         <button class="btn btn-info btn-sm">Edit</button>
                         <button class="btn btn-danger btn-sm">Remove</button>
                     </div>
+                </div>
+                
+                <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                <div class="code-example hidden">
+                    <pre><code>&lt;!-- Budget Item Card --&gt;
+&lt;div class="card-item"&gt;
+    &lt;div class="card-item-info"&gt;
+        &lt;div class="card-item-name"&gt;Grocery Budget&lt;/div&gt;
+        &lt;div class="card-item-details"&gt;
+            &lt;span class="card-item-value"&gt;$450.00&lt;/span&gt;
+            &lt;span class="card-item-frequency"&gt;monthly&lt;/span&gt;
+            &lt;span class="card-item-tags"&gt;groceries, food&lt;/span&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="card-item-actions"&gt;
+        &lt;button class="btn btn-info btn-sm"&gt;Edit&lt;/button&gt;
+        &lt;button class="btn btn-danger btn-sm"&gt;Remove&lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Multiple Items List --&gt;
+&lt;div class="items-list"&gt;
+    &lt;div class="card-item"&gt;...&lt;/div&gt;
+    &lt;div class="card-item"&gt;...&lt;/div&gt;
+    &lt;div class="card-item"&gt;...&lt;/div&gt;
+&lt;/div&gt;</code></pre>
                 </div>
             </div>
         </section>
@@ -279,6 +484,19 @@
                     <button class="nav-btn nav-btn export">📥 Export</button>
                     <button class="nav-btn help">❓ Help</button>
                 </nav>
+                <button class="code-toggle" onclick="toggleCode(this)" style="margin-top: 1rem; background: rgba(255,255,255,0.2);">Show Code</button>
+                <div class="code-example hidden">
+                    <pre><code>&lt;!-- Page Navigation (typically in header) --&gt;
+&lt;header class="card-header"&gt;
+    &lt;h1&gt;Budget Planner&lt;/h1&gt;
+    &lt;nav class="page-nav"&gt;
+        &lt;a href="/dashboard" class="nav-link"&gt;🏠 Dashboard&lt;/a&gt;
+        &lt;a href="/analytics" class="nav-link"&gt;📊 Analytics&lt;/a&gt;
+        &lt;button class="nav-btn btn-export"&gt;📥 Export&lt;/button&gt;
+        &lt;button class="nav-btn btn-help"&gt;❓ Help&lt;/button&gt;
+    &lt;/nav&gt;
+&lt;/header&gt;</code></pre>
+                </div>
             </div>
             
             <div class="example-item" style="margin-top: 1rem;">
@@ -289,6 +507,28 @@
                     <button class="nav-tab">Analytics</button>
                     <button class="nav-tab">Settings</button>
                 </nav>
+                <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                <div class="code-example hidden">
+                    <pre><code>&lt;!-- Tab Navigation --&gt;
+&lt;nav class="nav-tabs"&gt;
+    &lt;button class="nav-tab active" onclick="showTab('overview')"&gt;
+        Overview
+    &lt;/button&gt;
+    &lt;button class="nav-tab" onclick="showTab('budget')"&gt;
+        Budget Items
+    &lt;/button&gt;
+    &lt;button class="nav-tab" onclick="showTab('analytics')"&gt;
+        Analytics
+    &lt;/button&gt;
+    &lt;button class="nav-tab" onclick="showTab('settings')"&gt;
+        Settings
+    &lt;/button&gt;
+&lt;/nav&gt;
+
+&lt;!-- Tab Content --&gt;
+&lt;div id="overview" class="tab-content active"&gt;...&lt;/div&gt;
+&lt;div id="budget" class="tab-content"&gt;...&lt;/div&gt;</code></pre>
+                </div>
             </div>
             
             <div class="example-item" style="margin-top: 1rem;">
@@ -300,6 +540,262 @@
                     <span class="nav-breadcrumb-separator">›</span>
                     <span class="nav-breadcrumb-item active">Current Item</span>
                 </nav>
+                <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                <div class="code-example hidden">
+                    <pre><code>&lt;!-- Breadcrumb Navigation --&gt;
+&lt;nav class="nav-breadcrumb"&gt;
+    &lt;a href="/" class="nav-breadcrumb-item"&gt;Home&lt;/a&gt;
+    &lt;span class="nav-breadcrumb-separator"&gt;›&lt;/span&gt;
+    &lt;a href="/budget" class="nav-breadcrumb-item"&gt;Budget&lt;/a&gt;
+    &lt;span class="nav-breadcrumb-separator"&gt;›&lt;/span&gt;
+    &lt;span class="nav-breadcrumb-item active"&gt;
+        Monthly Planning
+    &lt;/span&gt;
+&lt;/nav&gt;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tooltip Section -->
+        <section id="tooltip" class="example-section">
+            <h2>Tooltip Components</h2>
+            <p>Interactive tooltips for providing contextual help and information on hover or focus.</p>
+            
+            <div class="example-grid">
+                <div class="example-item" style="overflow: visible; padding: 2rem;">
+                    <h4>Basic Tooltips</h4>
+                    <div style="display: flex; flex-wrap: wrap; gap: 3rem; padding: 2rem; justify-content: center; align-items: center; min-height: 120px; position: relative;">
+                        <span class="tooltip" style="padding: 0.75rem 1rem; background: #e9ecef; border-radius: 6px; border: 1px solid #ced4da; cursor: pointer;">
+                            Hover me (top)
+                            <span class="tooltip-content">This tooltip appears on top</span>
+                        </span>
+                        
+                        <span class="tooltip" style="padding: 0.75rem 1rem; background: #e9ecef; border-radius: 6px; border: 1px solid #ced4da; cursor: pointer;">
+                            Hover me (bottom)
+                            <span class="tooltip-content bottom">This tooltip appears on bottom</span>
+                        </span>
+                        
+                        <span class="tooltip" style="padding: 0.75rem 1rem; background: #e9ecef; border-radius: 6px; border: 1px solid #ced4da; cursor: pointer;">
+                            Hover me (left)
+                            <span class="tooltip-content left">This tooltip appears on left</span>
+                        </span>
+                        
+                        <span class="tooltip" style="padding: 0.75rem 1rem; background: #e9ecef; border-radius: 6px; border: 1px solid #ced4da; cursor: pointer;">
+                            Hover me (right)
+                            <span class="tooltip-content right">This tooltip appears on right</span>
+                        </span>
+                    </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Basic Tooltips with Positioning --&gt;
+&lt;span class="tooltip"&gt;
+    Hover me (top)
+    &lt;span class="tooltip-content"&gt;This tooltip appears on top&lt;/span&gt;
+&lt;/span&gt;
+
+&lt;span class="tooltip"&gt;
+    Hover me (bottom)
+    &lt;span class="tooltip-content bottom"&gt;This tooltip appears on bottom&lt;/span&gt;
+&lt;/span&gt;
+
+&lt;span class="tooltip"&gt;
+    Hover me (left)
+    &lt;span class="tooltip-content left"&gt;This tooltip appears on left&lt;/span&gt;
+&lt;/span&gt;
+
+&lt;span class="tooltip"&gt;
+    Hover me (right)
+    &lt;span class="tooltip-content right"&gt;This tooltip appears on right&lt;/span&gt;
+&lt;/span&gt;</code></pre>
+                    </div>
+                </div>
+                
+                <div class="example-item">
+                    <h4>Colored Tooltips</h4>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+                        <button class="btn btn-success tooltip">
+                            Success
+                            <span class="tooltip-content success">Operation completed successfully!</span>
+                        </button>
+                        
+                        <button class="btn btn-danger tooltip">
+                            Error
+                            <span class="tooltip-content danger">Something went wrong!</span>
+                        </button>
+                        
+                        <button class="btn btn-warning tooltip">
+                            Warning
+                            <span class="tooltip-content warning">Please be careful!</span>
+                        </button>
+                        
+                        <button class="btn btn-info tooltip">
+                            Info
+                            <span class="tooltip-content info">Additional information available</span>
+                        </button>
+                    </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Colored Tooltips --&gt;
+&lt;button class="btn btn-success tooltip"&gt;
+    Success
+    &lt;span class="tooltip-content success"&gt;
+        Operation completed successfully!
+    &lt;/span&gt;
+&lt;/button&gt;
+
+&lt;button class="btn btn-danger tooltip"&gt;
+    Error
+    &lt;span class="tooltip-content danger"&gt;
+        Something went wrong!
+    &lt;/span&gt;
+&lt;/button&gt;
+
+&lt;button class="btn btn-warning tooltip"&gt;
+    Warning
+    &lt;span class="tooltip-content warning"&gt;
+        Please be careful!
+    &lt;/span&gt;
+&lt;/button&gt;
+
+&lt;button class="btn btn-info tooltip"&gt;
+    Info
+    &lt;span class="tooltip-content info"&gt;
+        Additional information available
+    &lt;/span&gt;
+&lt;/button&gt;</code></pre>
+                    </div>
+                </div>
+                
+                <div class="example-item">
+                    <h4>Form Tooltips</h4>
+                    <div class="form-group">
+                        <label for="budget-amount-tooltip">
+                            Budget Amount
+                            <span class="tooltip">
+                                <span class="tooltip-content">Enter your total monthly budget in USD. This will be used to calculate your spending limits.</span>
+                            </span>
+                        </label>
+                        <input type="number" id="budget-amount-tooltip" class="form-input" placeholder="0.00">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="investment-type-tooltip">
+                            Investment Type
+                            <span class="tooltip">
+                                <span class="tooltip-content multiline">Choose between fixed amount (specific dollar value) or percentage (portion of your budget) for investments.</span>
+                            </span>
+                        </label>
+                        <select id="investment-type-tooltip" class="form-select">
+                            <option value="">Select type...</option>
+                            <option value="amount">Fixed Amount</option>
+                            <option value="percentage">Percentage</option>
+                        </select>
+                    </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Form Field Tooltips --&gt;
+&lt;div class="form-group"&gt;
+    &lt;label for="budget-amount"&gt;
+        Budget Amount
+        &lt;span class="tooltip"&gt;
+            &lt;span class="tooltip-content"&gt;
+                Enter your total monthly budget in USD
+            &lt;/span&gt;
+        &lt;/span&gt;
+    &lt;/label&gt;
+    &lt;input type="number" id="budget-amount" class="form-input"&gt;
+&lt;/div&gt;
+
+&lt;!-- Multiline Tooltip --&gt;
+&lt;div class="form-group"&gt;
+    &lt;label for="investment-type"&gt;
+        Investment Type
+        &lt;span class="tooltip"&gt;
+            &lt;span class="tooltip-content multiline"&gt;
+                Choose between fixed amount or percentage 
+                for your investment allocation
+            &lt;/span&gt;
+        &lt;/span&gt;
+    &lt;/label&gt;
+    &lt;select id="investment-type" class="form-select"&gt;...&lt;/select&gt;
+&lt;/div&gt;</code></pre>
+                    </div>
+                </div>
+                
+                <div class="example-item">
+                    <h4>Icon Tooltips</h4>
+                    <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                        <span style="display: flex; align-items: center; gap: 0.5rem;">
+                            Budget Status
+                            <span class="tooltip">
+                                <span class="tooltip-icon">?</span>
+                                <span class="tooltip-content">Your current budget utilization is 75% of the monthly limit</span>
+                            </span>
+                        </span>
+                        
+                        <span style="display: flex; align-items: center; gap: 0.5rem;">
+                            Investment Growth
+                            <span class="tooltip">
+                                <span class="tooltip-icon success">✓</span>
+                                <span class="tooltip-content success">Your investments are performing above average this month</span>
+                            </span>
+                        </span>
+                        
+                        <span style="display: flex; align-items: center; gap: 0.5rem;">
+                            Overspending Alert
+                            <span class="tooltip">
+                                <span class="tooltip-icon danger">!</span>
+                                <span class="tooltip-content danger">You've exceeded your dining budget by $150 this month</span>
+                            </span>
+                        </span>
+                        
+                        <span style="display: flex; align-items: center; gap: 0.5rem;">
+                            Tip
+                            <span class="tooltip">
+                                <span class="tooltip-icon warning">💡</span>
+                                <span class="tooltip-content warning large">Consider setting up automatic transfers to reach your savings goals faster</span>
+                            </span>
+                        </span>
+                    </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Icon Tooltips --&gt;
+&lt;span style="display: flex; align-items: center; gap: 0.5rem;"&gt;
+    Budget Status
+    &lt;span class="tooltip"&gt;
+        &lt;span class="tooltip-icon"&gt;?&lt;/span&gt;
+        &lt;span class="tooltip-content"&gt;
+            Your current budget utilization is 75%
+        &lt;/span&gt;
+    &lt;/span&gt;
+&lt;/span&gt;
+
+&lt;!-- Success Icon Tooltip --&gt;
+&lt;span class="tooltip"&gt;
+    &lt;span class="tooltip-icon success"&gt;✓&lt;/span&gt;
+    &lt;span class="tooltip-content success"&gt;
+        Investments performing above average
+    &lt;/span&gt;
+&lt;/span&gt;
+
+&lt;!-- Danger Icon Tooltip --&gt;
+&lt;span class="tooltip"&gt;
+    &lt;span class="tooltip-icon danger"&gt;!&lt;/span&gt;
+    &lt;span class="tooltip-content danger"&gt;
+        You've exceeded your dining budget
+    &lt;/span&gt;
+&lt;/span&gt;
+
+&lt;!-- Large Tooltip with Icon --&gt;
+&lt;span class="tooltip"&gt;
+    &lt;span class="tooltip-icon warning"&gt;💡&lt;/span&gt;
+    &lt;span class="tooltip-content warning large"&gt;
+        Consider setting up automatic transfers 
+        to reach your savings goals faster
+    &lt;/span&gt;
+&lt;/span&gt;</code></pre>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -309,6 +805,55 @@
             <p>Modal dialogs and overlays used for help, confirmations, and forms.</p>
             
             <button class="btn btn-primary" onclick="showModal()">Show Modal Example</button>
+            
+            <button class="code-toggle" onclick="toggleCode(this)" style="margin-left: 1rem;">Show Code</button>
+            <div class="code-example hidden">
+                <pre><code>&lt;!-- Modal Trigger --&gt;
+&lt;button class="btn btn-primary" onclick="showModal('helpModal')"&gt;
+    Show Help
+&lt;/button&gt;
+
+&lt;!-- Modal Structure --&gt;
+&lt;div id="helpModal" class="modal-overlay"&gt;
+    &lt;div class="modal-content"&gt;
+        &lt;div class="modal-header"&gt;
+            &lt;h2&gt;Help &amp; Tips&lt;/h2&gt;
+            &lt;button class="modal-close" onclick="hideModal('helpModal')"&gt;
+                &amp;times;
+            &lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div class="modal-body"&gt;
+            &lt;h3&gt;Getting Started&lt;/h3&gt;
+            &lt;p&gt;Welcome to Budget Planner...&lt;/p&gt;
+            
+            &lt;div class="modal-privacy-notice"&gt;
+                &lt;p&gt;&lt;strong&gt;Privacy:&lt;/strong&gt; 
+                   All data is stored locally.&lt;/p&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class="modal-footer"&gt;
+            &lt;button class="modal-btn secondary" 
+                    onclick="hideModal('helpModal')"&gt;
+                Close
+            &lt;/button&gt;
+            &lt;button class="modal-btn primary" 
+                    onclick="getStarted()"&gt;
+                Get Started
+            &lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+function showModal(id) {
+    document.getElementById(id).classList.add('show');
+}
+
+function hideModal(id) {
+    document.getElementById(id).classList.remove('show');
+}
+&lt;/script&gt;</code></pre>
+            </div>
             
             <!-- Modal Overlay -->
             <div id="exampleModal" class="modal-overlay">
@@ -344,6 +889,20 @@
             document.getElementById('exampleModal').classList.remove('show');
         }
         
+        // Toggle code examples
+        function toggleCode(button) {
+            const codeExample = button.nextElementSibling;
+            const isHidden = codeExample.classList.contains('hidden');
+            
+            if (isHidden) {
+                codeExample.classList.remove('hidden');
+                button.textContent = 'Hide Code';
+            } else {
+                codeExample.classList.add('hidden');
+                button.textContent = 'Show Code';
+            }
+        }
+        
         // Close modal when clicking overlay
         document.getElementById('exampleModal').addEventListener('click', function(e) {
             if (e.target === this) {
@@ -358,6 +917,54 @@
                 this.classList.add('active');
             });
         });
+        
+        // Copy code functionality
+        function copyCode(button) {
+            const codeBlock = button.parentElement.querySelector('code');
+            const text = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(text).then(function() {
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = 'Copy Code';
+                }, 2000);
+            });
+        }
+        
+        // Tooltip positioning helper (optional enhancement)
+        function initTooltips() {
+            const tooltips = document.querySelectorAll('.tooltip');
+            
+            tooltips.forEach(tooltip => {
+                const content = tooltip.querySelector('.tooltip-content');
+                
+                tooltip.addEventListener('mouseenter', () => {
+                    // Check if tooltip is clipped and adjust position if needed
+                    const rect = content.getBoundingClientRect();
+                    const viewportWidth = window.innerWidth;
+                    const viewportHeight = window.innerHeight;
+                    
+                    // Reset any auto-positioning classes
+                    content.classList.remove('auto-left', 'auto-right', 'auto-top', 'auto-bottom');
+                    
+                    // Add auto-positioning if tooltip would be clipped
+                    if (rect.right > viewportWidth) {
+                        content.classList.add('auto-left');
+                    } else if (rect.left < 0) {
+                        content.classList.add('auto-right');
+                    }
+                    
+                    if (rect.bottom > viewportHeight) {
+                        content.classList.add('auto-top');
+                    } else if (rect.top < 0) {
+                        content.classList.add('auto-bottom');
+                    }
+                });
+            });
+        }
+        
+        // Initialize tooltips when page loads
+        document.addEventListener('DOMContentLoaded', initTooltips);
     </script>
 </body>
 </html>
