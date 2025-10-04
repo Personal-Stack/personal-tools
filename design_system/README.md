@@ -29,6 +29,9 @@ design_system/
 │   ├── spinner.css   # Loading indicators and spinners
 │   ├── snackbar.css  # Toast notifications and snackbars
 │   └── snackbar.js   # Snackbar JavaScript utility
+├── themes/           # Theme system
+│   ├── dark.css      # Dark theme implementation
+│   └── theme-manager.js # Theme switching utility
 ├── examples/         # Usage examples
 │   └── component-showcase.html # Interactive component demo
 ├── design-system.css # Main consolidated stylesheet
@@ -474,6 +477,59 @@ snackbar.dismissAll();
 **Available Positions**: `top-left`, `top-center`, `top-right`, `center-left`, `center-right`, `bottom-left`, `bottom-center`, `bottom-right`  
 **Available Variants**: `default`, `success`, `warning`, `error`, `info`, `light`, `dark`  
 **Features**: Auto-dismiss, progress bar, action buttons, custom icons, responsive design
+
+### 🌓 Theme System
+
+Easy theme switching with automatic system preference detection:
+
+```html
+<!-- Include theme manager -->
+<script src="design_system/themes/theme-manager.js"></script>
+
+<!-- Set theme attribute on body -->
+<body ds-theme="dark"> <!-- or ds-theme="light" -->
+
+<script>
+// Manual theme switching
+setTheme('dark');
+setTheme('light');
+toggleTheme();
+
+// Using theme object
+theme.set('dark');
+theme.toggle();
+theme.clear(); // Use system preference
+
+// Check current theme
+if (theme.isDark()) {
+    console.log('Dark theme is active');
+}
+
+// Listen for theme changes
+theme.onChange((event) => {
+    console.log('Theme changed to:', event.detail.theme);
+});
+</script>
+```
+
+```css
+/* Theme-aware CSS using CSS variables */
+.my-component {
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+}
+
+/* Variables automatically change with theme */
+[ds-theme="dark"] {
+    --color-surface: #334155;
+    --color-text-primary: #f8fafc;
+    --color-border: #475569;
+}
+```
+
+**Features**: Automatic system detection, localStorage persistence, smooth transitions, component compatibility  
+**Usage**: Simply add `ds-theme="dark"` or `ds-theme="light"` to body element
 
 ## 🛠 Development Guidelines
 

@@ -6,6 +6,7 @@
     <title>Budget Planner Design System - Component Examples</title>
     <link rel="stylesheet" href="../design-system.css">
     <script src="../components/snackbar.js"></script>
+    <script src="../themes/theme-manager.js"></script>
     <style>
         .example-section {
             margin-bottom: 3rem;
@@ -99,8 +100,14 @@
                 <a href="#tooltip" class="nav-link">Tooltips</a>
                 <a href="#spinner" class="nav-link">Spinners</a>
                 <a href="#snackbar" class="nav-link">Snackbars</a>
+                <a href="#theme" class="nav-link">Themes</a>
             </nav>
         </header>
+
+        <!-- Theme Toggle Button -->
+        <button class="theme-toggle" onclick="window.toggleTheme()" aria-label="Toggle theme">
+            <span id="theme-icon">🌙</span>
+        </button>
 
         <!-- Colors Section -->
         <section id="colors" class="example-section">
@@ -1171,6 +1178,147 @@ function showCustomSnackbarDemo() {
             </div>
         </section>
 
+        <!-- Theme Section -->
+        <section id="theme" class="example-section">
+            <h2>Theme System</h2>
+            <p>Easy theme switching with automatic system preference detection and manual controls.</p>
+            
+            <div class="example-grid">
+                <div class="example-item">
+                    <h4>Theme Controls</h4>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; padding: 1rem;">
+                        <button class="btn btn-primary" onclick="window.setTheme('light')">Light Theme</button>
+                        <button class="btn btn-secondary" onclick="window.setTheme('dark')">Dark Theme</button>
+                        <button class="btn btn-outline" onclick="window.toggleTheme()">Toggle Theme</button>
+                        <button class="btn btn-success" onclick="window.theme && window.theme.clear ? window.theme.clear() : console.error('theme.clear not available')">Auto (System)</button>
+                        <button class="btn btn-warning" onclick="console.log('Theme object:', window.theme); console.log('Functions:', window.theme ? Object.keys(window.theme) : 'No theme object')">Debug</button>
+                    </div>
+                    <div style="padding: 1rem; margin-top: 1rem; background: rgba(59, 130, 246, 0.1); border-radius: 8px; border: 1px solid rgba(59, 130, 246, 0.2);">
+                        <strong>Current Theme:</strong> <span id="current-theme">Loading...</span><br>
+                        <strong>System Preference:</strong> <span id="system-preference">Loading...</span><br>
+                        <strong>Saved Preference:</strong> <span id="saved-preference">Loading...</span>
+                    </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Theme System Usage --&gt;
+&lt;!-- Include theme manager --&gt;
+&lt;script src="themes/theme-manager.js"&gt;&lt;/script&gt;
+
+&lt;!-- Set ds-theme attribute on body --&gt;
+&lt;body ds-theme="dark"&gt; &lt;!-- or ds-theme="light" --&gt;
+
+&lt;script&gt;
+// Manual theme switching
+setTheme('dark');
+setTheme('light');
+toggleTheme();
+
+// Using theme object
+theme.set('dark');
+theme.toggle();
+theme.clear(); // Use system preference
+
+// Check current theme
+if (theme.isDark()) {
+    console.log('Dark theme is active');
+}
+
+// Listen for theme changes
+theme.onChange((event) =&gt; {
+    console.log('Theme changed to:', event.detail.theme);
+});
+&lt;/script&gt;</code></pre>
+                    </div>
+                </div>
+                
+                <div class="example-item">
+                    <h4>Theme-Aware Components</h4>
+                    <div style="padding: 1rem;">
+                        <p style="margin-bottom: 1rem;">All components automatically adapt to the current theme:</p>
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+                            <button class="btn btn-primary">Primary</button>
+                            <button class="btn btn-secondary">Secondary</button>
+                            <button class="btn btn-success">Success</button>
+                        </div>
+                        <div class="card" style="margin-bottom: 1rem;">
+                            <div class="card-header">
+                                <h5>Theme-Aware Card</h5>
+                            </div>
+                            <div class="card-body">
+                                <p>This card automatically adapts its colors based on the current theme.</p>
+                                <input type="text" class="form-control" placeholder="Theme-aware input" style="margin-bottom: 0.5rem;">
+                                <select class="form-control">
+                                    <option>Theme-aware select</option>
+                                    <option>Option 2</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline" onclick="snackbar.info('This snackbar adapts to the current theme!')">Test Snackbar</button>
+                    </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- All components are theme-aware --&gt;
+&lt;button class="btn btn-primary"&gt;Primary&lt;/button&gt;
+&lt;div class="card"&gt;
+    &lt;div class="card-header"&gt;
+        &lt;h5&gt;Card Title&lt;/h5&gt;
+    &lt;/div&gt;
+    &lt;div class="card-body"&gt;
+        &lt;input class="form-control" placeholder="Input"&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Components automatically inherit theme colors --&gt;
+&lt;!-- No additional CSS classes needed --&gt;</code></pre>
+                    </div>
+                </div>
+                
+                <div class="example-item">
+                    <h4>Custom Theme Integration</h4>
+                    <div style="padding: 1rem;">
+                        <p style="margin-bottom: 1rem;">Easy integration with your application:</p>
+                        <div style="background: var(--color-surface, #f8f9fa); padding: 1rem; border-radius: 8px; border: 1px solid var(--color-border, #e9ecef); margin-bottom: 1rem;">
+                            <code style="color: var(--color-text-primary, #333);">
+                                /* Your CSS automatically works with themes */<br>
+                                .my-component {<br>
+                                &nbsp;&nbsp;background: var(--color-surface);<br>
+                                &nbsp;&nbsp;color: var(--color-text-primary);<br>
+                                &nbsp;&nbsp;border: 1px solid var(--color-border);<br>
+                                }
+                            </code>
+                        </div>
+                        <button class="btn btn-primary" onclick="showThemeDemo()">Demo Theme Variables</button>
+                    </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Use CSS variables for theme compatibility --&gt;
+.my-component {
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border);
+}
+
+&lt;!-- Variables automatically change with theme --&gt;
+[ds-theme="dark"] {
+    --color-surface: #334155;
+    --color-text-primary: #f8fafc;
+    --color-border: #475569;
+}
+
+&lt;!-- Listen for theme changes in JS --&gt;
+theme.onChange((event) =&gt; {
+    if (event.detail.isDark) {
+        // Dark theme specific logic
+    } else {
+        // Light theme specific logic
+    }
+});
+&lt;/script&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Modal Section -->
         <section id="modal" class="example-section">
             <h2>Modal Example</h2>
@@ -1376,6 +1524,141 @@ function hideModal(id) {
                 duration: 4000
             });
         }
+        
+        // Theme functions
+        function updateThemeIcon() {
+            const icon = document.getElementById('theme-icon');
+            if (icon && window.theme && typeof window.theme.isDark === 'function') {
+                try {
+                    icon.textContent = window.theme.isDark() ? '☀️' : '🌙';
+                } catch (e) {
+                    console.warn('Error updating theme icon:', e);
+                    // Fallback: check theme attribute directly
+                    const isDark = document.body.getAttribute('ds-theme') === 'dark';
+                    icon.textContent = isDark ? '☀️' : '🌙';
+                }
+            }
+        }
+        
+        function updateThemeInfo() {
+            if (!window.theme || typeof window.theme.current !== 'function') return;
+            
+            const currentThemeEl = document.getElementById('current-theme');
+            const systemPreferenceEl = document.getElementById('system-preference');
+            const savedPreferenceEl = document.getElementById('saved-preference');
+            
+            if (currentThemeEl) {
+                try {
+                    currentThemeEl.textContent = window.theme.current();
+                } catch (e) {
+                    console.warn('Error getting current theme:', e);
+                    // Fallback: check theme attribute directly
+                    currentThemeEl.textContent = document.body.getAttribute('ds-theme') || 'light';
+                }
+            }
+            if (systemPreferenceEl) {
+                const systemTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                systemPreferenceEl.textContent = systemTheme;
+            }
+            if (savedPreferenceEl) {
+                const saved = localStorage.getItem('ds-theme');
+                savedPreferenceEl.textContent = saved || 'None (using system)';
+            }
+        }
+        
+        // Global theme functions for onclick handlers - more robust version
+        window.toggleTheme = function() {
+            console.log('toggleTheme called');
+            if (window.theme && typeof window.theme.toggle === 'function') {
+                console.log('Calling theme.toggle()');
+                return window.theme.toggle();
+            } else if (window.themeManager && typeof window.themeManager.toggle === 'function') {
+                console.log('Calling themeManager.toggle()');
+                return window.themeManager.toggle();
+            } else {
+                console.error('Theme manager not available. window.theme:', window.theme, 'window.themeManager:', window.themeManager);
+                // Fallback: manual toggle
+                const body = document.body;
+                const current = body.getAttribute('ds-theme') || 'light';
+                const newTheme = current === 'light' ? 'dark' : 'light';
+                body.setAttribute('ds-theme', newTheme);
+                console.log('Fallback toggle to:', newTheme);
+            }
+        }
+        
+        window.setTheme = function(themeName) {
+            console.log('setTheme called with:', themeName);
+            if (window.theme && typeof window.theme.set === 'function') {
+                console.log('Calling theme.set()');
+                return window.theme.set(themeName);
+            } else if (window.themeManager && typeof window.themeManager.setTheme === 'function') {
+                console.log('Calling themeManager.setTheme()');
+                return window.themeManager.setTheme(themeName);
+            } else {
+                console.error('Theme manager not available');
+                // Fallback: manual set
+                document.body.setAttribute('ds-theme', themeName);
+                console.log('Fallback set to:', themeName);
+            }
+        }
+        
+        function showThemeDemo() {
+            if (!window.theme) {
+                console.error('Theme manager not loaded');
+                return;
+            }
+            
+            const currentTheme = window.theme.current();
+            const variables = [
+                'color-surface',
+                'color-text-primary',
+                'color-border',
+                'color-primary-light'
+            ];
+            
+            let message = `Current theme: ${currentTheme}<br>`;
+            variables.forEach(variable => {
+                const value = getComputedStyle(document.documentElement).getPropertyValue(`--${variable}`).trim();
+                message += `--${variable}: ${value}<br>`;
+            });
+            
+            snackbar.show(message, {
+                variant: 'info',
+                duration: 6000,
+                position: 'top-center'
+            });
+        }
+        
+        // Initialize theme info on load - wait for theme manager
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait a bit for theme manager to initialize
+            setTimeout(() => {
+                console.log('Checking theme system...');
+                console.log('window.theme exists:', !!window.theme);
+                console.log('window.theme.toggle exists:', !!(window.theme && window.theme.toggle));
+                console.log('window.toggleTheme exists:', !!window.toggleTheme);
+                
+                updateThemeIcon();
+                updateThemeInfo();
+                
+                // Listen for theme changes
+                if (window.theme && typeof window.theme.onChange === 'function') {
+                    window.theme.onChange(function(event) {
+                        updateThemeIcon();
+                        updateThemeInfo();
+                        if (window.snackbar) {
+                            snackbar.success(`Switched to ${event.detail.theme} theme`, {
+                                duration: 2000,
+                                position: 'bottom-right'
+                            });
+                        }
+                    });
+                    console.log('Theme change listener attached');
+                } else {
+                    console.error('Theme system not properly initialized');
+                }
+            }, 200);
+        });
         
         // Close modal when clicking overlay
         document.getElementById('exampleModal').addEventListener('click', function(e) {

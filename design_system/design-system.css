@@ -21,6 +21,9 @@
 @import 'components/spinner.css';
 @import 'components/snackbar.css';
 
+/* Import Themes */
+@import 'themes/dark.css';
+
 /* Base Reset and Global Styles */
 * {
   margin: 0;
