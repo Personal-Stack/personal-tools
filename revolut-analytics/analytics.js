@@ -24,7 +24,7 @@ class RevolutAnalytics {
         // Description chart filters
         this.descriptionFilters = {
             type: 'expenses', // all, expenses, income - default to expenses for spending analysis
-            limit: 10,   // number or 'all'
+            limit: 20,   // number or 'all'
             sort: 'value' // value, count
         };
         

@@ -421,6 +421,7 @@ html[ds-theme="dark"] .container,
 
 .charts-grid .card {
     padding: var(--spacing-4);
+    margin: 0 var(--spacing-3);
 }
 
 .charts-grid h3 {
@@ -775,4 +776,130 @@ textarea.form-input {
 
 #loadingSpinner.show {
     display: flex;
+}
+
+/* Compact text sizing overrides for analytics */
+.card-summary-label {
+    font-size: var(--font-size-xs) !important;
+    font-weight: var(--font-weight-medium);
+}
+
+.card-summary-value {
+    font-size: var(--font-size-2xl) !important;
+    font-weight: var(--font-weight-bold);
+    line-height: 1.1;
+}
+
+/* Compact card padding */
+.card-summary {
+    padding: var(--spacing-3) !important;
+}
+
+/* Compact section headers */
+.card-section h2 {
+    font-size: var(--font-size-xl) !important;
+    margin-bottom: var(--spacing-3);
+}
+
+.card-section h3,
+.card-title {
+    font-size: var(--font-size-base) !important;
+}
+
+/* Compact form elements */
+.form-input {
+    font-size: var(--font-size-sm) !important;
+    padding: 0.375rem 0.5rem;
+}
+
+.form-group label {
+    font-size: var(--font-size-xs) !important;
+    margin-bottom: 0.25rem;
+}
+
+/* Compact button text */
+.btn {
+    font-size: var(--font-size-sm) !important;
+    padding: 0.375rem 0.75rem;
+}
+
+.btn-sm {
+    font-size: var(--font-size-xs) !important;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Compact table styling */
+.data-table th,
+.data-table td {
+    font-size: var(--font-size-sm) !important;
+    padding: 0.5rem 0.75rem;
+}
+
+.data-table th {
+    font-size: var(--font-size-xs) !important;
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Compact upload header */
+.upload-header h2 {
+    font-size: var(--font-size-xl) !important;
+}
+
+/* Compact chart container titles */
+.card-body h3 {
+    font-size: var(--font-size-base) !important;
+    margin-bottom: var(--spacing-2);
+}
+
+/* Compact filter controls */
+.description-filters .form-group label,
+.analytics-filters .form-group label,
+.table-controls .form-group label,
+.filter-controls .form-group label {
+    font-size: var(--font-size-xs) !important;
+}
+
+/* Compact modal content */
+.modal-header h2 {
+    font-size: var(--font-size-lg) !important;
+}
+
+.modal-body p {
+    font-size: var(--font-size-sm) !important;
+}
+
+/* Responsive compact adjustments */
+@media (max-width: 768px) {
+    .card-summary-value {
+        font-size: var(--font-size-xl) !important;
+    }
+    
+    .card-section h2 {
+        font-size: var(--font-size-lg) !important;
+    }
+    
+    .analytics-overview,
+    .spending-insights {
+        gap: 0.75rem;
+    }
+    
+    .card-summary {
+        padding: var(--spacing-2) !important;
+    }
+    
+    .data-table th,
+    .data-table td {
+        padding: 0.375rem 0.5rem;
+        font-size: var(--font-size-xs) !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-summary-value {
+        font-size: var(--font-size-lg) !important;
+    }
+    
+    .card-section h2 {
+        font-size: var(--font-size-base) !important;
+    }
 }
