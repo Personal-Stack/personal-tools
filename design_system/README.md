@@ -26,7 +26,9 @@ design_system/
 │   ├── modal.css     # Modal overlays and dialogs
 │   ├── navigation.css # Navigation patterns
 │   ├── tooltip.css   # Tooltip and contextual help
-│   └── spinner.css   # Loading indicators and spinners
+│   ├── spinner.css   # Loading indicators and spinners
+│   ├── snackbar.css  # Toast notifications and snackbars
+│   └── snackbar.js   # Snackbar JavaScript utility
 ├── examples/         # Usage examples
 │   └── component-showcase.html # Interactive component demo
 ├── design-system.css # Main consolidated stylesheet
@@ -421,6 +423,57 @@ Loading indicators and spinners for providing visual feedback during async opera
 **Available Sizes**: `spinner-sm`, `spinner-md`, `spinner-lg`, `spinner-xl`  
 **Available Colors**: `spinner-primary`, `spinner-success`, `spinner-warning`, `spinner-danger`, `spinner-white`  
 **Available Types**: `spinner-circle`, `spinner-dots`, `spinner-pulse`, `spinner-bars`, `spinner-ring`, `spinner-ripple`
+
+### 🍞 Snackbars
+
+Toast notifications and snackbars for displaying temporary messages with easy positioning:
+
+```html
+<!-- Include snackbar JavaScript -->
+<script src="design_system/components/snackbar.js"></script>
+
+<!-- Basic usage -->
+<script>
+snackbar.show('Hello World!');
+snackbar.success('Operation completed!');
+snackbar.error('Something went wrong!');
+snackbar.warning('Please check your input');
+snackbar.info('Here is some information');
+</script>
+
+<!-- Advanced options -->
+<script>
+// Custom position and duration
+snackbar.show('Custom message', {
+  position: 'top-center',
+  duration: 5000,
+  variant: 'success',
+  icon: '🎉'
+});
+
+// With action button
+snackbar.show('File deleted', {
+  action: {
+    text: 'Undo',
+    handler: 'undoDelete()'
+  },
+  duration: 6000
+});
+
+// Persistent (manual dismiss only)
+snackbar.show('Important message', {
+  duration: 0,
+  dismissible: true
+});
+
+// Dismiss all snackbars
+snackbar.dismissAll();
+</script>
+```
+
+**Available Positions**: `top-left`, `top-center`, `top-right`, `center-left`, `center-right`, `bottom-left`, `bottom-center`, `bottom-right`  
+**Available Variants**: `default`, `success`, `warning`, `error`, `info`, `light`, `dark`  
+**Features**: Auto-dismiss, progress bar, action buttons, custom icons, responsive design
 
 ## 🛠 Development Guidelines
 

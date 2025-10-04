@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budget Planner Design System - Component Examples</title>
     <link rel="stylesheet" href="../design-system.css">
+    <script src="../components/snackbar.js"></script>
     <style>
         .example-section {
             margin-bottom: 3rem;
@@ -97,6 +98,7 @@
                 <a href="#navigation" class="nav-link">Navigation</a>
                 <a href="#tooltip" class="nav-link">Tooltips</a>
                 <a href="#spinner" class="nav-link">Spinners</a>
+                <a href="#snackbar" class="nav-link">Snackbars</a>
             </nav>
         </header>
 
@@ -996,6 +998,179 @@ function showSpinnerDemo() {
             </div>
         </section>
 
+        <!-- Snackbar Section -->
+        <section id="snackbar" class="example-section">
+            <h2>Snackbar Components</h2>
+            <p>Toast notifications and snackbars for displaying temporary messages with automatic dismiss.</p>
+            
+            <div class="example-grid">
+                <div class="example-item">
+                    <h4>Basic Snackbars</h4>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; padding: 1rem;">
+                        <button class="btn btn-primary" onclick="showBasicSnackbar()">Default</button>
+                        <button class="btn btn-success" onclick="snackbar.success('Operation completed successfully!')">Success</button>
+                        <button class="btn btn-warning" onclick="snackbar.warning('Please check your input')">Warning</button>
+                        <button class="btn btn-danger" onclick="snackbar.error('Something went wrong!')">Error</button>
+                        <button class="btn btn-secondary" onclick="snackbar.info('Here is some information')">Info</button>
+                    </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Basic Snackbar Usage --&gt;
+&lt;script&gt;
+// Basic snackbar
+snackbar.show('Hello World!');
+
+// Variant shortcuts
+snackbar.success('Operation completed successfully!');
+snackbar.warning('Please check your input');
+snackbar.error('Something went wrong!');
+snackbar.info('Here is some information');
+&lt;/script&gt;</code></pre>
+                    </div>
+                </div>
+                
+                <div class="example-item">
+                    <h4>Position Options</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.5rem; padding: 1rem;">
+                        <button class="btn btn-outline" onclick="snackbar.show('Top Left', {position: 'top-left'})">Top Left</button>
+                        <button class="btn btn-outline" onclick="snackbar.show('Top Center', {position: 'top-center'})">Top Center</button>
+                        <button class="btn btn-outline" onclick="snackbar.show('Top Right', {position: 'top-right'})">Top Right</button>
+                        <button class="btn btn-outline" onclick="snackbar.show('Center Left', {position: 'center-left'})">Center Left</button>
+                        <button class="btn btn-outline" onclick="snackbar.show('Center Right', {position: 'center-right'})">Center Right</button>
+                        <button class="btn btn-outline" onclick="snackbar.show('Bottom Left', {position: 'bottom-left'})">Bottom Left</button>
+                        <button class="btn btn-outline" onclick="snackbar.show('Bottom Center', {position: 'bottom-center'})">Bottom Center</button>
+                        <button class="btn btn-outline" onclick="snackbar.show('Bottom Right', {position: 'bottom-right'})">Bottom Right</button>
+                    </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Position Options --&gt;
+&lt;script&gt;
+// Available positions:
+snackbar.show('Message', {position: 'top-left'});
+snackbar.show('Message', {position: 'top-center'});
+snackbar.show('Message', {position: 'top-right'});
+snackbar.show('Message', {position: 'center-left'});
+snackbar.show('Message', {position: 'center-right'});
+snackbar.show('Message', {position: 'bottom-left'});
+snackbar.show('Message', {position: 'bottom-center'});
+snackbar.show('Message', {position: 'bottom-right'});
+&lt;/script&gt;</code></pre>
+                    </div>
+                </div>
+                
+                <div class="example-item">
+                    <h4>Advanced Options</h4>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; padding: 1rem;">
+                        <button class="btn btn-primary" onclick="showPersistentSnackbar()">Persistent</button>
+                        <button class="btn btn-secondary" onclick="showActionSnackbar()">With Action</button>
+                        <button class="btn btn-success" onclick="showLongSnackbar()">Long Duration</button>
+                        <button class="btn btn-warning" onclick="showCustomSnackbar()">Custom Icon</button>
+                        <button class="btn btn-danger" onclick="snackbar.dismissAll()">Dismiss All</button>
+                    </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Advanced Snackbar Options --&gt;
+&lt;script&gt;
+// Persistent snackbar (no auto-dismiss)
+snackbar.show('Persistent message', {
+    duration: 0,
+    dismissible: true
+});
+
+// With action button
+snackbar.show('File deleted', {
+    action: {
+        text: 'Undo',
+        handler: 'undoDelete()'
+    }
+});
+
+// Custom duration (10 seconds)
+snackbar.show('Long message', {
+    duration: 10000
+});
+
+// Custom icon and styling
+snackbar.show('Custom notification', {
+    icon: '🎉',
+    variant: 'success',
+    position: 'top-center'
+});
+
+// Dismiss all snackbars
+snackbar.dismissAll();
+&lt;/script&gt;</code></pre>
+                    </div>
+                </div>
+                
+                <div class="example-item">
+                    <h4>Interactive Demo</h4>
+                    <div style="padding: 1rem;">
+                        <div style="margin-bottom: 1rem;">
+                            <label for="demo-message" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Message:</label>
+                            <input type="text" id="demo-message" class="form-control" value="Custom snackbar message" style="margin-bottom: 1rem;">
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                                <div>
+                                    <label for="demo-position" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Position:</label>
+                                    <select id="demo-position" class="form-control">
+                                        <option value="bottom-right">Bottom Right</option>
+                                        <option value="bottom-left">Bottom Left</option>
+                                        <option value="bottom-center">Bottom Center</option>
+                                        <option value="top-right">Top Right</option>
+                                        <option value="top-left">Top Left</option>
+                                        <option value="top-center">Top Center</option>
+                                        <option value="center-left">Center Left</option>
+                                        <option value="center-right">Center Right</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="demo-variant" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Variant:</label>
+                                    <select id="demo-variant" class="form-control">
+                                        <option value="default">Default</option>
+                                        <option value="success">Success</option>
+                                        <option value="warning">Warning</option>
+                                        <option value="error">Error</option>
+                                        <option value="info">Info</option>
+                                        <option value="light">Light</option>
+                                        <option value="dark">Dark</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="showCustomSnackbarDemo()">Show Custom Snackbar</button>
+                    </div>
+                    <button class="code-toggle" onclick="toggleCode(this)">Show Code</button>
+                    <div class="code-example hidden">
+                        <pre><code>&lt;!-- Interactive Snackbar Demo --&gt;
+&lt;input type="text" id="demo-message" value="Custom message"&gt;
+&lt;select id="demo-position"&gt;
+    &lt;option value="bottom-right"&gt;Bottom Right&lt;/option&gt;
+    &lt;!-- More options... --&gt;
+&lt;/select&gt;
+&lt;select id="demo-variant"&gt;
+    &lt;option value="default"&gt;Default&lt;/option&gt;
+    &lt;!-- More options... --&gt;
+&lt;/select&gt;
+
+&lt;script&gt;
+function showCustomSnackbarDemo() {
+    const message = document.getElementById('demo-message').value;
+    const position = document.getElementById('demo-position').value;
+    const variant = document.getElementById('demo-variant').value;
+    
+    snackbar.show(message, {
+        position: position,
+        variant: variant,
+        icon: getVariantIcon(variant)
+    });
+}
+&lt;/script&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Modal Section -->
         <section id="modal" class="example-section">
             <h2>Modal Example</h2>
@@ -1133,6 +1308,73 @@ function hideModal(id) {
                 button.classList.remove('loading', 'btn-loading-left');
                 button.innerHTML = 'Click to Load';
             }, 3000);
+        }
+        
+        // Snackbar demo functions
+        function showBasicSnackbar() {
+            snackbar.show('This is a basic snackbar message!');
+        }
+        
+        function showPersistentSnackbar() {
+            snackbar.show('This snackbar will stay until dismissed', {
+                duration: 0,
+                dismissible: true,
+                position: 'top-center'
+            });
+        }
+        
+        function showActionSnackbar() {
+            snackbar.show('File deleted successfully', {
+                action: {
+                    text: 'Undo',
+                    handler: 'undoFileDelete()'
+                },
+                variant: 'warning',
+                duration: 6000
+            });
+        }
+        
+        function undoFileDelete() {
+            snackbar.success('File deletion undone!');
+        }
+        
+        function showLongSnackbar() {
+            snackbar.info('This message will stay for 8 seconds', {
+                duration: 8000,
+                progress: true
+            });
+        }
+        
+        function showCustomSnackbar() {
+            snackbar.show('🎉 Congratulations! You completed the task!', {
+                variant: 'success',
+                icon: '🎉',
+                position: 'top-center',
+                duration: 5000
+            });
+        }
+        
+        function showCustomSnackbarDemo() {
+            const message = document.getElementById('demo-message').value || 'Custom message';
+            const position = document.getElementById('demo-position').value;
+            const variant = document.getElementById('demo-variant').value;
+            
+            const icons = {
+                success: '✓',
+                warning: '⚠',
+                error: '✕',
+                info: 'ℹ',
+                default: '💬',
+                light: '💬',
+                dark: '💬'
+            };
+            
+            snackbar.show(message, {
+                position: position,
+                variant: variant,
+                icon: icons[variant] || '💬',
+                duration: 4000
+            });
         }
         
         // Close modal when clicking overlay

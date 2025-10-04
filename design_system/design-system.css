@@ -19,6 +19,7 @@
 @import 'components/navigation.css';
 @import 'components/tooltip.css';
 @import 'components/spinner.css';
+@import 'components/snackbar.css';
 
 /* Base Reset and Global Styles */
 * {
