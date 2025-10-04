@@ -677,10 +677,16 @@ class RevolutAnalytics {
                         position: 'bottom',
                         labels: {
                             padding: 20,
-                            usePointStyle: true
+                            usePointStyle: true,
+                            color: this.getThemeColors().textColor
                         }
                     },
                     tooltip: {
+                        titleColor: this.getThemeColors().textColor,
+                        bodyColor: this.getThemeColors().textColor,
+                        backgroundColor: document.documentElement.getAttribute('ds-theme') === 'dark' ? '#374151' : '#ffffff',
+                        borderColor: this.getThemeColors().borderColor,
+                        borderWidth: 1,
                         callbacks: {
                             label: (context) => {
                                 const label = context.label || '';
@@ -719,7 +725,8 @@ class RevolutAnalytics {
                         position: 'bottom',
                         labels: {
                             padding: 20,
-                            usePointStyle: true
+                            usePointStyle: true,
+                            color: this.getThemeColors().textColor
                         }
                     },
                     tooltip: {
@@ -767,18 +774,30 @@ class RevolutAnalytics {
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: this.descriptionFilters.sort === 'count' ? 'Number of Transactions' : 'Transaction Value'
+                            text: this.descriptionFilters.sort === 'count' ? 'Number of Transactions' : 'Transaction Value',
+                            color: this.getThemeColors().textColor
                         },
                         ticks: {
+                            color: this.getThemeColors().textColor,
                             callback: function(value) {
                                 return this.descriptionFilters.sort === 'count' ? Math.round(value) : value.toFixed(2);
                             }.bind(this)
+                        },
+                        grid: {
+                            color: this.getThemeColors().gridColor
                         }
                     },
                     y: {
                         title: {
                             display: true,
-                            text: 'Transaction Description'
+                            text: 'Transaction Description',
+                            color: this.getThemeColors().textColor
+                        },
+                        ticks: {
+                            color: this.getThemeColors().textColor
+                        },
+                        grid: {
+                            color: this.getThemeColors().gridColor
                         }
                     }
                 },
@@ -894,6 +913,7 @@ class RevolutAnalytics {
         document.getElementById('currentBalance').textContent = `${currentBalance.toFixed(2)}`;
         
         this.updateAdvancedAnalytics();
+        this.updateAdvancedFinancialAnalytics();
     }
     
     updateAdvancedAnalytics() {
@@ -1149,10 +1169,17 @@ class RevolutAnalytics {
     // Theme Management - using global theme approach
 
     getThemeColors() {
-        const isDark = document.documentElement.getAttribute('ds-theme') === 'dark';
+        // Multiple ways to detect dark theme to ensure it works
+        const isDark = document.documentElement.getAttribute('ds-theme') === 'dark' || 
+                      document.documentElement.classList.contains('dark') ||
+                      document.body.getAttribute('ds-theme') === 'dark';
+        
+        console.log('Theme detection:', { isDark, attribute: document.documentElement.getAttribute('ds-theme') });
         
         return {
             borderColor: isDark ? '#334155' : '#fff',
+            textColor: isDark ? '#ffffff' : '#374151',
+            gridColor: isDark ? '#4b5563' : '#e5e7eb',
             pieColors: [
                 '#FF6384',
                 '#36A2EB', 
@@ -1171,6 +1198,497 @@ class RevolutAnalytics {
             }
         };
     }
+
+    // Advanced Financial Analytics Functions
+    updateAdvancedFinancialAnalytics() {
+        this.calculateVolatilityRisk();
+        this.calculateDrawdownRisk();
+        this.analyzeTrends();
+        this.detectAnomalies();
+        this.generateInsights();
+        this.createAdvancedCharts();
+        this.analyzeCategoryRisks();
+    }
+
+    calculateVolatilityRisk() {
+        const expenses = this.filteredTransactions.filter(t => t.Amount < 0);
+        if (expenses.length < 7) {
+            document.getElementById('volatilityScore').textContent = 'N/A';
+            document.getElementById('volatilityStatus').textContent = 'Need more data';
+            return;
+        }
+
+        // Group by day and calculate daily spending
+        const dailySpending = {};
+        expenses.forEach(t => {
+            const date = new Date(t['Completed Date']).toDateString();
+            dailySpending[date] = (dailySpending[date] || 0) + Math.abs(t.Amount);
+        });
+
+        const amounts = Object.values(dailySpending);
+        const mean = amounts.reduce((a, b) => a + b, 0) / amounts.length;
+        const variance = amounts.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / amounts.length;
+        const stdDev = Math.sqrt(variance);
+        const volatility = (stdDev / mean) * 100;
+
+        document.getElementById('volatilityScore').textContent = `${volatility.toFixed(1)}%`;
+        
+        const riskElement = document.getElementById('volatilityRisk');
+        const statusElement = document.getElementById('volatilityStatus');
+        
+        if (volatility < 30) {
+            riskElement.className = 'card-summary risk-indicator low-risk';
+            statusElement.textContent = 'Low Risk - Stable spending';
+        } else if (volatility < 60) {
+            riskElement.className = 'card-summary risk-indicator medium-risk';
+            statusElement.textContent = 'Medium Risk - Some variability';
+        } else {
+            riskElement.className = 'card-summary risk-indicator high-risk';
+            statusElement.textContent = 'High Risk - Very volatile spending';
+        }
+    }
+
+    calculateDrawdownRisk() {
+        if (this.transactions.length < 30) {
+            document.getElementById('drawdownScore').textContent = 'N/A';
+            document.getElementById('drawdownStatus').textContent = 'Need more history';
+            return;
+        }
+
+        // Calculate running balance changes
+        let maxBalance = this.transactions[0].Balance;
+        let maxDrawdown = 0;
+        
+        this.transactions.forEach(t => {
+            if (t.Balance > maxBalance) {
+                maxBalance = t.Balance;
+            }
+            const drawdown = ((maxBalance - t.Balance) / maxBalance) * 100;
+            maxDrawdown = Math.max(maxDrawdown, drawdown);
+        });
+
+        document.getElementById('drawdownScore').textContent = `${maxDrawdown.toFixed(1)}%`;
+        
+        const riskElement = document.getElementById('drawdownRisk');
+        const statusElement = document.getElementById('drawdownStatus');
+        
+        if (maxDrawdown < 20) {
+            riskElement.className = 'card-summary risk-indicator low-risk';
+            statusElement.textContent = 'Low Risk - Stable balance';
+        } else if (maxDrawdown < 40) {
+            riskElement.className = 'card-summary risk-indicator medium-risk';
+            statusElement.textContent = 'Medium Risk - Some depletion';
+        } else {
+            riskElement.className = 'card-summary risk-indicator high-risk';
+            statusElement.textContent = 'High Risk - Significant drawdowns';
+        }
+    }
+
+    analyzeTrends() {
+        const expenses = this.filteredTransactions.filter(t => t.Amount < 0);
+        if (expenses.length < 10) {
+            document.getElementById('trendDirection').textContent = '?';
+            document.getElementById('trendStatus').textContent = 'Insufficient data';
+            return;
+        }
+
+        // Calculate weekly spending trend
+        const weeklyData = {};
+        expenses.forEach(t => {
+            const date = new Date(t['Completed Date']);
+            const weekStart = new Date(date.setDate(date.getDate() - date.getDay()));
+            const weekKey = weekStart.toDateString();
+            weeklyData[weekKey] = (weeklyData[weekKey] || 0) + Math.abs(t.Amount);
+        });
+
+        const weeks = Object.keys(weeklyData).sort();
+        if (weeks.length < 3) {
+            document.getElementById('trendDirection').textContent = '→';
+            document.getElementById('trendStatus').textContent = 'Stable trend';
+            return;
+        }
+
+        const firstWeek = weeklyData[weeks[0]];
+        const lastWeek = weeklyData[weeks[weeks.length - 1]];
+        const trendPercent = ((lastWeek - firstWeek) / firstWeek) * 100;
+
+        const riskElement = document.getElementById('trendRisk');
+        const statusElement = document.getElementById('trendStatus');
+        
+        if (trendPercent > 15) {
+            document.getElementById('trendDirection').textContent = '📈';
+            riskElement.className = 'card-summary risk-indicator high-risk';
+            statusElement.textContent = `Spending up ${trendPercent.toFixed(1)}%`;
+        } else if (trendPercent < -15) {
+            document.getElementById('trendDirection').textContent = '📉';
+            riskElement.className = 'card-summary risk-indicator low-risk';
+            statusElement.textContent = `Spending down ${Math.abs(trendPercent).toFixed(1)}%`;
+        } else {
+            document.getElementById('trendDirection').textContent = '→';
+            riskElement.className = 'card-summary risk-indicator medium-risk';
+            statusElement.textContent = 'Stable trend';
+        }
+    }
+
+    detectAnomalies() {
+        const expenses = this.filteredTransactions.filter(t => t.Amount < 0);
+        if (expenses.length < 10) {
+            document.getElementById('anomaliesCount').textContent = '0';
+            document.getElementById('anomalyStatus').textContent = 'Need more data';
+            return;
+        }
+
+        const amounts = expenses.map(t => Math.abs(t.Amount));
+        const mean = amounts.reduce((a, b) => a + b, 0) / amounts.length;
+        const stdDev = Math.sqrt(amounts.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / amounts.length);
+        
+        // Detect outliers (>2 standard deviations from mean)
+        const anomalies = expenses.filter(t => Math.abs(t.Amount) > mean + (2 * stdDev));
+        
+        document.getElementById('anomaliesCount').textContent = anomalies.length;
+        
+        const riskElement = document.getElementById('anomalyRisk');
+        const statusElement = document.getElementById('anomalyStatus');
+        
+        if (anomalies.length === 0) {
+            riskElement.className = 'card-summary risk-indicator low-risk';
+            statusElement.textContent = 'No unusual transactions';
+        } else if (anomalies.length <= 3) {
+            riskElement.className = 'card-summary risk-indicator medium-risk';
+            statusElement.textContent = 'Some large transactions';
+        } else {
+            riskElement.className = 'card-summary risk-indicator high-risk';
+            statusElement.textContent = 'Many unusual transactions';
+        }
+    }
+
+    generateInsights() {
+        const insights = [];
+        const expenses = this.filteredTransactions.filter(t => t.Amount < 0);
+        
+        if (expenses.length < 5) {
+            insights.push({
+                icon: '📊',
+                text: 'Upload more transaction data to get personalized insights and risk analysis.',
+                type: 'info'
+            });
+        } else {
+            // Category concentration risk
+            const categorySpending = {};
+            expenses.forEach(t => {
+                const category = t.Description || 'Unknown';
+                categorySpending[category] = (categorySpending[category] || 0) + Math.abs(t.Amount);
+            });
+            
+            const totalSpending = Object.values(categorySpending).reduce((a, b) => a + b, 0);
+            const topCategory = Object.entries(categorySpending)
+                .sort((a, b) => b[1] - a[1])[0];
+            
+            if (topCategory && (topCategory[1] / totalSpending) > 0.4) {
+                insights.push({
+                    icon: '⚠️',
+                    text: `${Math.round((topCategory[1] / totalSpending) * 100)}% of spending is concentrated in "${topCategory[0]}". Consider diversifying expenses to reduce risk.`,
+                    type: 'warning'
+                });
+            }
+            
+            // Recent spending spike
+            const recentExpenses = expenses.filter(t => {
+                const date = new Date(t['Completed Date']);
+                const sevenDaysAgo = new Date();
+                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                return date >= sevenDaysAgo;
+            });
+            
+            if (recentExpenses.length > expenses.length * 0.3) {
+                insights.push({
+                    icon: '🔥',
+                    text: 'High spending activity in the last 7 days. Monitor upcoming expenses to maintain budget control.',
+                    type: 'warning'
+                });
+            }
+            
+            // Positive insights
+            const monthlyAverage = totalSpending / Math.max(1, Math.ceil(expenses.length / 30));
+            if (monthlyAverage < 1000) {
+                insights.push({
+                    icon: '✅',
+                    text: `Your average monthly spending of £${monthlyAverage.toFixed(2)} suggests good budget discipline.`,
+                    type: 'success'
+                });
+            }
+        }
+        
+        if (insights.length === 0) {
+            insights.push({
+                icon: '💡',
+                text: 'Your spending patterns look stable. Keep monitoring for any changes in trends.',
+                type: 'info'
+            });
+        }
+        
+        const insightsContainer = document.getElementById('advancedInsights');
+        insightsContainer.innerHTML = insights.map(insight => `
+            <div class="insight-item ${insight.type}">
+                <div class="insight-icon">${insight.icon}</div>
+                <div class="insight-text">${insight.text}</div>
+            </div>
+        `).join('');
+    }
+
+    createAdvancedCharts() {
+        this.createTrendChart();
+        this.createAnomalyChart();
+    }
+
+    createTrendChart() {
+        const canvas = document.getElementById('trendChart');
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        
+        // Destroy existing chart
+        if (this.charts.trendChart) {
+            this.charts.trendChart.destroy();
+        }
+        
+        const expenses = this.filteredTransactions.filter(t => t.Amount < 0);
+        const dailyData = {};
+        
+        expenses.forEach(t => {
+            const date = new Date(t['Completed Date']).toDateString();
+            dailyData[date] = (dailyData[date] || 0) + Math.abs(t.Amount);
+        });
+        
+        const sortedDates = Object.keys(dailyData).sort((a, b) => new Date(a) - new Date(b));
+        const amounts = sortedDates.map(date => dailyData[date]);
+        
+        // Calculate moving average
+        const movingAvg = [];
+        const period = Math.min(7, amounts.length);
+        for (let i = 0; i < amounts.length; i++) {
+            const start = Math.max(0, i - period + 1);
+            const slice = amounts.slice(start, i + 1);
+            movingAvg.push(slice.reduce((a, b) => a + b, 0) / slice.length);
+        }
+        
+        this.charts.trendChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: sortedDates.map(date => new Date(date).toLocaleDateString()),
+                datasets: [{
+                    label: 'Daily Spending',
+                    data: amounts,
+                    borderColor: 'rgba(255, 99, 132, 0.8)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                    tension: 0.1
+                }, {
+                    label: '7-Day Average',
+                    data: movingAvg,
+                    borderColor: 'rgba(54, 162, 235, 0.8)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: this.getThemeColors().textColor
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date',
+                            color: this.getThemeColors().textColor
+                        },
+                        ticks: {
+                            color: this.getThemeColors().textColor
+                        },
+                        grid: {
+                            color: this.getThemeColors().gridColor
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Amount (£)',
+                            color: this.getThemeColors().textColor
+                        },
+                        ticks: {
+                            color: this.getThemeColors().textColor
+                        },
+                        grid: {
+                            color: this.getThemeColors().gridColor
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    createAnomalyChart() {
+        const canvas = document.getElementById('anomalyChart');
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        
+        // Destroy existing chart
+        if (this.charts.anomalyChart) {
+            this.charts.anomalyChart.destroy();
+        }
+        
+        const expenses = this.filteredTransactions.filter(t => t.Amount < 0);
+        const amounts = expenses.map(t => Math.abs(t.Amount));
+        const mean = amounts.reduce((a, b) => a + b, 0) / amounts.length;
+        const stdDev = Math.sqrt(amounts.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / amounts.length);
+        
+        const data = expenses.map((t, i) => ({
+            x: i,
+            y: Math.abs(t.Amount),
+            isAnomaly: Math.abs(t.Amount) > mean + (2 * stdDev)
+        }));
+        
+        this.charts.anomalyChart = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Normal Transactions',
+                    data: data.filter(d => !d.isAnomaly),
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 0.8)'
+                }, {
+                    label: 'Anomalies',
+                    data: data.filter(d => d.isAnomaly),
+                    backgroundColor: 'rgba(255, 99, 132, 0.8)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    pointRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: this.getThemeColors().textColor
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Transaction Index',
+                            color: this.getThemeColors().textColor
+                        },
+                        ticks: {
+                            color: this.getThemeColors().textColor
+                        },
+                        grid: {
+                            color: this.getThemeColors().gridColor
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Amount (£)',
+                            color: this.getThemeColors().textColor
+                        },
+                        ticks: {
+                            color: this.getThemeColors().textColor
+                        },
+                        grid: {
+                            color: this.getThemeColors().gridColor
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    analyzeCategoryRisks() {
+        const expenses = this.filteredTransactions.filter(t => t.Amount < 0);
+        const categoryData = {};
+        
+        expenses.forEach(t => {
+            const category = t.Description || 'Unknown';
+            if (!categoryData[category]) {
+                categoryData[category] = {
+                    total: 0,
+                    count: 0,
+                    amounts: []
+                };
+            }
+            const amount = Math.abs(t.Amount);
+            categoryData[category].total += amount;
+            categoryData[category].count += 1;
+            categoryData[category].amounts.push(amount);
+        });
+        
+        const categories = Object.entries(categoryData)
+            .map(([name, data]) => {
+                const avg = data.total / data.count;
+                const variance = data.amounts.reduce((sum, val) => sum + Math.pow(val - avg, 2), 0) / data.count;
+                const volatility = Math.sqrt(variance) / avg;
+                
+                let risk = 'low';
+                if (volatility > 0.5) risk = 'high';
+                else if (volatility > 0.3) risk = 'medium';
+                
+                return {
+                    name: name.length > 30 ? name.substring(0, 30) + '...' : name,
+                    total: data.total,
+                    count: data.count,
+                    avg: avg,
+                    volatility: volatility,
+                    risk: risk
+                };
+            })
+            .sort((a, b) => b.total - a.total)
+            .slice(0, 10);
+        
+        const tableHTML = `
+            <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Total</th>
+                        <th>Count</th>
+                        <th>Average</th>
+                        <th>Risk</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${categories.map(cat => `
+                        <tr>
+                            <td>${cat.name}</td>
+                            <td>${cat.total.toFixed(2)}</td>
+                            <td>${cat.count}</td>
+                            <td>${cat.avg.toFixed(2)}</td>
+                            <td><span class="risk-score ${cat.risk}">${cat.risk.toUpperCase()}</span></td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+        
+        document.getElementById('categoryRiskTable').innerHTML = tableHTML;
+    }
+
+    // Refresh all charts with current theme colors
+    refreshChartsForTheme() {
+        if (this.filteredTransactions.length > 0) {
+            this.createCharts();
+            this.createAdvancedCharts();
+        }
+    }
 }
 
 // Theme toggle functionality (same as home page)
@@ -1178,6 +1696,13 @@ function toggleTheme() {
     if (window.theme && typeof window.theme.toggle === 'function') {
         window.theme.toggle();
         updateThemeUI();
+        
+        // Force chart refresh after theme change
+        setTimeout(() => {
+            if (window.analytics && typeof window.analytics.refreshChartsForTheme === 'function') {
+                window.analytics.refreshChartsForTheme();
+            }
+        }, 50);
     }
 }
 
@@ -1188,6 +1713,11 @@ function updateThemeUI() {
         try {
             const isDark = window.theme.isDark();
             icon.textContent = isDark ? '☀️' : '🌙';
+            
+            // Refresh charts with new theme colors
+            if (window.analytics && typeof window.analytics.refreshChartsForTheme === 'function') {
+                window.analytics.refreshChartsForTheme();
+            }
         } catch (e) {
             console.warn('Error updating theme UI:', e);
         }
@@ -1208,6 +1738,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     analytics = new RevolutAnalytics();
+    window.analytics = analytics; // Make globally accessible for theme changes
     console.log('Calling init() after DOM is ready');
     analytics.init();
 });

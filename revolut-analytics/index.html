@@ -225,6 +225,82 @@
             </div>
         </div>
 
+        <!-- Advanced Analytics Section -->
+        <div class="card-section">
+            <h2>🔍 Advanced Financial Analytics</h2>
+            
+            <!-- Risk Indicators -->
+            <div class="analytics-overview">
+                <div class="card-summary risk-indicator" id="volatilityRisk">
+                    <div class="card-summary-label">Spending Volatility</div>
+                    <div class="card-summary-value" id="volatilityScore">0%</div>
+                    <div class="risk-status" id="volatilityStatus">Calculating...</div>
+                </div>
+                
+                <div class="card-summary risk-indicator" id="drawdownRisk">
+                    <div class="card-summary-label">Max Drawdown Risk</div>
+                    <div class="card-summary-value" id="drawdownScore">0%</div>
+                    <div class="risk-status" id="drawdownStatus">Calculating...</div>
+                </div>
+                
+                <div class="card-summary risk-indicator" id="trendRisk">
+                    <div class="card-summary-label">Trend Analysis</div>
+                    <div class="card-summary-value" id="trendDirection">→</div>
+                    <div class="risk-status" id="trendStatus">Analyzing...</div>
+                </div>
+                
+                <div class="card-summary risk-indicator" id="anomalyRisk">
+                    <div class="card-summary-label">Anomalies Detected</div>
+                    <div class="card-summary-value" id="anomaliesCount">0</div>
+                    <div class="risk-status" id="anomalyStatus">Scanning...</div>
+                </div>
+            </div>
+
+            <!-- Advanced Charts -->
+            <div class="chart-analytics">
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <h3>📈 Spending Trend & Volatility</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <h3>⚠️ Anomaly Detection</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="anomalyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Insights Panel -->
+            <div class="insights-panel">
+                <h3>🎯 Key Insights & Recommendations</h3>
+                <div id="advancedInsights" class="insights-list">
+                    <div class="insight-item">
+                        <div class="insight-icon">📊</div>
+                        <div class="insight-text">Loading advanced analytics...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories Risk Analysis -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>📋 Category Risk Assessment</h3>
+                </div>
+                <div class="card-body">
+                    <div id="categoryRiskTable" class="risk-table">
+                        <!-- Risk table will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Transaction Table Section -->
         <div class="card-section">
             <h2>All Transactions</h2>

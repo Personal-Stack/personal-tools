@@ -89,7 +89,7 @@ html[ds-theme="dark"] .container,
 }
 
 [ds-theme="dark"] .card-section h2 {
-    color: var(--color-text-primary) !important;
+    color: var(--color-white) !important;
 }
 
 [ds-theme="dark"] .card {
@@ -799,6 +799,7 @@ textarea.form-input {
 .card-section h2 {
     font-size: var(--font-size-xl) !important;
     margin-bottom: var(--spacing-3);
+    color: var(--color-white);
 }
 
 .card-section h3,
@@ -901,5 +902,237 @@ textarea.form-input {
     
     .card-section h2 {
         font-size: var(--font-size-base) !important;
+    }
+}
+
+/* Advanced Analytics Styles */
+
+/* Risk Indicators */
+.risk-indicator {
+    position: relative;
+    border-left: 4px solid var(--color-gray-300);
+    transition: var(--transition-all);
+}
+
+.risk-indicator.low-risk {
+    border-left-color: var(--color-success);
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(40, 167, 69, 0.05));
+}
+
+.risk-indicator.medium-risk {
+    border-left-color: var(--color-warning);
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05));
+}
+
+.risk-indicator.high-risk {
+    border-left-color: var(--color-danger);
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(220, 53, 69, 0.05));
+}
+
+.risk-status {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    margin-top: var(--spacing-1);
+    font-weight: var(--font-weight-medium);
+}
+
+/* Insights Panel */
+.insights-panel {
+    margin: var(--spacing-6) 0;
+    padding: var(--spacing-5);
+    background: var(--color-gray-50);
+    border-radius: var(--radius-xl);
+    border: var(--border-width-thin) solid var(--color-gray-200);
+}
+
+.insights-panel h3 {
+    margin-bottom: var(--spacing-4);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-lg);
+}
+
+.insights-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+}
+
+.insight-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-3);
+    padding: var(--spacing-3);
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    border: var(--border-width-thin) solid var(--color-gray-100);
+    transition: var(--transition-all);
+}
+
+.insight-item:hover {
+    border-color: var(--color-primary-light);
+    box-shadow: var(--shadow-sm);
+}
+
+.insight-icon {
+    font-size: var(--font-size-lg);
+    flex-shrink: 0;
+    width: 24px;
+    text-align: center;
+}
+
+.insight-text {
+    flex: 1;
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-relaxed);
+    color: var(--color-text-primary);
+}
+
+.insight-item.warning .insight-text {
+    color: var(--color-warning-dark);
+}
+
+.insight-item.danger .insight-text {
+    color: var(--color-danger-dark);
+}
+
+.insight-item.success .insight-text {
+    color: var(--color-success-dark);
+}
+
+/* Risk Table */
+.risk-table {
+    overflow-x: auto;
+    margin-top: var(--spacing-4);
+}
+
+.risk-table table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+    border: var(--border-width-thin) solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.risk-table th,
+.risk-table td {
+    text-align: left;
+    padding: var(--spacing-3) var(--spacing-4);
+    border-bottom: var(--border-width-thin) solid var(--color-gray-200);
+}
+
+.risk-table th {
+    background: var(--color-gray-50);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    border-bottom: 2px solid var(--color-gray-200);
+}
+
+.risk-score {
+    display: inline-block;
+    padding: var(--spacing-1) var(--spacing-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    text-align: center;
+    min-width: 60px;
+}
+
+.risk-score.low {
+    background: rgba(40, 167, 69, 0.1);
+    color: var(--color-success-dark);
+}
+
+.risk-score.medium {
+    background: rgba(255, 193, 7, 0.1);
+    color: var(--color-warning-dark);
+}
+
+.risk-score.high {
+    background: rgba(220, 53, 69, 0.1);
+    color: var(--color-danger-dark);
+}
+
+/* Dark theme adjustments */
+[ds-theme="dark"] .insights-panel {
+    background: var(--color-gray-800);
+    border-color: var(--color-gray-700);
+}
+
+[ds-theme="dark"] .insight-item {
+    background: var(--color-surface);
+    border-color: var(--color-gray-700);
+}
+
+[ds-theme="dark"] .risk-table {
+    border-color: var(--color-gray-700);
+}
+
+[ds-theme="dark"] .risk-table table {
+    border-color: var(--color-gray-700);
+}
+
+[ds-theme="dark"] .risk-table th {
+    background: var(--color-gray-800);
+    border-bottom-color: var(--color-gray-700);
+    color: var(--color-text-primary);
+}
+
+[ds-theme="dark"] .risk-table td {
+    border-bottom-color: var(--color-gray-700);
+}
+
+/* Fix card header titles for both themes */
+.card .card-header h3 {
+    color: var(--color-text-primary);
+}
+
+[ds-theme="dark"] .card .card-header h3 {
+    color: var(--color-text-primary) !important;
+}
+
+/* Chart.js dark theme text color fixes */
+[ds-theme="dark"] canvas {
+    filter: none;
+}
+
+[ds-theme="dark"] .chart-card canvas,
+[ds-theme="dark"] .charts-grid canvas,
+[ds-theme="dark"] .chart-analytics canvas {
+    color-scheme: dark;
+}
+
+/* Chart.js text elements in dark mode */
+[ds-theme="dark"] .chartjs-tooltip,
+[ds-theme="dark"] .chartjs-tooltip * {
+    color: var(--color-white) !important;
+    background: var(--color-gray-800) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .insights-panel {
+        padding: var(--spacing-4);
+    }
+    
+    .insight-item {
+        padding: var(--spacing-2);
+        gap: var(--spacing-2);
+    }
+    
+    .risk-table {
+        font-size: var(--font-size-xs);
+        margin-top: var(--spacing-3);
+    }
+    
+    .risk-table th,
+    .risk-table td {
+        padding: var(--spacing-2) var(--spacing-2);
+    }
+    
+    .risk-score {
+        min-width: 50px;
+        font-size: 10px;
     }
 }
