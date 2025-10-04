@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Planner Design System - Component Examples</title>
+    <link rel="stylesheet" href="../design-system.css">
+    <style>
+        .example-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .example-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .example-item {
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        .color-swatch {
+            width: 100%;
+            height: 60px;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="card-header">
+            <h1>Budget Planner Design System</h1>
+            <nav class="page-nav">
+                <a href="#colors" class="nav-link">Colors</a>
+                <a href="#typography" class="nav-link">Typography</a>
+                <a href="#buttons" class="nav-link">Buttons</a>
+                <a href="#forms" class="nav-link">Forms</a>
+                <a href="#cards" class="nav-link">Cards</a>
+                <a href="#navigation" class="nav-link">Navigation</a>
+            </nav>
+        </header>
+
+        <!-- Colors Section -->
+        <section id="colors" class="example-section">
+            <h2>Color Palette</h2>
+            <p>Primary colors and variants used throughout the Budget Planner application.</p>
+            
+            <div class="example-grid">
+                <div class="example-item">
+                    <div class="color-swatch" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">Primary Gradient</div>
+                    <strong>Primary Gradient</strong>
+                    <p>Main brand gradient used for headers, buttons, and highlights.</p>
+                </div>
+                
+                <div class="example-item">
+                    <div class="color-swatch" style="background: #28a745;">Success</div>
+                    <strong>Success Green</strong>
+                    <p>Used for positive values, success states, and confirmation buttons.</p>
+                </div>
+                
+                <div class="example-item">
+                    <div class="color-swatch" style="background: #dc3545;">Danger</div>
+                    <strong>Danger Red</strong>
+                    <p>Used for errors, warnings, and destructive actions.</p>
+                </div>
+                
+                <div class="example-item">
+                    <div class="color-swatch" style="background: #ffc107; color: #333;">Warning</div>
+                    <strong>Warning Yellow</strong>
+                    <p>Used for alerts, help buttons, and important notices.</p>
+                </div>
+                
+                <div class="example-item">
+                    <div class="color-swatch" style="background: #17a2b8;">Info</div>
+                    <strong>Info Blue</strong>
+                    <p>Used for informational content and edit buttons.</p>
+                </div>
+                
+                <div class="example-item">
+                    <div class="color-swatch" style="background: #f8f9fa; color: #333; border: 1px solid #dee2e6;">Light Gray</div>
+                    <strong>Light Gray</strong>
+                    <p>Used for backgrounds, subtle containers, and disabled states.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Typography Section -->
+        <section id="typography" class="example-section">
+            <h2>Typography</h2>
+            <p>Font sizes, weights, and hierarchy used in the application.</p>
+            
+            <div class="example-item" style="margin-top: 1rem;">
+                <h1 class="heading-1">Heading 1 - Main Title</h1>
+                <h2 class="heading-2">Heading 2 - Section Title</h2>
+                <h3 class="heading-3">Heading 3 - Subsection Title</h3>
+                <h4 class="heading-4">Heading 4 - Component Title</h4>
+                <h5 class="heading-5">Heading 5 - Small Title</h5>
+                <h6 class="heading-6">Heading 6 - Tiny Title</h6>
+                <p class="body-text">Body text - Regular paragraph content with proper line height and readability.</p>
+                <p class="small-text">Small text - Used for secondary information, captions, and metadata.</p>
+                <code class="code-text">Code text - Monospace font for technical content</code>
+            </div>
+        </section>
+
+        <!-- Buttons Section -->
+        <section id="buttons" class="example-section">
+            <h2>Buttons</h2>
+            <p>Button variants and states used throughout the application.</p>
+            
+            <div class="example-grid">
+                <div class="example-item">
+                    <h4>Primary Actions</h4>
+                    <div class="btn-group vertical">
+                        <button class="btn btn-primary">Primary Button</button>
+                        <button class="btn btn-secondary">Secondary Button</button>
+                        <button class="btn btn-primary" disabled>Disabled Button</button>
+                    </div>
+                </div>
+                
+                <div class="example-item">
+                    <h4>Action States</h4>
+                    <div class="btn-group vertical">
+                        <button class="btn btn-success">Success Action</button>
+                        <button class="btn btn-danger">Danger Action</button>
+                        <button class="btn btn-warning">Warning Action</button>
+                        <button class="btn btn-info">Info Action</button>
+                    </div>
+                </div>
+                
+                <div class="example-item">
+                    <h4>Navigation Buttons</h4>
+                    <div class="btn-group vertical">
+                        <a href="#" class="btn btn-nav">📊 Analytics</a>
+                        <button class="btn btn-nav btn-export">📥 Export Data</button>
+                        <button class="btn btn-nav btn-help">❓ Help</button>
+                    </div>
+                </div>
+                
+                <div class="example-item">
+                    <h4>Button Sizes</h4>
+                    <div class="btn-group vertical">
+                        <button class="btn btn-primary btn-sm">Small Button</button>
+                        <button class="btn btn-primary">Regular Button</button>
+                        <button class="btn btn-primary btn-lg">Large Button</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Forms Section -->
+        <section id="forms" class="example-section">
+            <h2>Form Elements</h2>
+            <p>Input fields, selects, and form layouts used in the application.</p>
+            
+            <div class="example-grid">
+                <div class="example-item">
+                    <h4>Basic Inputs</h4>
+                    <div class="form-group">
+                        <label for="sample-text">Text Input</label>
+                        <input type="text" id="sample-text" class="form-input" placeholder="Enter text...">
+                    </div>
+                    <div class="form-group">
+                        <label for="sample-number">Number Input</label>
+                        <input type="number" id="sample-number" class="form-input" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="sample-select">Select Dropdown</label>
+                        <select id="sample-select" class="form-select">
+                            <option value="">Choose option...</option>
+                            <option value="option1">Option 1</option>
+                            <option value="option2">Option 2</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="example-item">
+                    <h4>Input with Unit</h4>
+                    <div class="form-group">
+                        <label for="amount-input">Amount</label>
+                        <div class="form-input-with-unit">
+                            <input type="number" id="amount-input" class="form-input" placeholder="0.00">
+                            <span class="form-input-unit">$</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="file-input">File Upload</label>
+                        <div class="form-file-wrapper">
+                            <input type="file" id="file-input" class="form-file">
+                            <label for="file-input" class="form-file-label">Choose File</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="example-item">
+                    <h4>Form States</h4>
+                    <div class="form-group">
+                        <label for="valid-input">Valid Input</label>
+                        <input type="text" id="valid-input" class="form-input valid" value="Valid input">
+                        <span class="form-status success">This field is valid</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="invalid-input">Invalid Input</label>
+                        <input type="text" id="invalid-input" class="form-input invalid" value="Invalid input">
+                        <span class="form-status error">This field has an error</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cards Section -->
+        <section id="cards" class="example-section">
+            <h2>Cards & Containers</h2>
+            <p>Card layouts and content containers used throughout the application.</p>
+            
+            <div class="example-grid">
+                <div class="card-indicator">
+                    <h3>Monthly Budget</h3>
+                    <div class="card-indicator-value">$2,500</div>
+                    <small>Available this month</small>
+                </div>
+                
+                <div class="card-summary">
+                    <div class="card-summary-label">Total Transactions</div>
+                    <div class="card-summary-value">142</div>
+                </div>
+                
+                <div class="card">
+                    <div style="padding: 1.5rem;">
+                        <h4>Basic Card</h4>
+                        <p>Simple card container with shadow and rounded corners.</p>
+                        <button class="btn btn-primary btn-sm">Action</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 2rem;">
+                <div class="card-item">
+                    <div class="card-item-info">
+                        <div class="card-item-name">Sample Budget Item</div>
+                        <div class="card-item-details">
+                            <span class="card-item-value">$450.00</span>
+                            <span class="card-item-frequency">monthly</span>
+                            <span class="card-item-tags">groceries, food</span>
+                        </div>
+                    </div>
+                    <div class="card-item-actions">
+                        <button class="btn btn-info btn-sm">Edit</button>
+                        <button class="btn btn-danger btn-sm">Remove</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation Section -->
+        <section id="navigation" class="example-section">
+            <h2>Navigation Components</h2>
+            <p>Navigation patterns and link styles used in the application.</p>
+            
+            <div class="example-item" style="margin-top: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <h4 style="color: white; margin-bottom: 1rem;">Page Navigation (on colored background)</h4>
+                <nav class="page-nav">
+                    <a href="#" class="nav-link">🏠 Home</a>
+                    <a href="#" class="nav-link">📊 Analytics</a>
+                    <button class="nav-btn nav-btn export">📥 Export</button>
+                    <button class="nav-btn help">❓ Help</button>
+                </nav>
+            </div>
+            
+            <div class="example-item" style="margin-top: 1rem;">
+                <h4>Tab Navigation</h4>
+                <nav class="nav-tabs">
+                    <button class="nav-tab active">Overview</button>
+                    <button class="nav-tab">Budget Items</button>
+                    <button class="nav-tab">Analytics</button>
+                    <button class="nav-tab">Settings</button>
+                </nav>
+            </div>
+            
+            <div class="example-item" style="margin-top: 1rem;">
+                <h4>Breadcrumb Navigation</h4>
+                <nav class="nav-breadcrumb">
+                    <a href="#" class="nav-breadcrumb-item">Home</a>
+                    <span class="nav-breadcrumb-separator">›</span>
+                    <a href="#" class="nav-breadcrumb-item">Budget</a>
+                    <span class="nav-breadcrumb-separator">›</span>
+                    <span class="nav-breadcrumb-item active">Current Item</span>
+                </nav>
+            </div>
+        </section>
+
+        <!-- Modal Section -->
+        <section id="modal" class="example-section">
+            <h2>Modal Example</h2>
+            <p>Modal dialogs and overlays used for help, confirmations, and forms.</p>
+            
+            <button class="btn btn-primary" onclick="showModal()">Show Modal Example</button>
+            
+            <!-- Modal Overlay -->
+            <div id="exampleModal" class="modal-overlay">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Example Modal</h2>
+                        <button class="modal-close" onclick="hideModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <h3>Modal Content</h3>
+                        <p>This is an example of the modal component used in the Budget Planner application.</p>
+                        <p>It includes a header with close button, scrollable body content, and action buttons in the footer.</p>
+                        
+                        <div class="modal-privacy-notice">
+                            <p><strong>Privacy Notice:</strong> This is an example of how important notices are displayed within modals.</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="modal-btn secondary" onclick="hideModal()">Cancel</button>
+                        <button class="modal-btn primary" onclick="hideModal()">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function showModal() {
+            document.getElementById('exampleModal').classList.add('show');
+        }
+        
+        function hideModal() {
+            document.getElementById('exampleModal').classList.remove('show');
+        }
+        
+        // Close modal when clicking overlay
+        document.getElementById('exampleModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideModal();
+            }
+        });
+        
+        // Tab functionality
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+/**
+ * Design Tokens: Spacing
+ * 
+ * Spacing scale extracted from the Budget Planner application.
+ * Provides consistent padding, margin, and gap values.
+ */
+
+:root {
+  /* Base Spacing Unit */
+  --spacing-unit: 1rem; /* 16px */
+  
+  /* Spacing Scale */
+  --spacing-0: 0;
+  --spacing-1: 0.25rem;   /* 4px */
+  --spacing-2: 0.5rem;    /* 8px */
+  --spacing-3: 0.75rem;   /* 12px */
+  --spacing-4: 1rem;      /* 16px */
+  --spacing-5: 1.25rem;   /* 20px */
+  --spacing-6: 1.5rem;    /* 24px */
+  --spacing-7: 1.75rem;   /* 28px */
+  --spacing-8: 2rem;      /* 32px */
+  --spacing-10: 2.5rem;   /* 40px */
+  --spacing-12: 3rem;     /* 48px */
+  --spacing-15: 3.75rem;  /* 60px */
+  --spacing-16: 4rem;     /* 64px */
+  --spacing-20: 5rem;     /* 80px */
+  
+  /* Component-specific Spacing */
+  --spacing-form-group: 1.25rem;     /* 20px */
+  --spacing-section: 1.5625rem;      /* 25px */
+  --spacing-container: 1.25rem;      /* 20px */
+  --spacing-card-padding: 1.25rem;   /* 20px */
+  --spacing-button-padding: 0.75rem 1.25rem; /* 12px 20px */
+  --spacing-input-padding: 0.75rem;  /* 12px */
+  --spacing-modal-padding: 1.25rem 1.5625rem; /* 20px 25px */
+  
+  /* Grid Gaps */
+  --gap-xs: 0.5rem;      /* 8px */
+  --gap-sm: 0.75rem;     /* 12px */
+  --gap-md: 0.9375rem;   /* 15px */
+  --gap-lg: 1.25rem;     /* 20px */
+  --gap-xl: 1.875rem;    /* 30px */
+  
+  /* Border Radius */
+  --radius-xs: 3px;
+  --radius-sm: 4px;
+  --radius-md: 5px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --radius-2xl: 10px;
+  --radius-3xl: 12px;
+  --radius-4xl: 15px;
+  --radius-round: 50%;
+  
+  /* Border Widths */
+  --border-width-thin: 1px;
+  --border-width-medium: 2px;
+  --border-width-thick: 4px;
+  
+  /* Box Shadows */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 2px 10px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 4px 8px rgba(0, 0, 0, 0.2);
+  --shadow-2xl: 0 10px 30px rgba(0, 0, 0, 0.3);
+  
+  /* Focus Ring */
+  --focus-ring: 0 0 0 3px rgba(85, 108, 214, 0.1);
+  
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  --transition-transform: transform 0.2s ease;
+  --transition-colors: background-color 0.3s ease, border-color 0.3s ease;
+  --transition-all: all 0.3s ease;
+}
+
+/* Spacing Utility Classes */
+.m-0 { margin: var(--spacing-0); }
+.m-1 { margin: var(--spacing-1); }
+.m-2 { margin: var(--spacing-2); }
+.m-3 { margin: var(--spacing-3); }
+.m-4 { margin: var(--spacing-4); }
+.m-5 { margin: var(--spacing-5); }
+.m-6 { margin: var(--spacing-6); }
+.m-8 { margin: var(--spacing-8); }
+.m-10 { margin: var(--spacing-10); }
+.m-12 { margin: var(--spacing-12); }
+
+.p-0 { padding: var(--spacing-0); }
+.p-1 { padding: var(--spacing-1); }
+.p-2 { padding: var(--spacing-2); }
+.p-3 { padding: var(--spacing-3); }
+.p-4 { padding: var(--spacing-4); }
+.p-5 { padding: var(--spacing-5); }
+.p-6 { padding: var(--spacing-6); }
+.p-8 { padding: var(--spacing-8); }
+.p-10 { padding: var(--spacing-10); }
+.p-12 { padding: var(--spacing-12); }
+
+/* Margin Top/Bottom */
+.mt-0 { margin-top: var(--spacing-0); }
+.mt-4 { margin-top: var(--spacing-4); }
+.mt-5 { margin-top: var(--spacing-5); }
+.mt-6 { margin-top: var(--spacing-6); }
+.mt-8 { margin-top: var(--spacing-8); }
+
+.mb-0 { margin-bottom: var(--spacing-0); }
+.mb-2 { margin-bottom: var(--spacing-2); }
+.mb-4 { margin-bottom: var(--spacing-4); }
+.mb-5 { margin-bottom: var(--spacing-5); }
+.mb-6 { margin-bottom: var(--spacing-6); }
+.mb-8 { margin-bottom: var(--spacing-8); }
+
+/* Border Radius Classes */
+.rounded-xs { border-radius: var(--radius-xs); }
+.rounded-sm { border-radius: var(--radius-sm); }
+.rounded-md { border-radius: var(--radius-md); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-xl { border-radius: var(--radius-xl); }
+.rounded-2xl { border-radius: var(--radius-2xl); }
+.rounded-3xl { border-radius: var(--radius-3xl); }
+.rounded-4xl { border-radius: var(--radius-4xl); }
+.rounded-full { border-radius: var(--radius-round); }
+
+/* Shadow Classes */
+.shadow-xs { box-shadow: var(--shadow-xs); }
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+.shadow-xl { box-shadow: var(--shadow-xl); }
+.shadow-2xl { box-shadow: var(--shadow-2xl); }

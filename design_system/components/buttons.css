@@ -1,0 +1,267 @@
+/**
+ * Button Components
+ * 
+ * Button system extracted from the Budget Planner application.
+ * Includes primary, secondary, navigation, and specialized button variants.
+ */
+
+/* Base Button Styles */
+.btn {
+  /* Reset */
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+  
+  /* Layout */
+  display: inline-block;
+  padding: var(--spacing-button-padding);
+  border-radius: var(--radius-md);
+  
+  /* Typography */
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-normal);
+  text-align: center;
+  
+  /* Transitions */
+  transition: var(--transition-all);
+  
+  /* States */
+  &:hover {
+    transform: translateY(-2px);
+  }
+  
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
+  }
+  
+  &:focus {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+/* Primary Button */
+.btn-primary {
+  background: var(--color-primary-gradient);
+  color: var(--color-white);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover:not(:disabled) {
+  box-shadow: var(--shadow-xl);
+}
+
+/* Secondary Button */
+.btn-secondary {
+  background: var(--color-success-light);
+  color: var(--color-white);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--color-success-dark);
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+/* Success Button */
+.btn-success {
+  background: var(--color-success-light);
+  color: var(--color-white);
+}
+
+.btn-success:hover:not(:disabled) {
+  background: var(--color-success-dark);
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+/* Danger Button */
+.btn-danger {
+  background: var(--color-danger);
+  color: var(--color-white);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: var(--color-danger-dark);
+}
+
+/* Info Button */
+.btn-info {
+  background: var(--color-info);
+  color: var(--color-white);
+}
+
+.btn-info:hover:not(:disabled) {
+  background: var(--color-info-dark);
+}
+
+/* Warning Button */
+.btn-warning {
+  background: var(--color-warning);
+  color: var(--color-text-primary);
+}
+
+.btn-warning:hover:not(:disabled) {
+  background: var(--color-warning-dark);
+}
+
+/* Navigation Button */
+.btn-nav {
+  background: var(--color-overlay-light);
+  color: var(--color-white);
+  border: var(--border-width-thin) solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-lg);
+  padding: 10px 20px;
+  font-weight: var(--font-weight-normal);
+}
+
+.btn-nav:hover:not(:disabled) {
+  background: var(--color-overlay-medium);
+}
+
+/* Specialized Navigation Buttons */
+.btn-export {
+  background: rgba(40, 167, 69, 0.8) !important;
+  border-color: rgba(40, 167, 69, 0.6) !important;
+  font-weight: var(--font-weight-semibold);
+}
+
+.btn-export:hover:not(:disabled) {
+  background: var(--color-success-light) !important;
+  border-color: rgba(40, 167, 69, 0.8) !important;
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+.btn-help {
+  background: rgba(255, 193, 7, 0.8) !important;
+  border-color: rgba(255, 193, 7, 0.6) !important;
+  font-weight: var(--font-weight-semibold);
+}
+
+.btn-help:hover:not(:disabled) {
+  background: var(--color-warning) !important;
+  border-color: rgba(255, 193, 7, 0.8) !important;
+  box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+}
+
+/* Button Sizes */
+.btn-sm {
+  padding: 8px 16px;
+  font-size: var(--font-size-base);
+}
+
+.btn-lg {
+  padding: 12px 24px;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Button Group */
+.btn-group {
+  display: flex;
+  gap: var(--gap-sm);
+  align-items: center;
+}
+
+.btn-group.vertical {
+  flex-direction: column;
+}
+
+.btn-group.full-width .btn {
+  width: 100%;
+}
+
+/* Close Button (for modals) */
+.btn-close {
+  background: none;
+  border: none;
+  color: var(--color-white);
+  font-size: var(--font-size-6xl);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-round);
+  transition: var(--transition-colors);
+}
+
+.btn-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Remove Button (circular) */
+.btn-remove {
+  background: var(--color-danger);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-round);
+  width: 30px;
+  height: 30px;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-all);
+}
+
+.btn-remove:hover:not(:disabled) {
+  background: var(--color-danger-dark);
+  transform: scale(1.1);
+}
+
+/* File Input Button */
+.btn-file {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-primary);
+  border: var(--border-width-medium) solid transparent;
+  border-radius: var(--radius-lg);
+  padding: 12px 20px;
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: var(--transition-all);
+}
+
+.btn-file:hover {
+  background: var(--color-white);
+  border-color: var(--color-primary-light);
+}
+
+/* Sample Link Button */
+.btn-sample {
+  color: var(--color-warning);
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+  padding: 8px 16px;
+  border: var(--border-width-thin) solid var(--color-warning);
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  transition: var(--transition-all);
+}
+
+.btn-sample:hover {
+  background: var(--color-warning);
+  color: var(--color-text-primary);
+}
+
+/* Responsive Button Styles */
+@media (max-width: 768px) {
+  .btn-group {
+    flex-direction: column;
+  }
+  
+  .btn-group .btn {
+    width: 100%;
+  }
+  
+  .btn {
+    font-size: var(--font-size-base);
+    padding: 10px 16px;
+  }
+}

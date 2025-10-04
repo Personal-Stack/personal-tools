@@ -1,0 +1,318 @@
+/**
+ * Modal Components
+ * 
+ * Modal system extracted from the Budget Planner application.
+ * Includes overlay, content, header, body, and footer sections.
+ */
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-overlay);
+  z-index: var(--z-modal-backdrop);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-5);
+  box-sizing: border-box;
+}
+
+.modal-overlay.show {
+  display: flex;
+}
+
+/* Modal Content */
+.modal-content {
+  background: var(--color-white);
+  border-radius: var(--radius-4xl);
+  max-width: var(--modal-max-width);
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: var(--shadow-2xl);
+  animation: modalSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: var(--z-modal);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Modal Header */
+.modal-header {
+  background: var(--color-primary-gradient);
+  color: var(--color-white);
+  padding: var(--spacing-8) var(--spacing-10);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: var(--radius-4xl) var(--radius-4xl) 0 0;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: var(--font-size-4xl);
+  color: var(--color-white);
+  border: none;
+  padding: 0;
+}
+
+/* Modal Body */
+.modal-body {
+  padding: var(--spacing-10) var(--spacing-10);
+  max-height: 60vh;
+  overflow-y: auto;
+  color: var(--color-text-primary);
+  line-height: var(--line-height-relaxed);
+}
+
+.modal-body h3 {
+  color: var(--color-primary-light);
+  margin: var(--spacing-10) 0 var(--spacing-6) 0;
+  font-size: var(--font-size-2xl);
+}
+
+.modal-body h3:first-child {
+  margin-top: 0;
+}
+
+.modal-body h4 {
+  color: var(--color-text-primary);
+  margin: var(--spacing-8) 0 var(--spacing-4) 0;
+  font-size: var(--font-size-xl);
+}
+
+.modal-body p {
+  margin-bottom: var(--spacing-6);
+  color: var(--color-text-secondary);
+}
+
+.modal-body ul {
+  margin: var(--spacing-4) 0;
+  padding-left: var(--spacing-5);
+}
+
+.modal-body li {
+  margin-bottom: var(--spacing-2);
+  color: var(--color-text-secondary);
+}
+
+.modal-body strong {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Privacy Notice in Modal */
+.modal-privacy-notice {
+  background: var(--color-success-bg);
+  border: var(--border-width-thin) solid var(--color-success-border);
+  color: var(--color-success-light);
+  padding: var(--spacing-8);
+  border-radius: var(--radius-xl);
+  margin: var(--spacing-8) 0;
+  border-left: var(--border-width-thick) solid var(--color-success-light);
+}
+
+.modal-privacy-notice p {
+  margin: 0;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-success-light);
+}
+
+/* Modal Footer */
+.modal-footer {
+  background: var(--color-gray-100);
+  padding: var(--spacing-8) var(--spacing-10);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-6);
+  border-top: var(--border-width-thin) solid var(--color-border-medium);
+}
+
+/* Modal Buttons */
+.modal-btn {
+  padding: var(--spacing-4) var(--spacing-8);
+  border: none;
+  border-radius: var(--radius-xl);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: var(--transition-all);
+  font-size: var(--font-size-lg);
+  min-width: 120px;
+}
+
+.modal-btn.primary {
+  background: var(--color-primary-gradient);
+  color: var(--color-white);
+}
+
+.modal-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.modal-btn.secondary {
+  background: var(--color-success-light);
+  color: var(--color-white);
+}
+
+.modal-btn.secondary:hover {
+  background: var(--color-success-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+/* Close Button */
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--color-white);
+  font-size: var(--font-size-6xl);
+  cursor: pointer;
+  padding: var(--spacing-2);
+  line-height: 1;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-round);
+  transition: var(--transition-colors);
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.modal-close:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Modal States */
+.modal-overlay.entering {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-overlay.leaving {
+  animation: fadeOut 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Responsive Modal */
+@media (max-width: 768px) {
+  .modal-content {
+    margin: 10px;
+    max-height: 95vh;
+    border-radius: var(--radius-3xl);
+  }
+  
+  .modal-header {
+    padding: var(--spacing-8) var(--spacing-6);
+    border-radius: var(--radius-3xl) var(--radius-3xl) 0 0;
+  }
+  
+  .modal-header h2 {
+    font-size: var(--font-size-3xl);
+  }
+  
+  .modal-body {
+    padding: var(--spacing-8) var(--spacing-6);
+    max-height: 70vh;
+  }
+  
+  .modal-footer {
+    padding: var(--spacing-8) var(--spacing-6);
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+  
+  .modal-btn {
+    width: 100%;
+  }
+}
+
+/* Modal Backdrop Blur (optional enhancement) */
+.modal-overlay.blur-backdrop {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Modal Content Variants */
+.modal-content.small {
+  max-width: 400px;
+}
+
+.modal-content.large {
+  max-width: 1000px;
+}
+
+.modal-content.full-screen {
+  max-width: 95vw;
+  max-height: 95vh;
+}
+
+/* Scrollable Modal Body */
+.modal-body.scrollable {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Modal with No Padding */
+.modal-body.no-padding {
+  padding: 0;
+}
+
+/* Modal Loading State */
+.modal-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-12);
+  color: var(--color-text-secondary);
+}
+
+.modal-loading::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--color-gray-300);
+  border-top: 2px solid var(--color-primary-light);
+  border-radius: var(--radius-round);
+  animation: spin 1s linear infinite;
+  margin-right: var(--spacing-3);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

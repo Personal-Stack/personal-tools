@@ -1,0 +1,262 @@
+/**
+ * Form Components
+ * 
+ * Form system extracted from the Budget Planner application.
+ * Includes inputs, selects, labels, and form groups.
+ */
+
+/* Base Form Styles */
+.form-group {
+  margin-bottom: var(--spacing-form-group);
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: var(--spacing-2);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+}
+
+/* Input Fields */
+.form-input {
+  width: 100%;
+  padding: var(--spacing-input-padding);
+  border: var(--border-width-medium) solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-lg);
+  font-family: var(--font-family-primary);
+  background: var(--color-white);
+  transition: var(--transition-colors);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-border-focus);
+  box-shadow: var(--focus-ring);
+}
+
+.form-input:hover:not(:focus) {
+  border-color: var(--color-border-focus);
+}
+
+.form-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Input Variants */
+input[type="number"].form-input,
+input[type="text"].form-input,
+input[type="email"].form-input,
+input[type="password"].form-input {
+  /* Inherits base styles */
+}
+
+/* Select Fields */
+.form-select {
+  width: 100%;
+  padding: var(--spacing-input-padding);
+  border: var(--border-width-medium) solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-lg);
+  font-family: var(--font-family-primary);
+  background: var(--color-white);
+  cursor: pointer;
+  transition: var(--transition-colors);
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: var(--color-border-focus);
+  box-shadow: var(--focus-ring);
+}
+
+.form-select option:disabled {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* File Input */
+.form-file-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.form-file {
+  position: absolute;
+  opacity: 0;
+  width: 0.1px;
+  height: 0.1px;
+  overflow: hidden;
+}
+
+.form-file-label {
+  display: inline-block;
+  padding: var(--spacing-input-padding);
+  background: var(--color-white);
+  border: var(--border-width-medium) solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+  transition: var(--transition-colors);
+  width: 100%;
+  text-align: center;
+}
+
+.form-file:focus + .form-file-label,
+.form-file-label:hover {
+  border-color: var(--color-border-focus);
+  box-shadow: var(--focus-ring);
+}
+
+/* Input with Unit */
+.form-input-with-unit {
+  position: relative;
+}
+
+.form-input-with-unit .form-input {
+  padding-right: 30px;
+}
+
+.form-input-unit {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-investment-accent);
+  pointer-events: none;
+  font-size: var(--font-size-base);
+}
+
+/* Form Status Messages */
+.form-status {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  margin-top: var(--spacing-2);
+  display: block;
+}
+
+.form-status.success {
+  color: var(--color-success-light);
+}
+
+.form-status.error {
+  color: var(--color-danger);
+}
+
+.form-status.warning {
+  color: var(--color-warning);
+}
+
+/* Form Sections */
+.form-section {
+  border: var(--border-width-medium) dashed var(--color-border-light);
+  padding: var(--spacing-5);
+  border-radius: var(--radius-xl);
+  background: var(--color-bg-section);
+  margin-top: var(--spacing-6);
+}
+
+.form-section h3 {
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-2);
+  font-size: var(--font-size-2xl);
+}
+
+.form-section p {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-6);
+  font-size: var(--font-size-md);
+}
+
+/* Investment Controls (specialized form layout) */
+.investment-controls {
+  padding: var(--spacing-5);
+  background: var(--color-gray-100);
+  border-radius: var(--radius-xl);
+  border: var(--border-width-medium) solid var(--color-gray-200);
+  margin-top: var(--spacing-6);
+}
+
+.investment-controls .form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+}
+
+.investment-controls label {
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-2);
+  color: var(--color-text-secondary);
+}
+
+.investment-controls .form-select,
+.investment-controls .form-input {
+  padding: 10px;
+  font-size: var(--font-size-base);
+}
+
+/* Form Help Text */
+.form-help {
+  margin-top: var(--spacing-6);
+  border-top: var(--border-width-thin) solid var(--color-border-medium);
+  padding-top: var(--spacing-6);
+}
+
+.form-help summary {
+  cursor: pointer;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-border-focus);
+  margin-bottom: var(--spacing-4);
+}
+
+.form-help pre {
+  background: var(--color-gray-100);
+  border: var(--border-width-thin) solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-6);
+  margin: var(--spacing-4) 0;
+  overflow-x: auto;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+.form-help code {
+  font-family: var(--font-family-monospace);
+}
+
+/* Form Validation States */
+.form-input.invalid,
+.form-select.invalid {
+  border-color: var(--color-danger);
+}
+
+.form-input.valid,
+.form-select.valid {
+  border-color: var(--color-success-light);
+}
+
+/* Disabled State */
+.form-input:disabled,
+.form-select:disabled {
+  background: var(--color-gray-100);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+/* Responsive Form Styles */
+@media (max-width: 768px) {
+  .form-input,
+  .form-select {
+    font-size: var(--font-size-lg);
+  }
+  
+  .investment-controls {
+    padding: var(--spacing-4);
+  }
+  
+  .form-section {
+    padding: var(--spacing-4);
+  }
+}

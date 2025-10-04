@@ -1,0 +1,146 @@
+/**
+ * Design Tokens: Typography
+ * 
+ * Typography scale and font properties extracted from the Budget Planner application.
+ * Defines consistent font sizes, weights, and line heights.
+ */
+
+:root {
+  /* Font Families */
+  --font-family-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font-family-monospace: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  --font-family-alternative: 'IBM Plex Sans', sans-serif;
+  
+  /* Font Weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Font Sizes */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.85rem;    /* 13.6px */
+  --font-size-base: 0.9rem;   /* 14.4px */
+  --font-size-md: 0.95rem;    /* 15.2px */
+  --font-size-lg: 1rem;       /* 16px */
+  --font-size-xl: 1.1rem;     /* 17.6px */
+  --font-size-2xl: 1.2rem;    /* 19.2px */
+  --font-size-3xl: 1.3rem;    /* 20.8px */
+  --font-size-4xl: 1.5rem;    /* 24px */
+  --font-size-5xl: 1.8rem;    /* 28.8px */
+  --font-size-6xl: 2rem;      /* 32px */
+  --font-size-7xl: 2.5rem;    /* 40px */
+  
+  /* Line Heights */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.4;
+  --line-height-relaxed: 1.6;
+  --line-height-loose: 1.8;
+  
+  /* Letter Spacing */
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.025em;
+}
+
+/* Typography Classes */
+.text-xs { font-size: var(--font-size-xs); }
+.text-sm { font-size: var(--font-size-sm); }
+.text-base { font-size: var(--font-size-base); }
+.text-md { font-size: var(--font-size-md); }
+.text-lg { font-size: var(--font-size-lg); }
+.text-xl { font-size: var(--font-size-xl); }
+.text-2xl { font-size: var(--font-size-2xl); }
+.text-3xl { font-size: var(--font-size-3xl); }
+.text-4xl { font-size: var(--font-size-4xl); }
+.text-5xl { font-size: var(--font-size-5xl); }
+.text-6xl { font-size: var(--font-size-6xl); }
+.text-7xl { font-size: var(--font-size-7xl); }
+
+.font-light { font-weight: var(--font-weight-light); }
+.font-normal { font-weight: var(--font-weight-normal); }
+.font-medium { font-weight: var(--font-weight-medium); }
+.font-semibold { font-weight: var(--font-weight-semibold); }
+.font-bold { font-weight: var(--font-weight-bold); }
+
+.leading-tight { line-height: var(--line-height-tight); }
+.leading-normal { line-height: var(--line-height-normal); }
+.leading-relaxed { line-height: var(--line-height-relaxed); }
+.leading-loose { line-height: var(--line-height-loose); }
+
+/* Headings */
+h1, .heading-1 {
+  font-size: var(--font-size-7xl);
+  font-weight: var(--font-weight-light);
+  line-height: var(--line-height-tight);
+  color: var(--color-text-primary);
+}
+
+h2, .heading-2 {
+  font-size: var(--font-size-5xl);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-tight);
+  color: var(--color-primary-light);
+}
+
+h3, .heading-3 {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
+}
+
+h4, .heading-4 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+}
+
+h5, .heading-5 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+}
+
+h6, .heading-6 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-primary);
+}
+
+/* Body Text */
+body, .body-text {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-primary);
+}
+
+/* Small Text */
+small, .small-text {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+}
+
+/* Code Text */
+code, .code-text {
+  font-family: var(--font-family-monospace);
+  font-size: var(--font-size-base);
+  background: var(--color-gray-100);
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+pre {
+  font-family: var(--font-family-monospace);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  background: var(--color-gray-100);
+  padding: 15px;
+  border-radius: 4px;
+  overflow-x: auto;
+}
