@@ -1,4 +1,14 @@
-# Personal Tools Suite �️
+# Personal Tools Suite 🛠️
+
+A comprehensive collection of personal productivity tools featuring financial management, advanced analytics, and a complete design system. Built with modern web technologies to enhance personal workflow and data analysis.
+
+## ☕ Support This Project
+
+If you find these tools useful and want to support continued development:
+
+[![Buy Me A Coffee](https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png)](https://www.buymeacoffee.com/personalstack)
+
+Your support helps maintain and improve these open-source personal productivity tools! 🙏ersonal Tools Suite �️
 
 A comprehensive collection of personal productivity tools featuring financial management, advanced analytics, and a complete design system. Built with modern web technologies to enhance personal workflow and data analysis.
 
