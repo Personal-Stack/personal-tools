@@ -8,7 +8,8 @@ If you find these tools useful and want to support continued development:
 
 [![Buy Me A Coffee](https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png)](https://www.buymeacoffee.com/personalstack)
 
-Your support helps maintain and improve these open-source personal productivity tools! 🙏ersonal Tools Suite �️
+Your support helps maintain and improve these open-source personal productivity tools! 🙏
+Personal Tools Suite �️
 
 A comprehensive collection of personal productivity tools featuring financial management, advanced analytics, and a complete design system. Built with modern web technologies to enhance personal workflow and data analysis.
 
@@ -37,6 +38,12 @@ A comprehensive collection of personal productivity tools featuring financial ma
 - **🎯 Accessibility**: WCAG-compliant components with proper contrast ratios and focus management
 - **📐 Design Tokens**: Standardized colors, spacing, typography, and layout systems
 
+### 🍅 Pomodoro Timer
+- **🍅 Focused Work Sessions**: Customizable Pomodoro intervals with enforced break
+- **📊 Advanced Statistics**: Visualize focus trends and session statistics with interactive charts
+- **🔔 Notifications**: Configurable sound and visual alerts for session transition
+- **🔒 Lock Screen Mode**: Prevents skipping breaks to ensure productivity
+
 ## 🚀 Live Demo
 
 Experience the personal tools suite: [Personal Tools Collection](https://Personal-Stack.github.io/personal-tools/)
@@ -45,7 +52,7 @@ Experience the personal tools suite: [Personal Tools Collection](https://Persona
 - **🏠 Main Hub**: [Landing Page](https://Personal-Stack.github.io/personal-tools/) - Overview and navigation
 - **💰 Budget Planner**: [Budget Tool](https://Personal-Stack.github.io/personal-tools/budget/) - Comprehensive budget management
 - **📊 Analytics Dashboard**: [Revolut Analytics](https://Personal-Stack.github.io/personal-tools/revolut-analytics/) - Advanced financial analysis
-- **🎨 Design System**: [Component Showcase](https://Personal-Stack.github.io/personal-tools/design_system/examples/component-showcase.html) - UI components demo
+- **�� Design System**: [Component Showcase](https://Personal-Stack.github.io/personal-tools/design_system/examples/component-showcase.html) - UI components demo
 
 ## 🎯 Quick Start Guide
 

@@ -1,0 +1,14 @@
+{
+    "name": "Personal Pomodoro Timer",
+    "short_name": "Pomodoro",
+    "description": "Enhanced productivity timer with forced break enforcement for better work-life balance",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#dc2626",
+    "orientation": "portrait-primary",
+    "scope": "./",
+    "categories": ["productivity", "health", "lifestyle"],
+    "prefer_related_applications": false,
+    "related_applications": []
+}

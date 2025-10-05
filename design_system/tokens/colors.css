@@ -27,6 +27,8 @@
   /* Warning Colors */
   --color-warning: #ffc107;
   --color-warning-dark: #e0a800;
+  --color-warning-bg: rgba(255, 193, 7, 0.2);
+  --color-warning-border: rgba(255, 193, 7, 0.3);
   
   /* Info Colors */
   --color-info: #17a2b8;

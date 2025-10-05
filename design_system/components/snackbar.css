@@ -150,8 +150,9 @@
 }
 
 .snackbar.warning {
-  background: var(--color-warning-light);
-  color: var(--color-white);
+  background: var(--color-warning);
+  color: var(--color-gray-800);
+  border: 1px solid var(--color-warning-dark);
 }
 
 .snackbar.error,

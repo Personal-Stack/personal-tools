@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer - Personal Tools</title>
+    <meta name="description" content="A focused Pomodoro timer with forced break enforcement to improve productivity and wellbeing.">
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#dc2626">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Pomodoro Timer">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍅</text></svg>">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../design_system/design-system.css">
+    <link rel="stylesheet" href="./pomodoro.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <nav class="nav">
+                <a href="../" class="nav-link">← Personal Tools</a>
+                <button id="reset-state-btn" class="reset-state-btn" title="Reset All Data">
+                    🔄
+                </button>
+            </nav>
+            <h1 class="app-title">🍅 Pomodoro Timer</h1>
+            <p class="app-subtitle">Focused work sessions with enforced breaks</p>
+        </header>
+
+        <!-- Main Timer Interface -->
+        <main class="main">
+            <!-- Timer Display -->
+            <section class="timer-section card">
+                <div class="timer-display">
+                    <div class="timer-circle">
+                        <svg class="progress-ring" width="300" height="300" viewBox="0 0 300 300">
+                            <circle class="progress-ring-bg" 
+                                    stroke="var(--color-gray-200)" 
+                                    stroke-width="8" 
+                                    fill="none" 
+                                    r="140" 
+                                    cx="150" 
+                                    cy="150"/>
+                            <circle id="progress-ring" 
+                                    class="progress-ring-circle"
+                                    stroke="var(--color-primary)" 
+                                    stroke-width="8" 
+                                    fill="transparent" 
+                                    r="140" 
+                                    cx="150" 
+                                    cy="150"/>
+                        </svg>
+                        <div class="timer-content">
+                            <div id="timer-time" class="timer-time">25:00</div>
+                            <div id="timer-phase" class="timer-phase">Focus</div>
+                            <div id="timer-session" class="timer-session">Session 1</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timer Controls -->
+                <div class="timer-controls">
+                    <button id="start-pause-btn" class="btn btn-primary btn-lg">
+                        <span id="start-pause-text">Start Focus</span>
+                    </button>
+                    <button id="reset-btn" class="btn btn-secondary">Reset</button>
+                    <button id="skip-btn" class="btn btn-secondary" disabled>Skip</button>
+                </div>
+            </section>
+
+            <!-- Timer Settings -->
+            <section class="settings-section card">
+                <h2 class="card-title">⚙️ Timer Settings</h2>
+                
+                <!-- Preset Configurations -->
+                <div class="presets-section">
+                    <h3 class="presets-title">Quick Presets</h3>
+                    <div class="presets-grid">
+                        <button type="button" class="preset-chip" data-focus="25" data-short="5" data-long="15">
+                            <span class="preset-label">Classic</span>
+                            <span class="preset-values">25m • 5m • 15m</span>
+                        </button>
+                        <button type="button" class="preset-chip" data-focus="30" data-short="10" data-long="15">
+                            <span class="preset-label">Extended</span>
+                            <span class="preset-values">30m • 10m • 15m</span>
+                        </button>
+                        <button type="button" class="preset-chip" data-focus="55" data-short="15" data-long="30">
+                            <span class="preset-label">Deep Work</span>
+                            <span class="preset-values">55m • 15m • 30m</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <form class="settings-form" id="timer-settings">
+                    <div class="settings-grid">
+                        <div class="form-group">
+                            <label for="focus-duration" class="form-label">Focus Duration</label>
+                            <div class="input-group">
+                                <input type="number" id="focus-duration" class="form-input" min="1" max="60" value="25">
+                                <span class="input-suffix">min</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="short-break-duration" class="form-label">Short Break</label>
+                            <div class="input-group">
+                                <input type="number" id="short-break-duration" class="form-input" min="1" max="30" value="5">
+                                <span class="input-suffix">min</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="long-break-duration" class="form-label">Long Break</label>
+                            <div class="input-group">
+                                <input type="number" id="long-break-duration" class="form-input" min="1" max="60" value="15">
+                                <span class="input-suffix">min</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Lock Screen Settings -->
+                    <div class="lock-screen-settings">
+                        <h3 class="settings-section-title">Break Enforcement</h3>
+                        <div class="toggle-group">
+                            <label class="toggle-label" for="lock-screen-enabled">
+                                <input type="checkbox" id="lock-screen-enabled" class="toggle-input" checked>
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-text">
+                                    <span class="toggle-title">Lock Screen During Breaks</span>
+                                    <span class="toggle-description">Enforce break periods with full-screen overlay (Alt+Shift+E to exit)</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-actions">
+                        <div class="auto-save-note">
+                            <small>💾 Settings save automatically when changed</small>
+                        </div>
+                        <button type="button" id="reset-settings" class="btn btn-outline btn-sm">Reset to Default</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Statistics Section -->
+            <section class="stats-section card">
+                <h2 class="card-title">Session Statistics</h2>
+                <div class="stats-grid">
+                    <!-- Basic Stats -->
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-sessions">0</div>
+                        <div class="stat-label">Total Sessions</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="completed-sessions">0</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="completion-rate">0%</div>
+                        <div class="stat-label">Completion Rate</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-focus-time">0m</div>
+                        <div class="stat-label">Total Focus</div>
+                    </div>
+                    
+                    <!-- Performance Stats -->
+                    <div class="stat-card">
+                        <div class="stat-value" id="avg-session-length">0m</div>
+                        <div class="stat-label">Avg Session</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="focus-efficiency">100%</div>
+                        <div class="stat-label">Focus Efficiency</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="session-consistency">100%</div>
+                        <div class="stat-label">Consistency</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="avg-break-length">0m</div>
+                        <div class="stat-label">Avg Break</div>
+                    </div>
+                    
+                    <!-- Streak & Daily Stats -->
+                    <div class="stat-card">
+                        <div class="stat-value" id="current-streak">0</div>
+                        <div class="stat-label">Current Streak</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="longest-streak">0</div>
+                        <div class="stat-label">Best Streak</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="todays-sessions">0</div>
+                        <div class="stat-label">Today's Sessions</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="emergency-stops">0</div>
+                        <div class="stat-label">Emergency Stops</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Advanced Statistics with Charts -->
+            <section class="advanced-stats-section card">
+                <h2 class="card-title">📊 Advanced Analytics</h2>
+                
+                <!-- Chart Controls -->
+                <div class="chart-controls">
+                    <select id="chart-timeframe" class="form-select">
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="all">All Time</option>
+                    </select>
+                </div>
+                
+                <!-- Charts Grid -->
+                <div class="charts-grid">
+                    <!-- Focus Time Trend -->
+                    <div class="chart-card">
+                        <h3>Focus Time Trend</h3>
+                        <canvas id="focusTrendChart"></canvas>
+                    </div>
+                    
+                    <!-- Session Completion Rate -->
+                    <div class="chart-card">
+                        <h3>Completion Rate</h3>
+                        <canvas id="completionChart"></canvas>
+                    </div>
+                    
+                    <!-- Daily Activity Heatmap -->
+                    <div class="chart-card">
+                        <h3>Session Distribution</h3>
+                        <canvas id="sessionDistributionChart"></canvas>
+                    </div>
+                    
+                    <!-- Phase Breakdown -->
+                    <div class="chart-card">
+                        <h3>Time by Phase</h3>
+                        <canvas id="phaseBreakdownChart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Break Overlay -->
+    <div id="break-overlay" class="break-overlay hidden">
+        <div class="break-content">
+            <div class="break-icon">☕</div>
+            <h2 class="break-title">Break Time!</h2>
+            <p class="break-message">Take a moment to rest your mind and body.</p>
+            <div id="break-timer" class="break-timer">5:00</div>
+            <div class="break-suggestions">
+                <div class="suggestion-item">💧 Drink some water</div>
+                <div class="suggestion-item">👀 Look away from the screen</div>
+                <div class="suggestion-item">🧘 Take deep breaths</div>
+                <div class="suggestion-item">🚶 Stretch or walk around</div>
+            </div>
+            <div class="break-progress">
+                <div class="break-progress-bar">
+                    <div id="break-progress-fill" class="break-progress-fill"></div>
+                </div>
+                <div id="break-progress-text" class="break-progress-text">0% complete</div>
+            </div>
+            <div class="emergency-shortcut-hint">
+                <small>🚨 Emergency? Press <kbd>Alt + Shift + E</kbd> to stop immediately</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Chart.js for Advanced Statistics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Include Snackbar for Notifications -->
+    <script src="../design_system/components/snackbar.js"></script>
+    <!-- Include Progress Ring Component -->
+    <script src="./progress-ring.js"></script>
+    <!-- Include Statistics Module -->
+    <script src="./statistics.js"></script>
+    <!-- Include Advanced Statistics Module -->
+    <script src="./advanced-statistics.js"></script>
+    <script src="./lock-screen.js"></script>
+    <script src="./timer-manager.js"></script>
+    <script src="./pomodoro-full.js"></script>
+    <script>
+        // Update stats display when state changes
+        function updateStatsDisplay() {
+            if (window.pomodoroTimer && window.pomodoroTimer.updateStatistics) {
+                window.pomodoroTimer.updateStatistics();
+            }
+        }
+        
+
+        
+        // Update charts when statistics change
+        document.addEventListener('pomodoroStatsUpdated', () => {
+            if (window.advancedStats) {
+                window.advancedStats.updateCharts();
+            }
+        });
+        
+        // Stats are updated when sessions change, no need for constant polling
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(updateStatsDisplay, 500);
+        });
+    </script>
+    
+    <!-- PWA Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', async () => {
+                try {
+                    const registration = await navigator.serviceWorker.register('sw.js');
+                    console.log('ServiceWorker registered successfully:', registration.scope);
+                    
+                    // Check for updates
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                // New version available, show update notification
+                                console.log('New version available! Refresh to update.');
+                            }
+                        });
+                    });
+                } catch (error) {
+                    console.log('ServiceWorker registration failed:', error);
+                }
+            });
+        }
+        
+        // PWA Install Prompt
+        let deferredPrompt;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show install button or hint
+            const installHint = document.createElement('div');
+            installHint.className = 'install-hint';
+            installHint.innerHTML = `
+                <div class="install-content">
+                    <span>📱 Install this app for a better experience</span>
+                    <button id="install-btn" class="btn btn-primary btn-sm">Install</button>
+                    <button id="dismiss-btn" class="btn btn-secondary btn-sm">✕</button>
+                </div>
+            `;
+            installHint.style.cssText = `
+                position: fixed;
+                top: 10px;
+                right: 10px;
+                background: var(--color-surface);
+                border: 2px solid var(--color-primary);
+                border-radius: 8px;
+                padding: 12px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1000;
+                max-width: 300px;
+            `;
+            
+            document.body.appendChild(installHint);
+            
+            // Install button handler
+            document.getElementById('install-btn').addEventListener('click', async () => {
+                deferredPrompt.prompt();
+                const result = await deferredPrompt.userChoice;
+                console.log('PWA install result:', result.outcome);
+                deferredPrompt = null;
+                installHint.remove();
+            });
+            
+            // Dismiss button handler
+            document.getElementById('dismiss-btn').addEventListener('click', () => {
+                installHint.remove();
+            });
+        });
+        
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA was installed successfully');
+            deferredPrompt = null;
+        });
+    </script>
+</body>
+</html>
