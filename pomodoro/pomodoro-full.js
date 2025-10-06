@@ -11,7 +11,8 @@ class PomodoroTimer {
             shortBreakDuration: 5 * 60,
             longBreakDuration: 15 * 60,
             sessionsUntilLongBreak: 4,
-            lockScreenEnabled: true
+            lockScreenEnabled: true,
+            notificationsEnabled: true
         };
         
         // State
@@ -40,6 +41,7 @@ class PomodoroTimer {
         this.initializeLockScreen();
         this.initializeProgressRing();
         this.initializeStatistics();
+        this.initializeNotifications();
         this.restoreSessionIfRunning();
         this.render();
         this.updateStatistics();
@@ -105,6 +107,7 @@ class PomodoroTimer {
             shortBreakDurationInput: document.getElementById('short-break-duration'),
             longBreakDurationInput: document.getElementById('long-break-duration'),
             lockScreenToggle: document.getElementById('lock-screen-enabled'),
+            notificationsToggle: document.getElementById('notifications-enabled'),
             resetSettingsBtn: document.getElementById('reset-settings'),
             // Preset elements
             presetChips: document.querySelectorAll('.preset-chip')
@@ -164,6 +167,7 @@ class PomodoroTimer {
         this.elements.shortBreakDurationInput.value = this.settings.shortBreakDuration / 60;
         this.elements.longBreakDurationInput.value = this.settings.longBreakDuration / 60;
         this.elements.lockScreenToggle.checked = this.settings.lockScreenEnabled;
+        this.elements.notificationsToggle.checked = this.settings.notificationsEnabled;
         
         // Auto-save on changes
         [this.elements.focusDurationInput, this.elements.shortBreakDurationInput, 
@@ -172,6 +176,7 @@ class PomodoroTimer {
         });
         
         this.elements.lockScreenToggle?.addEventListener('change', () => this.autoSaveSettings());
+        this.elements.notificationsToggle?.addEventListener('change', () => this.autoSaveSettings());
         this.elements.resetSettingsBtn?.addEventListener('click', () => this.resetSettings());
         
         // Preset handlers
@@ -207,6 +212,63 @@ class PomodoroTimer {
         } else {
             console.warn('PomodoroStatistics not available on window object');
         }
+    }
+    
+    async initializeNotifications() {
+        // Check if notifications are supported
+        if (!('Notification' in window)) {
+            console.log('This browser does not support notifications');
+            return;
+        }
+        
+        // Check current permission status
+        if (Notification.permission === 'default') {
+            // Request permission on first visit
+            try {
+                const permission = await Notification.requestPermission();
+                console.log('Notification permission:', permission);
+                
+                if (permission === 'granted') {
+                    this.showWelcomeNotification();
+                }
+            } catch (error) {
+                console.log('Error requesting notification permission:', error);
+            }
+        } else if (Notification.permission === 'granted') {
+            console.log('Notifications already granted');
+        } else {
+            console.log('Notifications denied by user');
+        }
+    }
+    
+    showWelcomeNotification() {
+        this.sendBrowserNotification(
+            'Pomodoro Timer Ready! 🍅',
+            'You\'ll receive notifications when sessions start and finish.',
+            { icon: this.getNotificationIcon(), tag: 'welcome' }
+        );
+    }
+    
+    getNotificationIcon() {
+        // Use the tomato emoji as a data URL icon for consistency
+        const canvas = document.createElement('canvas');
+        canvas.width = 64;
+        canvas.height = 64;
+        const ctx = canvas.getContext('2d');
+        
+        // Simple fallback icon using canvas
+        ctx.fillStyle = '#dc2626';
+        ctx.beginPath();
+        ctx.arc(32, 32, 30, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        ctx.fillStyle = 'white';
+        ctx.font = '32px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('🍅', 32, 32);
+        
+        return canvas.toDataURL();
     }
     
     restoreSessionIfRunning() {
@@ -590,6 +652,7 @@ class PomodoroTimer {
         this.settings.shortBreakDuration = shortBreak;
         this.settings.longBreakDuration = longBreak;
         this.settings.lockScreenEnabled = this.elements.lockScreenToggle.checked;
+        this.settings.notificationsEnabled = this.elements.notificationsToggle.checked;
     }
     
     resetSettings() {
@@ -598,7 +661,8 @@ class PomodoroTimer {
             shortBreakDuration: 5 * 60,
             longBreakDuration: 15 * 60,
             sessionsUntilLongBreak: 4,
-            lockScreenEnabled: true
+            lockScreenEnabled: true,
+            notificationsEnabled: true
         };
         
         this.saveSettings();
@@ -711,10 +775,157 @@ class PomodoroTimer {
     }
     
     showNotification(message, variant = 'info') {
+        // Always show snackbar for immediate visual feedback
         if (window.showSnackbar) {
             window.showSnackbar(message, variant);
         } else {
             console.log(`[${variant.toUpperCase()}] ${message}`);
+        }
+        
+        // Send browser notification for important events
+        if (this.shouldSendBrowserNotification(message, variant)) {
+            this.sendBrowserNotification(
+                this.getNotificationTitle(message, variant),
+                message,
+                {
+                    icon: this.getNotificationIcon(),
+                    tag: 'pomodoro-timer',
+                    requireInteraction: false,
+                    silent: false
+                }
+            );
+        }
+    }
+    
+    shouldSendBrowserNotification(message, variant) {
+        // Send notifications for timer events, not for settings changes
+        const timerKeywords = ['started', 'completed', 'skipped', 'break', 'focus', 'stopped'];
+        const isTimerEvent = timerKeywords.some(keyword => 
+            message.toLowerCase().includes(keyword)
+        );
+        
+        // Don't send notifications if the page is visible (user is actively using it)
+        const isPageHidden = document.hidden || document.visibilityState === 'hidden';
+        
+        return isTimerEvent && (isPageHidden || variant === 'warning');
+    }
+    
+    getNotificationTitle(message, variant) {
+        if (message.includes('started')) {
+            return 'Timer Started ⏱️';
+        } else if (message.includes('completed')) {
+            return 'Session Complete! ✅';
+        } else if (message.includes('skipped')) {
+            return 'Session Skipped ⏭️';
+        } else if (message.includes('break')) {
+            return 'Break Time! ☕';
+        } else if (message.includes('stopped')) {
+            return 'Timer Stopped ⏹️';
+        } else if (variant === 'warning') {
+            return 'Pomodoro Alert ⚠️';
+        } else {
+            return 'Pomodoro Timer 🍅';
+        }
+    }
+    
+    sendBrowserNotification(title, body, options = {}) {
+        // Check if notifications are supported and permitted
+        if (!('Notification' in window) || Notification.permission !== 'granted') {
+            return;
+        }
+        
+        // Check if notifications are enabled in settings
+        if (!this.settings.notificationsEnabled) {
+            return;
+        }
+        
+        try {
+            const notification = new Notification(title, {
+                body: body,
+                icon: options.icon || this.getNotificationIcon(),
+                tag: options.tag || 'pomodoro',
+                requireInteraction: options.requireInteraction || false,
+                silent: options.silent || false,
+                ...options
+            });
+            
+            // Play notification sound (unless silent)
+            if (!options.silent) {
+                this.playNotificationSound(title);
+            }
+            
+            // Auto-close notification after 5 seconds unless it requires interaction
+            if (!options.requireInteraction) {
+                setTimeout(() => {
+                    notification.close();
+                }, 5000);
+            }
+            
+            // Optional: Focus app when notification is clicked
+            notification.onclick = () => {
+                window.focus();
+                notification.close();
+            };
+            
+            console.log('Browser notification sent:', title);
+        } catch (error) {
+            console.error('Error sending notification:', error);
+        }
+    }
+    
+    playNotificationSound(title) {
+        try {
+            // Create different sounds for different events
+            let frequency = 800; // Default frequency
+            let duration = 200; // Default duration
+            
+            if (title.includes('Complete')) {
+                // Success sound - higher pitch, double beep
+                frequency = 1200;
+                duration = 150;
+                this.beep(frequency, duration);
+                setTimeout(() => this.beep(frequency, duration), 200);
+            } else if (title.includes('Started')) {
+                // Start sound - medium pitch, single beep
+                frequency = 600;
+                duration = 300;
+                this.beep(frequency, duration);
+            } else if (title.includes('Break')) {
+                // Break sound - gentle, lower pitch
+                frequency = 400;
+                duration = 400;
+                this.beep(frequency, duration);
+            } else {
+                // Default sound
+                this.beep(frequency, duration);
+            }
+        } catch (error) {
+            console.log('Could not play notification sound:', error);
+        }
+    }
+    
+    beep(frequency = 800, duration = 200) {
+        try {
+            // Create web audio context for beep sound
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = frequency;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration / 1000);
+            
+        } catch (error) {
+            // Fallback: no sound if Web Audio API fails
+            console.log('Web Audio API not available for beep sound');
         }
     }
     

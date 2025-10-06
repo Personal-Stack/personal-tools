@@ -357,7 +357,7 @@
 }
 
 .form-toggle input:checked + .form-toggle-slider {
-    background: var(--color-primary-light);
+    background: var(--color-success-light);
 }
 
 .form-toggle input:checked + .form-toggle-slider:before {
@@ -515,7 +515,7 @@
 }
 
 .timer-short-break .progress-ring__progress {
-    stroke: var(--color-success);
+    stroke: var(--color-success-light);
 }
 
 .timer-long-break .progress-ring__progress {
@@ -531,7 +531,7 @@
 }
 
 .timer-short-break .timer-phase {
-    color: var(--color-success);
+    color: var(--color-success-light);
 }
 
 .timer-long-break .timer-phase {
@@ -1151,7 +1151,7 @@
 }
 
 .toggle-input:checked + .toggle-slider {
-    background: var(--color-success);
+    background: var(--color-success-light);
 }
 
 .toggle-input:checked + .toggle-slider::after {
