@@ -118,8 +118,12 @@ class LockScreenManager {
         // Show the overlay
         this.elements.breakOverlay.classList.remove('hidden');
         
-        // Skip fullscreen for now - might be causing issues
-        // this.requestFullscreen();
+        // Request fullscreen for immersive break experience in PWA mode
+        if (this.isPWAMode()) {
+            setTimeout(() => {
+                this.requestFullscreen();
+            }, 100); // Small delay to ensure overlay is visible first
+        }
         
         // Start the break timer
         this.startBreakTimer();
@@ -143,6 +147,9 @@ class LockScreenManager {
         this.breakStartTime = null;
         this.breakPhase = null;
         
+        // Exit fullscreen first
+        this.exitFullscreen();
+        
         // Hide the overlay
         if (this.elements.breakOverlay) {
             this.elements.breakOverlay.classList.add('hidden');
@@ -150,9 +157,6 @@ class LockScreenManager {
         
         // Stop the break timer
         this.stopBreakTimer();
-        
-        // Exit fullscreen
-        this.exitFullscreen();
         
         // Re-enable main timer controls
         this.enableMainControls();
@@ -311,14 +315,14 @@ class LockScreenManager {
         this.breakStartTime = null;
         this.breakPhase = null;
         
+        // Exit fullscreen first
+        this.exitFullscreen();
+        
         // Hide the overlay
         if (this.elements.breakOverlay) {
             this.elements.breakOverlay.classList.add('hidden');
             this.elements.breakOverlay.style.display = 'none';
         }
-        
-        // Exit fullscreen
-        this.exitFullscreen();
         
         // Re-enable main timer controls
         this.enableMainControls();
@@ -378,6 +382,19 @@ class LockScreenManager {
             skipBtn.disabled = false;
             skipBtn.style.opacity = '1';
         }
+    }
+    
+    isPWAMode() {
+        return window.matchMedia('(display-mode: standalone)').matches ||
+               window.navigator.standalone === true ||
+               document.referrer.includes('android-app://');
+    }
+    
+    isFullscreen() {
+        return !!(document.fullscreenElement ||
+                 document.webkitFullscreenElement ||
+                 document.mozFullScreenElement ||
+                 document.msFullscreenElement);
     }
     
     requestFullscreen() {
